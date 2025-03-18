@@ -8,8 +8,13 @@
 ├── home-manager
 │   ├── flake.lock
 │   ├── flake.nix
-│   └── home.nix
+│   ├── home.nix
+│   └── modules
+│       ├── firefox.nix
+│       ├── ghostty.nix
+│       ├── git.nix
+│       └── shell.nix
 └── README.md
 
-2 directories, 5 files
+3 directories, 9 files
 ```

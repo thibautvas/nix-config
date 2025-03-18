@@ -13,8 +13,9 @@
 │       ├── firefox.nix
 │       ├── ghostty.nix
 │       ├── git.nix
-│       └── shell.nix
+│       ├── shell.nix
+│       └── tmux.nix
 └── README.md
 
-3 directories, 9 files
+3 directories, 10 files
 ```

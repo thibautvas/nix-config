@@ -9,7 +9,6 @@
 
     packages = with pkgs; [
       vim
-      tmux
       tree
       fzf
       fd
@@ -30,6 +29,7 @@
   imports = [
     ./modules/git.nix
     ./modules/shell.nix
+    ./modules/tmux.nix
     ./modules/ghostty.nix
     ./modules/firefox.nix
   ];

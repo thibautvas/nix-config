@@ -8,7 +8,6 @@
     homeDirectory = "/home/thibautvas"; # linux standard
 
     packages = with pkgs; [
-      vim
       tree
       fzf
       fd
@@ -18,7 +17,6 @@
     sessionPath = [ "${config.home.homeDirectory}/.local/bin" ]; # prepend to path
 
     sessionVariables = {
-      EDITOR = "vim";
       HOSTRD = "${config.home.homeDirectory}/repos";
       HOSTCOLOR = "cyan";
     };
@@ -30,6 +28,7 @@
     ./modules/git.nix
     ./modules/shell.nix
     ./modules/tmux.nix
+    ./modules/neovim.nix
     ./modules/ghostty.nix
     ./modules/firefox.nix
   ];

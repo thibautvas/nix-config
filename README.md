@@ -13,9 +13,16 @@
 │       ├── firefox.nix
 │       ├── ghostty.nix
 │       ├── git.nix
+│       ├── neovim.nix
+│       ├── nvim-opts
+│       │   ├── blink.nix
+│       │   ├── catppuccin.nix
+│       │   ├── gitsigns.nix
+│       │   ├── settings.nix
+│       │   └── telescope.nix
 │       ├── shell.nix
 │       └── tmux.nix
 └── README.md
 
-3 directories, 10 files
+4 directories, 16 files
 ```

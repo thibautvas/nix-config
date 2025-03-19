@@ -13,6 +13,12 @@
 │       ├── firefox.nix
 │       ├── ghostty.nix
 │       ├── git.nix
+│       ├── hyprland.nix
+│       ├── hypr-opts
+│       │   ├── hypridle.nix
+│       │   ├── hyprlock.nix
+│       │   ├── hyprpaper.nix
+│       │   └── settings.nix
 │       ├── neovim.nix
 │       ├── nvim-opts
 │       │   ├── blink.nix
@@ -24,5 +30,5 @@
 │       └── tmux.nix
 └── README.md
 
-4 directories, 16 files
+5 directories, 21 files
 ```

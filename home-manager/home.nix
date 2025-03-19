@@ -31,5 +31,6 @@
     ./modules/neovim.nix
     ./modules/ghostty.nix
     ./modules/firefox.nix
+    ./modules/hyprland.nix
   ];
 }

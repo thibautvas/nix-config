@@ -15,6 +15,8 @@
     ./nvim-opts/catppuccin.nix
     ./nvim-opts/gitsigns.nix
     ./nvim-opts/telescope.nix
+    ./nvim-opts/treesitter.nix
+    ./nvim-opts/lspconfig.nix
     ./nvim-opts/blink.nix
     ./nvim-opts/settings.nix
   ];

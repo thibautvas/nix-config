@@ -24,11 +24,13 @@
 │       │   ├── blink.nix
 │       │   ├── catppuccin.nix
 │       │   ├── gitsigns.nix
+│       │   ├── lspconfig.nix
 │       │   ├── settings.nix
-│       │   └── telescope.nix
+│       │   ├── telescope.nix
+│       │   └── treesitter.nix
 │       ├── shell.nix
 │       └── tmux.nix
 └── README.md
 
-5 directories, 21 files
+5 directories, 23 files
 ```

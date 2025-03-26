@@ -34,9 +34,9 @@
 
     bind = [
       "super, r, exec, wofi --gtk-dark --show drun"
-      "alt-ctrl-shift-super, f, exec, $HOME/.config/hypr/bin/launch firefox firefox"
-      "alt-ctrl-shift-super, d, exec, $HOME/.config/hypr/bin/launch ghostty com.mitchellh.ghostty"
-      "alt-ctrl-shift-super, v, exec, $HOME/.config/hypr/bin/launch_alt firefox firefox 2"
+      "alt-ctrl-shift-super, f, exec, hyprctl-launch firefox firefox"
+      "alt-ctrl-shift-super, d, exec, hyprctl-launch ghostty com.mitchellh.ghostty"
+      "alt-ctrl-shift-super, v, exec, hyprctl-launch-alt firefox firefox 2"
       "alt-ctrl-shift-super, tab, cyclenext"
       "alt, f, workspace, 1"
       "alt, d, workspace, 2"

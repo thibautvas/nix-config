@@ -27,6 +27,7 @@
   imports = [
     ./modules/git.nix
     ./modules/shell.nix
+    ./modules/direnv.nix
     ./modules/tmux.nix
     ./modules/neovim.nix
     ./modules/ghostty.nix

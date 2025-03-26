@@ -10,11 +10,13 @@
 │   ├── flake.nix
 │   ├── home.nix
 │   └── modules
+│       ├── direnv.nix
 │       ├── firefox.nix
 │       ├── ghostty.nix
 │       ├── git.nix
 │       ├── hyprland.nix
 │       ├── hypr-opts
+│       │   ├── bin.nix
 │       │   ├── hypridle.nix
 │       │   ├── hyprlock.nix
 │       │   ├── hyprpaper.nix
@@ -29,8 +31,10 @@
 │       │   ├── telescope.nix
 │       │   └── treesitter.nix
 │       ├── shell.nix
-│       └── tmux.nix
+│       ├── tmux.nix
+│       └── tmux-opts
+│           └── bin.nix
 └── README.md
 
-5 directories, 23 files
+6 directories, 26 files
 ```

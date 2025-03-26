@@ -10,6 +10,7 @@
       "temp.*"
       "temp/"
       "*.bak"
+      ".direnv/"
       ".venv/"
       "*.egg-info/"
     ];

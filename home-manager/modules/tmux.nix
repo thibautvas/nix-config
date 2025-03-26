@@ -18,4 +18,8 @@
       bind-key l select-pane -R
     '';
   };
+
+  imports = [
+    ./tmux-opts/bin.nix
+  ];
 }

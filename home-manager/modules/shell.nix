@@ -86,8 +86,8 @@ let
     alias wcd='direct_cd $PWD'
     alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $HOSTRD/git)"'
 
-    alias tns="$HOME/.config/tmux/bin/new_session" # snowball: legacy bin
-    alias tas="$HOME/.config/tmux/bin/attach_session" # snowball: legacy bin
+    alias tns='tmux-new-session'
+    alias tas='tmux-attach-session'
     alias tls='tmux list-sessions'
     alias tks='tmux kill-session'
 

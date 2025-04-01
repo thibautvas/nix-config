@@ -1,9 +1,42 @@
 { config, pkgs, ... }:
 
 let
-  shellInit = ''
-    [[ -f "$HOME/.config/shell/prompt.sh" ]] && source "$HOME/.config/shell/prompt.sh" # snowball: legacy shell script
+  shellPrompt = ''
+    set_custom_prompt() {
+      if [[ $? -eq 0 ]]; then
+        local user_color=$(eval "echo \$$HOSTCOLOR")
+      else
+        local user_color="$RED"
+      fi
+      local active_user="[$USER@$(uname -n)]"
 
+      local project branch active_dir dir_color
+      if project=$(git rev-parse --show-toplevel 2>/dev/null); then
+        branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        active_dir="$(basename "$project"):$branch $(echo "$PWD" | sed "s|^$project|~|")"
+        dir_color="$YELLOW"
+      else
+        active_dir=$(echo "$PWD" | sed "s|^$HOME|~|")
+        dir_color="$BLUE"
+      fi
+
+      if [[ -n $VIRTUAL_ENV ]]; then
+        local active_venv="($(basename $VIRTUAL_ENV)) "
+      fi
+
+      PS1="$active_venv$user_color$active_user $dir_color$active_dir\$ $DEFAULT"
+    }
+
+    if [[ -n "$BASH_VERSION" ]]; then
+      DEFAULT='\[\e[0m\]'; RED='\[\e[31m\]'; GREEN='\[\e[32m\]'; YELLOW='\[\e[33m\]'; BLUE='\[\e[34m\]'; MAGENTA='\[\e[35m\]'; CYAN='\[\e[36m\]'
+      PROMPT_COMMAND='set_custom_prompt'
+    elif [[ -n "$ZSH_VERSION" ]]; then
+      DEFAULT='%f'; RED='%F{red}'; GREEN='%F{green}'; YELLOW='%F{yellow}'; BLUE='%F{blue}'; MAGENTA='%F{magenta}'; CYAN='%F{cyan}'
+      precmd_functions+=('set_custom_prompt')
+    fi
+  '';
+
+  shellInit = ''
     alias ..='cd ..'
     alias ...='cd ../..'
     alias ....='cd ../../..'
@@ -103,14 +136,14 @@ let
 in {
   programs.bash = {
     enable = true;
-    initExtra = shellInit;
+    initExtra = shellPrompt + shellInit;
     shellAliases = { rf = "source $HOME/.bashrc"; };
   };
 
   programs.zsh = {
     enable = true;
     defaultKeymap = "emacs";
-    initExtra = shellInit;
+    initExtra = shellPrompt + shellInit;
     shellAliases = { rf = "source $HOME/.zshrc"; };
   };
 }

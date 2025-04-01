@@ -18,7 +18,7 @@
 
     sessionVariables = {
       HOSTRD = "${config.home.homeDirectory}/repos";
-      HOSTCOLOR = "cyan";
+      HOSTCOLOR = "CYAN";
     };
   };
 

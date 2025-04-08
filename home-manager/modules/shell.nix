@@ -119,11 +119,6 @@ let
     alias wcd='direct_cd $PWD'
     alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $HOSTRD/git)"'
 
-    alias tns='tmux-new-session'
-    alias tas='tmux-attach-session'
-    alias tls='tmux list-sessions'
-    alias tks='tmux kill-session'
-
     vi() {
       if [[ -n "$1" ]]; then
         nvim "$1"
@@ -131,6 +126,13 @@ let
         nvim +Telescope\ find_files
       fi
     }
+
+    alias tns='tmux-new-session'
+    alias tas='tmux-attach-session'
+    alias tls='tmux list-sessions'
+    alias tks='tmux kill-session'
+
+    alias hrm='home-row-mods'
   '';
 
 in {

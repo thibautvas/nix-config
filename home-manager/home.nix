@@ -7,6 +7,7 @@
     ./modules/direnv.nix
     ./modules/ghostty.nix
     ./modules/firefox.nix
+    ./modules/kmonad.nix
     ./modules/neovim/main.nix
     ./modules/tmux/main.nix
     ./modules/window-manager/aerospace/main.nix

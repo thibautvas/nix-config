@@ -15,6 +15,7 @@
         ├── firefox.nix
         ├── ghostty.nix
         ├── git.nix
+        ├── kmonad.nix
         ├── neovim
         │   ├── blink.nix
         │   ├── catppuccin.nix
@@ -41,5 +42,5 @@
                 ├── main.nix
                 └── settings.nix
 
-8 directories, 29 files
+8 directories, 30 files
 ```

@@ -11,10 +11,12 @@
       local gs = package.loaded.gitsigns
       vim.keymap.set("n", "<M-h>", function()
         gs.nav_hunk("next")
+        vim.cmd("norm! zz")
       end,
       { desc = "Gitsigns next hunk" })
       vim.keymap.set("n", "<M-H>", function()
         gs.nav_hunk("prev")
+        vim.cmd("norm! zz")
       end,
       { desc = "Gitsigns previous hunk" })
       vim.keymap.set("n", "<leader>hd", gs.preview_hunk, { desc = "Gitsigns preview hunk" })

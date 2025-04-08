@@ -5,10 +5,10 @@
     ./modules/git.nix
     ./modules/shell.nix
     ./modules/direnv.nix
-    ./modules/tmux.nix
-    ./modules/neovim.nix
     ./modules/ghostty.nix
     ./modules/firefox.nix
+    ./modules/neovim/main.nix
+    ./modules/tmux/main.nix
     ./modules/window-manager/aerospace/main.nix
     ./modules/window-manager/hyprland/main.nix
   ];

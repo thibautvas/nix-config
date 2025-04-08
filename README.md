@@ -15,19 +15,19 @@
         ├── firefox.nix
         ├── ghostty.nix
         ├── git.nix
-        ├── neovim.nix
-        ├── nvim-opts
+        ├── neovim
         │   ├── blink.nix
         │   ├── catppuccin.nix
         │   ├── gitsigns.nix
         │   ├── lspconfig.nix
+        │   ├── main.nix
         │   ├── settings.nix
         │   ├── telescope.nix
         │   └── treesitter.nix
         ├── shell.nix
-        ├── tmux-opts
-        │   └── bin.nix
-        ├── tmux.nix
+        ├── tmux
+        │   ├── bin.nix
+        │   └── main.nix
         └── window-manager
             ├── aerospace
             │   ├── bin.nix

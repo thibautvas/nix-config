@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./bin.nix ];
+
   programs.tmux = {
     enable = true;
     terminal = "xterm-256color";
@@ -18,8 +20,4 @@
       bind-key l select-pane -R
     '';
   };
-
-  imports = [
-    ./tmux-opts/bin.nix
-  ];
 }

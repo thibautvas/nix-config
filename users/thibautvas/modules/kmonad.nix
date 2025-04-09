@@ -1,7 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 let
-  homeRowMods = pkgs.writeShellScriptBin "home-row-mods" ''
+  homeRowMods = pkgs.writeShellScriptBin "hrm" ''
     if [[ $(uname) == 'Darwin' ]]; then
       INPUT='iokit-name'
       OUTPUT='kext'
@@ -114,20 +114,7 @@ let
 
 in {
   # package kmonad marked as broken on aarch64-darwin
-  options.kmonad.isBroken = lib.mkOption { default = pkgs.stdenv.isDarwin; };
-
-  config = lib.mkMerge [
-    (lib.mkIf (!config.kmonad.isBroken) {
-      home.packages = [
-        pkgs.kmonad
-        homeRowMods
-      ];
-    })
-
-    (lib.mkIf config.kmonad.isBroken {
-      home.packages = [
-        homeRowMods
-      ];
-    })
-  ];
+  home.packages = [
+    homeRowMods
+  ] ++ (if pkgs.stdenv.isLinux then [ pkgs.kmonad ] else []);
 }

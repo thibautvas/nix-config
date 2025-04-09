@@ -8,6 +8,7 @@
     ./modules/ghostty.nix
     ./modules/firefox.nix
     ./modules/kmonad.nix
+    ./modules/localbin.nix
     ./modules/neovim/main.nix
     ./modules/tmux/main.nix
     ./modules/window-manager/aerospace/main.nix
@@ -31,6 +32,7 @@
         fzf
         fd
         ripgrep
+        lazygit
       ];
 
       sessionPath = [ "${config.home.homeDirectory}/.local/bin" ]; # prepend to path

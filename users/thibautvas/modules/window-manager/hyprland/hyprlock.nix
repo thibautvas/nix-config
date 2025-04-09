@@ -50,7 +50,7 @@
             valign = "top";
           }
           {
-            text = "cmd[update:1000] bluetoothctl info | grep 'Name' | cut -d':' -f2 | xargs";
+            text = "cmd[update:1000] bluetoothctl info | awk -F ': ' '/Name: / {print $2}'";
             color = "0xffffffff";
             font_size = 20;
             position = "700, -140";

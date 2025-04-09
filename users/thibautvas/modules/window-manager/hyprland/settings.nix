@@ -52,6 +52,8 @@
         "super, s, exec, hyprshot -m region -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
         "shift-super, s, exec, hyprshot -m window -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
         "super, v, exec, cliphist list | wofi --gtk-dark --dmenu | cliphist decode | wl-copy"
+        "super, p, exec, sup | wofi --gtk-dark --dmenu"
+        "super, b, exec, btc \"$(echo -e 'speakers\\n headset' | wofi --gtk-dark --dmenu)\""
       ];
 
       bindel = [

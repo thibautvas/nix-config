@@ -21,6 +21,7 @@
             ├── ghostty.nix
             ├── git.nix
             ├── kmonad.nix
+            ├── localbin.nix
             ├── neovim
             │   ├── blink.nix
             │   ├── catppuccin.nix
@@ -47,5 +48,5 @@
                     ├── main.nix
                     └── settings.nix
 
-11 directories, 32 files
+11 directories, 33 files
 ```

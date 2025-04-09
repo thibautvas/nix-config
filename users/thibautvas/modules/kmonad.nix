@@ -1,15 +1,15 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 let
-  homeRowMods = pkgs.writeShellScriptBin "home-row-mods" ''
-    if [[ $(uname) == 'Darwin' ]]; then
+  homeRowMods = pkgs.writeShellScriptBin "hrm" (
+    (if pkgs.stdenv.isDarwin then ''
       INPUT='iokit-name'
       OUTPUT='kext'
       CTLMET='M'
       ALTCTL='A'
       START='M-left'
       END='M-right'
-    elif [[ $(uname) == 'Linux' ]]; then
+    '' else ''
       if [[ -L /dev/input/by-id/usb-Keychron_Keychron_V4-event-kbd ]]; then
         INPUT='device-file "/dev/input/by-id/usb-Keychron_Keychron_V4-event-kbd"'
       else
@@ -20,114 +20,99 @@ let
       ALTCTL='C'
       START='home'
       END='end'
-    fi
+    '') + ''
+      TMPFILE=$(mktemp)
+      cat <<EOF > "$TMPFILE"
+      (defcfg
+        input ($INPUT)
+        output ($OUTPUT)
+        fallthrough true
+        allow-cmd true
+      )
 
-    TMPFILE=$(mktemp)
+      (defalias
+        ;; home row mods (AMSC)
+        alt_a (tap-hold-next-release 200 a lalt)
+        met_s (tap-hold-next-release 200 s lmet)
+        sft_d (tap-hold-next-release 200 d lsft)
+        ctl_f (tap-hold-next-release 200 f lctl)
+        ctl_j (tap-hold-next-release 200 j rctl)
+        sft_k (tap-hold-next-release 200 k rsft)
+        met_l (tap-hold-next-release 200 l rmet)
+        alt_; (tap-hold-next-release 200 ; ralt)
 
-    cat <<EOF > "$TMPFILE"
-    (defcfg
-      input ($INPUT)
-      output ($OUTPUT)
+        ;; hyper
+        hyp (around rmet (around ralt (around rctl rsft)))
+        hyp_h (tap-hold-next-release 200 h @hyp)
 
-      fallthrough true
-      allow-cmd true
-    )
+        ;; navigation layer
+        nav (layer-toggle nav)
+        nav_esc (tap-hold-next-release 200 esc @nav)
+        vim_d #($CTLMET-x)
+        vim_y #($CTLMET-c)
+        vim_p #($CTLMET-v)
+        vim_b #($ALTCTL-left)
+        vim_w #($ALTCTL-right)
+        vim_^ $START
+        vim_$ $END
+        vim_V #($START S-$END)
+        vim_S #($END S-$START bspc)
+        vim_o #($END S-ret)
 
-    (defalias
-      ;; home row mods (AMSC)
-      alt_a (tap-hold-next-release 200 a lalt)
-      met_s (tap-hold-next-release 200 s lmet)
-      sft_d (tap-hold-next-release 200 d lsft)
-      ctl_f (tap-hold-next-release 200 f lctl)
-      ctl_j (tap-hold-next-release 200 j rctl)
-      sft_k (tap-hold-next-release 200 k rsft)
-      met_l (tap-hold-next-release 200 l rmet)
-      alt_; (tap-hold-next-release 200 ; ralt)
+        ;; comfort layer: email addresses and accessible controls for 60% keyboard
+        com (layer-toggle com)
+        com_tab (tap-hold-next-release 200 tab @com)
+        gmail #(t h i b a u t . v a s @ g m a i l . c o m)
 
-      ;; hyper
-      hyp (around rmet (around ralt (around rctl rsft)))
-      hyp_h (tap-hold-next-release 200 h @hyp)
+        ;; restart aerospace
+        ar (cmd-button "aerospace-restart")
+      )
 
-      ;; navigation layer
-      nav (layer-toggle nav)
-      nav_esc (tap-hold-next-release 200 esc @nav)
-      vim_d #($CTLMET-x)
-      vim_y #($CTLMET-c)
-      vim_p #($CTLMET-v)
-      vim_b #($ALTCTL-left)
-      vim_w #($ALTCTL-right)
-      vim_^ $START
-      vim_$ $END
-      vim_V #($START S-$END)
-      vim_S #($END S-$START bspc)
-      vim_o #($END S-ret)
+      (defsrc
+        esc       f1        f2        f3        f4        f5        f6        f7        f8        f9        f10       f11       f12
+                  1         2         3         4         5         6         7         8         9         0         -         =         bspc
+        tab                                                         y         u         i         o         p         [         ]
+        caps      a         s         d         f                   h         j         k         l         ;
+                                                                              m         ,         .
+      )
 
-      ;; comfort layer: email addresses and accessible controls for 60% keyboard
-      com (layer-toggle com)
-      com_tab (tap-hold-next-release 200 tab @com)
-      gmail #(t h i b a u t . v a s @ g m a i l . c o m)
+      (deflayer mod
+        grv       brdn      brup      mctl      @ar       bldn      blup      prev      pp        next      mute      vold      volu
+                  _         _         _         _         _         _         _         _         _         _         _         _         _
+        @com_tab                                                    _         _         _         _         _         _         _
+        @nav_esc  @alt_a    @met_s    @sft_d    @ctl_f              @hyp_h    @ctl_j    @sft_k    @met_l    @alt_;
+                                                                              _         _         _
+      )
 
-      ;; restart aerospace
-      ar (cmd-button "aerospace-restart")
-    )
+      (deflayer nav
+        _         f1        f2        f3        f4        f5      f6          f7        f8        f9        f10       f11       f12
+                  _         _         _         _         _       _           S-@vim_b  S-@vim_w  @vim_V    @vim_S    _         _         del
+        _                                                         @vim_y      @vim_b    @vim_w    @vim_o    @vim_p    _         _
+        _         _         _         @vim_d    _                 left        down      up        right     _
+                                                                              @vim_^    @vim_$    S-down
+      )
 
-    (defsrc
-      esc       f1        f2        f3        f4        f5        f6        f7        f8        f9        f10       f11       f12
-                1         2         3         4         5         6         7         8         9         0         -         =         bspc
-      tab                                                         y         u         i         o         p         [         ]
-      caps      a         s         d         f                   h         j         k         l         ;
-                                                                            m         ,         .
-    )
+      (deflayer com
+        _         _         _         _         _         _         _         _         _         _         _         _         _
+                  brdn      brup      mctl      @ar       bldn      blup      prev      pp        next      mute      vold      volu      del
+        _                                                           _         _         _         _         -         _         @gmail
+        caps      _         _         _         _                   _         _         _         _         _
+                                                                              _         _         _
+      )
+      EOF
 
-    (deflayer mod
-      grv       brdn      brup      mctl      @ar       bldn      blup      prev      pp        next      mute      vold      volu
-                _         _         _         _         _         _         _         _         _         _         _         _         _
-      @com_tab                                                    _         _         _         _         _         _         _
-      @nav_esc  @alt_a    @met_s    @sft_d    @ctl_f              @hyp_h    @ctl_j    @sft_k    @met_l    @alt_;
-                                                                            _         _         _
-    )
+      if tmux has-session -t 'home-row-mods' 2>/dev/null; then
+        tmux kill-session -t 'home-row-mods'
+      fi
 
-    (deflayer nav
-      _         f1        f2        f3        f4        f5      f6          f7        f8        f9        f10       f11       f12
-                _         _         _         _         _       _           S-@vim_b  S-@vim_w  @vim_V    @vim_S    _         _         del
-      _                                                         @vim_y      @vim_b    @vim_w    @vim_o    @vim_p    _         _
-      _         _         _         @vim_d    _                 left        down      up        right     _
-                                                                            @vim_^    @vim_$    S-down
-    )
-
-    (deflayer com
-      _         _         _         _         _         _         _         _         _         _         _         _         _
-                brdn      brup      mctl      @ar       bldn      blup      prev      pp        next      mute      vold      volu      del
-      _                                                           _         _         _         _         -         _         @gmail
-      caps      _         _         _         _                   _         _         _         _         _
-                                                                            _         _         _
-    )
-    EOF
-
-    if tmux has-session -t 'home-row-mods' 2>/dev/null; then
-      tmux kill-session -t 'home-row-mods'
-    fi
-
-    tmux new-session -d -s 'home-row-mods'
-    tmux send-keys -t 'home-row-mods' "sudo kmonad $TMPFILE" Enter
-  '';
+      tmux new-session -d -s 'home-row-mods'
+      tmux send-keys -t 'home-row-mods' "sudo kmonad $TMPFILE" Enter
+    ''
+  );
 
 in {
   # package kmonad marked as broken on aarch64-darwin
-  options.kmonad.isBroken = lib.mkOption { default = pkgs.stdenv.isDarwin; };
-
-  config = lib.mkMerge [
-    (lib.mkIf (!config.kmonad.isBroken) {
-      home.packages = [
-        pkgs.kmonad
-        homeRowMods
-      ];
-    })
-
-    (lib.mkIf config.kmonad.isBroken {
-      home.packages = [
-        homeRowMods
-      ];
-    })
-  ];
+  home.packages = [
+    homeRowMods
+  ] ++ (if pkgs.stdenv.isLinux then [ pkgs.kmonad ] else []);
 }

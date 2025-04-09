@@ -41,7 +41,7 @@ let
     alias ...='cd ../..'
     alias ....='cd ../../..'
     alias ocd="cd $PWD"
-    alias grep='grep --color=auto' # colors
+    alias grep='grep --color=auto'
     alias tree='tree -C'
     alias ls='ls --color=auto'
     alias la='ls -A'
@@ -131,8 +131,6 @@ let
     alias tas='tmux-attach-session'
     alias tls='tmux list-sessions'
     alias tks='tmux kill-session'
-
-    alias hrm='home-row-mods'
   '';
 
 in {

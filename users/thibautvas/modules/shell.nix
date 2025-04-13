@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   shellPrompt = ''
     set_custom_prompt() {
       if [[ $? -eq 0 ]]; then
-        local user_color=$(eval "echo \$$HOSTCOLOR")
+        local user_color=$(eval "echo \$$HOST_COLOR")
       else
         local user_color="$RED"
       fi
@@ -115,9 +115,9 @@ let
       fi
       [[ -n "$target" ]] && cd "$target"
     }
-    alias dcd="direct_cd $HOSTRD"
+    alias dcd="direct_cd $HOST_PROJECT_DIR"
     alias wcd='direct_cd $PWD'
-    alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $HOSTRD/git)"'
+    alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $HOST_PROJECT_DIR/git)"'
 
     vi() {
       if [[ -n "$1" ]]; then

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, isLinux, ... }:
 
 {
   imports = [
@@ -9,21 +9,19 @@
     ./hyprlock.nix
   ];
 
-  config = lib.mkIf config.hyprland.enable {
-    wayland.windowManager.hyprland = {
-      enable = true;
-      package = null; # set the hyprland package to null to use the one from the NixOS module
-      portalPackage = null; # same with the xdg-desktop-portal-hyprland package
-    };
-
-    home.packages = with pkgs; [
-      hyprsunset
-      hyprshot
-      wl-clipboard
-      cliphist
-      wofi
-      brightnessctl
-      playerctl
-    ];
+  wayland.windowManager.hyprland = lib.mkIf isLinux {
+    enable = true;
+    package = null; # use system package
+    portalPackage = null; # use system portalPackage
   };
+
+  home.packages = lib.optionals isLinux (with pkgs; [
+    hyprsunset
+    hyprshot
+    wl-clipboard
+    cliphist
+    wofi
+    brightnessctl
+    playerctl
+  ]);
 }

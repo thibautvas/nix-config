@@ -11,32 +11,52 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }: {
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
+  let
+    mkPkgs = nixpkgs: system: import nixpkgs {
+      inherit system;
+    };
+    mkExtraArgs = pkgs: {
+      pkgs = pkgs;
+      isDarwin = pkgs.stdenv.isDarwin;
+      isLinux = pkgs.stdenv.isLinux;
+    };
+
+    systems = {
+      darwin = "aarch64-darwin";
+      linux = "x86_64-linux";
+    };
+    nixPkgs = {
+      darwinUnstable = mkPkgs nixpkgs-unstable systems.darwin;
+      linuxStable = mkPkgs nixpkgs systems.linux;
+      linuxUnstable = mkPkgs nixpkgs-unstable systems.linux;
+    };
+    extraArgs = {
+      darwin = mkExtraArgs nixPkgs.darwinUnstable;
+      linux = mkExtraArgs nixPkgs.linuxUnstable;
+    };
+
+  in {
+    # macos config: standalone home manager
+    homeConfigurations."thibautvas" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixPkgs.darwinUnstable;
+      modules = [ ./users/thibautvas/home.nix ];
+      extraSpecialArgs = extraArgs.darwin;
+    };
+
+    # nixos config: system and home manager
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-      };
+      pkgs = nixPkgs.linuxStable;
       modules = [
         ./hosts/nixos/configuration.nix
         home-manager.nixosModules.home-manager {
           home-manager = {
-	    useGlobalPkgs = true;
+            useGlobalPkgs = true;
             useUserPackages = true;
             users."thibautvas" = import ./users/thibautvas/home.nix;
-            extraSpecialArgs.pkgs = import nixpkgs-unstable {
-              system = "x86_64-linux";
-            };
+            extraSpecialArgs = extraArgs.linux;
           };
         }
-      ];
-    };
-
-    homeConfigurations."thibautvas" = home-manager.lib.homeManagerConfiguration {
-      pkgs = import nixpkgs-unstable {
-        system = "aarch64-darwin";
-      };
-      modules = [
-        ./users/thibautvas/home.nix
       ];
     };
   };

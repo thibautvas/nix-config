@@ -1,8 +1,9 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, isDarwin, ... }:
 
 let
-  statusSumUp = pkgs.writeShellScriptBin "sup" (
-    "date +\"%a %b %d %H:%M\"\n" + (if pkgs.stdenv.isDarwin then ''
+  statusSumUp = pkgs.writeShellScriptBin "sup" ''
+    date +"%a %b %d %H:%M"
+    ${if isDarwin then ''
       # @raycast.schemaVersion 1
       # @raycast.title sup
       # @raycast.mode fullOutput
@@ -15,17 +16,16 @@ let
       echo "$(cat /sys/class/power_supply/BAT1/capacity)%"
       nmcli -g GENERAL.CONNECTION device show | head -n1
       bluetoothctl info | awk -F ': ' '/Name: / {print $2}'
-    '')
-  );
+    ''}
+  '';
 
-  bluetoothConnect = pkgs.writeShellScriptBin "btc" (
-    ''
-      if [[ "$1" = h* ]]; then
-        MAC="98:47:44:93:A6:83"
-      elif [[ "$1" = s* ]]; then
-        MAC="40:72:18:EB:17:A7"
-      fi
-    '' + (if pkgs.stdenv.isDarwin then ''
+  bluetoothConnect = pkgs.writeShellScriptBin "btc" ''
+    if [[ "$1" = h* ]]; then
+      MAC="98:47:44:93:A6:83"
+    elif [[ "$1" = s* ]]; then
+      MAC="40:72:18:EB:17:A7"
+    fi
+    ${if isDarwin then ''
       # @raycast.schemaVersion 1
       # @raycast.title btc
       # @raycast.mode compact
@@ -37,12 +37,12 @@ let
       (echo 'scan on'; sleep 3) | bluetoothctl &&
         bluetoothctl pair "$MAC" &&
         bluetoothctl connect "$MAC"
-    '')
-  );
+    ''}
+  '';
 
 in {
   home.packages = [
     statusSumUp
     bluetoothConnect
-  ] ++ (if pkgs.stdenv.isDarwin then [ pkgs.blueutil ] else []);
+  ] ++ lib.optionals isDarwin [ pkgs.blueutil ];
 }

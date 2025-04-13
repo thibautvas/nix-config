@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, isLinux, ... }:
 
 let
   hyprctlLaunch = pkgs.writeShellScriptBin "hyprctl-launch" ''
@@ -27,10 +27,8 @@ let
   '';
 
 in {
-  config = lib.mkIf config.hyprland.enable {
-    home.packages = [
-      hyprctlLaunch
-      hyprctlLaunchAlt
-    ];
-  };
+  home.packages = lib.optionals isLinux [
+    hyprctlLaunch
+    hyprctlLaunchAlt
+  ];
 }

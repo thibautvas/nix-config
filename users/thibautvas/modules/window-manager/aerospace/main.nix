@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, isDarwin, ... }:
 
 {
   imports = [
@@ -6,7 +6,7 @@
     ./bin.nix
   ];
 
-  config = lib.mkIf config.aerospace.enable {
-    programs.aerospace.enable = true;
+  programs.aerospace = lib.mkIf isDarwin {
+    enable = true;
   };
 }

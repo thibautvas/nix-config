@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, isDarwin, isLinux, ... }:
 
 let
   ghosttySettings = {
@@ -28,20 +28,15 @@ let
 
   ghosttySettingsText = lib.concatStringsSep "\n" (lib.mapAttrsToList renderSettings ghosttySettings);
 
-in {
-  # package ghostty marked as broken on aarch64-darwin
-  options.ghostty.isBroken = lib.mkOption { default = pkgs.stdenv.isDarwin; };
-
-  config = lib.mkMerge [
-    (lib.mkIf (!config.ghostty.isBroken) {
-      programs.ghostty = {
-        enable = true;
-        settings = ghosttySettings;
-      };
-    })
-
-    (lib.mkIf config.ghostty.isBroken {
-      xdg.configFile."ghostty/config".text = ghosttySettingsText;
-    })
-  ];
-}
+in lib.mkMerge [
+  (lib.mkIf isDarwin {
+    # package ghostty marked as broken on aarch64-darwin
+    xdg.configFile."ghostty/config".text = ghosttySettingsText;
+  })
+  (lib.mkIf isLinux {
+    programs.ghostty = {
+      enable = true;
+      settings = ghosttySettings;
+    };
+  })
+]

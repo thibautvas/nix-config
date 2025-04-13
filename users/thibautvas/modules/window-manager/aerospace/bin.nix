@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, isDarwin, ... }:
 
 let
   aerospaceMoveApp = pkgs.writeShellScriptBin "aerospace-move-app" ''
@@ -9,14 +9,12 @@ let
 
   aerospaceRestart = pkgs.writeShellScriptBin "aerospace-restart" ''
     killall AeroSpace
-    open /Applications/AeroSpace.app
+    open -a 'AeroSpace'
   '';
 
 in {
-  config = lib.mkIf config.aerospace.enable {
-    home.packages = [
-      aerospaceMoveApp
-      aerospaceRestart
-    ];
-  };
+  home.packages = lib.optionals isDarwin [
+    aerospaceMoveApp
+    aerospaceRestart
+  ];
 }

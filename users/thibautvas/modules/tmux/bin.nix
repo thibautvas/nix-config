@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   tmuxNewSession = pkgs.writeShellScriptBin "tmux-new-session" ''
@@ -6,10 +6,10 @@ let
       target=$(realpath "$1")
     else
       target=$(
-        fd --base-directory "$HOSTRD" --type directory |
+        fd --base-directory "$HOST_PROJECT_DIR" --type directory |
         awk -F '/' '{printf "%-20s # %s\n", $(NF-1), $0}' |
-        fzf --reverse --height 10 --preview "tree -CaL 1 $HOSTRD/{3}" |
-        sed "s:^.*# \(.*\)/:$HOSTRD/\1:"
+        fzf --reverse --height 10 --preview "tree -CaL 1 $HOST_PROJECT_DIR/{3}" |
+        sed "s:^.*# \(.*\)/:$HOST_PROJECT_DIR/\1:"
       )
       [[ -z "$target" ]] && exit 1
     fi

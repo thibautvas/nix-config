@@ -1,6 +1,12 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, isDarwin, ... }:
 
-{
+let
+  username = "thibautvas";
+  homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
+  projectDirectory = "${homeDirectory}/repos";
+  color = if isDarwin then "GREEN" else "CYAN";
+
+in {
   imports = [
     ./modules/git.nix
     ./modules/shell.nix
@@ -15,33 +21,25 @@
     ./modules/window-manager/hyprland/main.nix
   ];
 
-  options = {
-    aerospace.enable = lib.mkOption { default = pkgs.stdenv.isDarwin; };
-    hyprland.enable = lib.mkOption { default = pkgs.stdenv.isLinux; };
-  };
+  home = {
+    stateVersion = "24.11"; # should not be changed
 
-  config = {
-    home = {
-      stateVersion = "24.11"; # should not be changed
+    username = username;
+    homeDirectory = homeDirectory;
 
-      username = "thibautvas";
-      homeDirectory = "/home/thibautvas"; # linux standard
-
-      packages = with pkgs; [
-        tree
-        fzf
-        fd
-        ripgrep
-        lazygit
-      ];
-
-
-      sessionVariables = {
-        HOSTRD = "${config.home.homeDirectory}/repos";
-        HOSTCOLOR = "CYAN";
-      };
+    sessionVariables = {
+      HOST_PROJECT_DIR = projectDirectory;
+      HOST_COLOR = color;
     };
 
-    programs.home-manager.enable = true; # let home manager manage itself
+    packages = with pkgs; [
+      tree
+      fzf
+      fd
+      ripgrep
+      lazygit
+    ];
   };
+
+  programs.home-manager.enable = true; # let home manager manage itself
 }

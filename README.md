@@ -16,6 +16,7 @@
     └── thibautvas
         ├── home.nix
         └── modules
+            ├── darwinapps.nix
             ├── direnv.nix
             ├── firefox.nix
             ├── ghostty.nix
@@ -35,6 +36,7 @@
             ├── tmux
             │   ├── bin.nix
             │   └── main.nix
+            ├── vscode.nix
             └── window-manager
                 ├── aerospace
                 │   ├── bin.nix
@@ -48,5 +50,5 @@
                     ├── main.nix
                     └── settings.nix
 
-11 directories, 33 files
+11 directories, 35 files
 ```

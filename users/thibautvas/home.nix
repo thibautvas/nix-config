@@ -15,6 +15,8 @@ in {
     ./modules/firefox.nix
     ./modules/kmonad.nix
     ./modules/localbin.nix
+    ./modules/darwinapps.nix
+    ./modules/vscode.nix
     ./modules/neovim/main.nix
     ./modules/tmux/main.nix
     ./modules/window-manager/aerospace/main.nix

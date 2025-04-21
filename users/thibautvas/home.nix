@@ -1,26 +1,31 @@
-{ config, lib, pkgs, isDarwin, ... }:
+{ config, lib, pkgs, isDesktop, isDarwin, isLinux, ... }:
 
 let
   username = "thibautvas";
   homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
   projectDirectory = "${homeDirectory}/repos";
-  color = if isDarwin then "GREEN" else "CYAN";
+  color = if isDarwin then "GREEN"
+          else if isDesktop then "CYAN"
+          else "MAGENTA";
 
 in {
   imports = [
     ./modules/git.nix
     ./modules/shell.nix
     ./modules/direnv.nix
+    ./modules/tmux
+    ./modules/neovim
+  ] ++ lib.optionals isDesktop [
     ./modules/ghostty.nix
     ./modules/firefox.nix
     ./modules/kmonad.nix
     ./modules/localbin.nix
+  ] ++ lib.optionals isDarwin [
+    ./modules/window-manager/aerospace
     ./modules/darwinapps.nix
     ./modules/vscode.nix
-    ./modules/neovim/main.nix
-    ./modules/tmux/main.nix
-    ./modules/window-manager/aerospace/main.nix
-    ./modules/window-manager/hyprland/main.nix
+  ] ++ lib.optionals (isDesktop && isLinux) [
+    ./modules/window-manager/hyprland
   ];
 
   home = {

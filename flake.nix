@@ -13,7 +13,7 @@
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
     let
-      mkHmCfg = system: let
+      mkHmCfg = system: isDesktop: let
         pkgs = nixpkgs.legacyPackages.${system};
         unstablePkgs = import nixpkgs-unstable {
           inherit system;
@@ -23,7 +23,7 @@
         inherit pkgs;
         modules = [ ./users/thibautvas/home.nix ];
         extraSpecialArgs = {
-          inherit unstablePkgs;
+          inherit unstablePkgs isDesktop;
           inherit (pkgs.stdenv) isDarwin isLinux;
         };
       };
@@ -36,7 +36,8 @@
       };
 
       # home-manager config: macos and nixos
-      homeConfigurations."thibautvas@macos" = mkHmCfg "aarch64-darwin";
-      homeConfigurations."thibautvas@nixos" = mkHmCfg "x86_64-linux";
+      homeConfigurations."thibautvas@macos" = mkHmCfg "aarch64-darwin" true;
+      homeConfigurations."thibautvas@nixos" = mkHmCfg "x86_64-linux" true;
+      homeConfigurations."thibautvas@wsl" = mkHmCfg "x86_64-linux" false;
     };
 }

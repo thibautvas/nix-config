@@ -1,7 +1,7 @@
-{ config, lib, pkgs, isDarwin, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-  programs.aerospace.userSettings = lib.mkIf isDarwin {
+  programs.aerospace.userSettings = {
     start-at-login = true;
     accordion-padding = 20;
 

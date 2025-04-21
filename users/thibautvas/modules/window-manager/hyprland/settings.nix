@@ -1,7 +1,7 @@
-{ config, lib, pkgs, isLinux, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-  wayland.windowManager.hyprland.settings = lib.mkIf isLinux {
+  wayland.windowManager.hyprland.settings = {
     exec-once = [
       "hyprsunset --temperature 2000"
       "wl-paste --type text --watch cliphist store"

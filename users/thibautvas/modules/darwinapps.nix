@@ -1,9 +1,9 @@
-{ config, lib, pkgs, unstablePkgs, isDarwin, ... }:
+{ config, lib, pkgs, unstablePkgs, ... }:
 
 {
-  home.packages = lib.optionals isDarwin (with unstablePkgs; [
+  home.packages = with unstablePkgs; [
     arc-browser
     raycast
     shortcat
-  ]);
+  ];
 }

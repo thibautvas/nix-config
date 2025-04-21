@@ -4,7 +4,7 @@ let
   cmdCtrl = if isDarwin then "cmd" else "ctrl";
 
 in {
-  programs.vscode = lib.mkIf isDarwin {
+  programs.vscode = {
     enable = true;
     package = unstablePkgs.vscode;
     profiles.default = {

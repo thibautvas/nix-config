@@ -1,7 +1,7 @@
-{ config, lib, pkgs, isLinux, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-  services.hypridle = lib.mkIf isLinux {
+  services.hypridle = {
     enable = true;
     settings = {
       general = {

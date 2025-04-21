@@ -1,7 +1,7 @@
-{ config, lib, pkgs, isLinux, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-  programs.hyprlock = lib.mkIf isLinux {
+  programs.hyprlock = {
     enable = true;
     settings = {
       background.path = "$HOME/Pictures/Kath.png";

@@ -1,10 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./bin.nix ];
-
   programs.tmux = {
-    enable = true;
     terminal = "xterm-256color";
     mouse = true;
     escapeTime = 0;

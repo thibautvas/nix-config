@@ -1,7 +1,7 @@
-{ config, lib, pkgs, isLinux, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-  services.hyprpaper = lib.mkIf isLinux {
+  services.hyprpaper = {
     enable = true;
     settings = {
       preload = "$HOME/Pictures/Kath.png";

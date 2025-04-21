@@ -1,4 +1,4 @@
-{ config, lib, pkgs, isLinux, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports = [
@@ -9,13 +9,13 @@
     ./hyprlock.nix
   ];
 
-  wayland.windowManager.hyprland = lib.mkIf isLinux {
+  wayland.windowManager.hyprland = {
     enable = true;
     package = null; # use system package
     portalPackage = null; # use system portalPackage
   };
 
-  home.packages = lib.optionals isLinux (with pkgs; [
+  home.packages = with pkgs; [
     hyprsunset
     hyprshot
     wl-clipboard
@@ -23,5 +23,5 @@
     wofi
     brightnessctl
     playerctl
-  ]);
+  ];
 }

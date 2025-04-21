@@ -1,8 +1,38 @@
 # nix-config
 
+Hi! I use this configuration on my work machine (macos), as well as on my personal machine (nixos).
+Eventually, I plan to use it on virtual machines too.
+For now I have just played with WSL a bit.
+
+## Modules
+
+This configuration is cross-platform: it works seamlessly on linux and macos machines, provided that `nix` is installed.
+
+Most of it is contained within the `home-manager` module, in [`./users/thibautvas/home.nix`](users/thibautvas/home.nix),
+which manages configuration files on a user level, and installs related binaries too.
+
+System configurations may be found in [`./hosts`](hosts).
+Though, as of now, I am not leveraging `nix-darwin` to configure my macos machine on a system level.
+Only my nixos configuration lives there.
+
+## Rebuilding
+
+The rebuilding process is managed by [`./flake.nix`](flake.nix):
+
+- home-manager:
+  - `home-manager switch --flake .#thibautvas@macos`
+  - `home-manager switch --flake .#thibautvas@nixos`
+  - `home-manager switch --flake .#thibautvas@wsl`
+
+The main difference between these three configurations relates to the conditional imports that are operated in `home.nix`,
+e.g., different window managers (or none at all).
+
+- nixos system:
+  - `sudo nixos-rebuild switch --flake .#nixos`
+
 ## Project structure
 
-```bash
+```text
 .
 ├── .gitignore
 ├── README.md
@@ -26,29 +56,30 @@
             ├── neovim
             │   ├── blink.nix
             │   ├── catppuccin.nix
+            │   ├── default.nix
             │   ├── gitsigns.nix
             │   ├── lspconfig.nix
-            │   ├── main.nix
             │   ├── settings.nix
             │   ├── telescope.nix
             │   └── treesitter.nix
             ├── shell.nix
             ├── tmux
             │   ├── bin.nix
-            │   └── main.nix
+            │   ├── default.nix
+            │   └── settings.nix
             ├── vscode.nix
             └── window-manager
                 ├── aerospace
                 │   ├── bin.nix
-                │   ├── main.nix
+                │   ├── default.nix
                 │   └── settings.nix
                 └── hyprland
                     ├── bin.nix
+                    ├── default.nix
                     ├── hypridle.nix
                     ├── hyprlock.nix
                     ├── hyprpaper.nix
-                    ├── main.nix
                     └── settings.nix
 
-11 directories, 35 files
+11 directories, 36 files
 ```

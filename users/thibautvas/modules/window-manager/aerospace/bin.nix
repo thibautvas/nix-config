@@ -1,4 +1,4 @@
-{ config, lib, pkgs, isDarwin, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   aerospaceMoveApp = pkgs.writeShellScriptBin "aerospace-move-app" ''
@@ -13,7 +13,7 @@ let
   '';
 
 in {
-  home.packages = lib.optionals isDarwin [
+  home.packages = [
     aerospaceMoveApp
     aerospaceRestart
   ];

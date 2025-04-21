@@ -20,11 +20,14 @@ let
         dir_color="$BLUE"
       fi
 
-      if [[ -n $VIRTUAL_ENV ]]; then
+      if [[ -n "$name" ]]; then
+        local active_shell="($name) "
+      fi
+      if [[ -n "$VIRTUAL_ENV" ]]; then
         local active_venv="($(basename $VIRTUAL_ENV)) "
       fi
 
-      PS1="$active_venv$user_color$active_user $dir_color$active_dir\$ $DEFAULT"
+      PS1="$active_shell$active_venv$user_color$active_user $dir_color$active_dir\$ $DEFAULT"
     }
 
     if [[ -n "$BASH_VERSION" ]]; then

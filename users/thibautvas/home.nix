@@ -24,8 +24,7 @@ in {
   home = {
     stateVersion = "24.11"; # should not be changed
 
-    username = username;
-    homeDirectory = homeDirectory;
+    inherit username homeDirectory;
 
     sessionVariables = {
       HOST_PROJECT_DIR = projectDirectory;

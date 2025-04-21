@@ -18,6 +18,7 @@
       bind-key j select-pane -D
       bind-key k select-pane -U
       bind-key l select-pane -R
+      bind-key v new-window 'nvim +Telescope\ find_files'
     '';
   };
 }

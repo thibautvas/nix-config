@@ -1,7 +1,9 @@
 { config, lib, pkgs, isDarwin, isLinux, ... }:
 
 let
-  cfg = {
+  keychronKbd = "usb-Keychron_Keychron_V4-event-kbd";
+
+  kbdCfg = {
     darwin = {
       input.base = "iokit-name";
       output = "kext";
@@ -13,7 +15,7 @@ let
     linux = {
       input = {
         base = "device-file \"/dev/input/by-path/platform-i8042-serio-0-event-kbd\"";
-        extended = "device-file \"/dev/input/by-id/usb-Keychron_Keychron_V4-event-kbd\"";
+        extended = "device-file \"/dev/input/by-id/${keychronKbd}\"";
       };
       output = "uinput-sink \"output\"";
       ctlMet = "C";
@@ -23,10 +25,13 @@ let
     };
   };
 
-  mkHomeRowMods = platform: inputDevice: ''
+  mkHomeRowMods = platform: inputDevice: let
+    platformCfg = kbdCfg.${platform};
+    inputCfg = platformCfg.input.${inputDevice};
+  in ''
     (defcfg
-      input (${cfg.${platform}.input.${inputDevice}})
-      output (${cfg.${platform}.output})
+      input (${inputCfg})
+      output (${platformCfg.output})
       fallthrough true
       allow-cmd true
     )
@@ -49,16 +54,16 @@ let
       ;; navigation layer
       nav (layer-toggle nav)
       nav_esc (tap-hold-next-release 200 esc @nav)
-      vim_d #(${cfg.${platform}.ctlMet}-x)
-      vim_y #(${cfg.${platform}.ctlMet}-c)
-      vim_p #(${cfg.${platform}.ctlMet}-v)
-      vim_b #(${cfg.${platform}.altCtl}-left)
-      vim_w #(${cfg.${platform}.altCtl}-right)
-      vim_^ ${cfg.${platform}.start}
-      vim_$ ${cfg.${platform}.end}
-      vim_V #(${cfg.${platform}.start} S-${cfg.${platform}.end})
-      vim_S #(${cfg.${platform}.end} S-${cfg.${platform}.start} bspc)
-      vim_o #(${cfg.${platform}.end} S-ret)
+      vim_d #(${platformCfg.ctlMet}-x)
+      vim_y #(${platformCfg.ctlMet}-c)
+      vim_p #(${platformCfg.ctlMet}-v)
+      vim_b #(${platformCfg.altCtl}-left)
+      vim_w #(${platformCfg.altCtl}-right)
+      vim_^ ${platformCfg.start}
+      vim_$ ${platformCfg.end}
+      vim_V #(${platformCfg.start} S-${platformCfg.end})
+      vim_S #(${platformCfg.end} S-${platformCfg.start} bspc)
+      vim_o #(${platformCfg.end} S-ret)
 
       ;; comfort layer: email addresses and accessible controls for 60% keyboard
       com (layer-toggle com)
@@ -110,11 +115,10 @@ let
     if tmux has-session -t 'home-row-mods' 2>/dev/null; then
       tmux kill-session -t 'home-row-mods'
     fi
-    tmux new-session -d -s 'home-row-mods'
-    if [[ "$1" = ext ]]; then
-      tmux send-keys -t 'home-row-mods' "sudo kmonad $HOME/.config/kmonad/home_row_mods_ext.kbd" Enter
+    if [[ -L /dev/input/by-id/${keychronKbd} ]]; then
+      tmux new-session -d -s 'home-row-mods' 'sudo kmonad $HOME/.config/kmonad/home_row_mod_ext.kbd'
     else
-      tmux send-keys -t 'home-row-mods' "sudo kmonad $HOME/.config/kmonad/home_row_mods.kbd" Enter
+      tmux new-session -d -s 'home-row-mods' 'sudo kmonad $HOME/.config/kmonad/home_row_mods.kbd'
     fi
   '';
 

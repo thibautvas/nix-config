@@ -23,11 +23,9 @@ let
     if ! tmux has-session -t "$title" 2>/dev/null; then
       tmux new-session -d -s "$title" -c "$target"
         if [[ -n "$project" ]]; then
-          tmux new-window -t "$title":0 -c "$target"
-          tmux send-keys -t "$title":0 'lazygit' Enter
+          tmux new-window -t "$title":0 -c "$target" 'lazygit'
         fi
-      tmux new-window -t "$title":2 -c "$target"
-      tmux send-keys -t "$title":2 'nvim +Telescope\ find_files' Enter
+      tmux new-window -t "$title":2 -c "$target" 'nvim +Telescope\ find_files'
     fi
 
     if [[ "$2" == d* ]]; then
@@ -51,20 +49,10 @@ let
     else
       local_sessions=$(tmux list-sessions 2>/dev/null)
 
-      if declare -p SSH_CLIENT &>/dev/null; then
-        sessions=$(
-          echo "$local_sessions" | sed 's/.*/\x1b[35m&/'
-          echo 'new session' | sed 's/.*/\x1b[3m&/'
-        )
-      else
-        remote_sessions=$(cat $HOME/.cache/mozart/tmux_sessions.txt 2>/dev/null)
-        sessions=$(
-          echo "$local_sessions" | sed 's/.*/\x1b[32m&/'
-          echo 'new session' | sed 's/.*/\x1b[3m&/'
-          echo "$remote_sessions" | sed 's/.*/\x1b[0;35m&/'
-          echo 'new mozart session' | sed 's/.*/\x1b[3m&/'
-        )
-      fi
+      sessions=$(
+        echo "$local_sessions" | sed 's/.*/\x1b[32m&/'
+        echo 'new session' | sed 's/.*/\x1b[3m&/'
+      )
 
       target=$(printf "%s\n" "$sessions" | fzf --ansi --reverse --height 10)
 
@@ -74,13 +62,6 @@ let
         $TMUX_ATTACH -t $(echo "$target" | cut -d : -f1)
       elif [[ "$target" == 'new session' ]]; then
         tmux-new-session
-      else
-        if echo "$remote_sessions" | grep -qF "$target"; then
-          ssh mozart -t "LC_ALL=en_US.UTF-8 tmux attach-session -t $(echo $target | cut -d : -f1)"
-        elif [[ "$target" == 'new mozart session' ]]; then
-          ssh mozart -t "LC_ALL=en_US.UTF-8 tmux-new-session"
-        fi
-        [[ $? -eq 0 ]] && ssh mozart -t 'tmux list-sessions' > "$HOME/.cache/mozart/tmux_sessions.txt"
       fi
     fi
   '';

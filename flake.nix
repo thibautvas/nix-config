@@ -7,57 +7,36 @@
 
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
-  let
-    mkPkgs = nixpkgs: system: import nixpkgs {
-      inherit system;
-    };
-    mkExtraArgs = pkgs: {
-      pkgs = pkgs;
-      isDarwin = pkgs.stdenv.isDarwin;
-      isLinux = pkgs.stdenv.isLinux;
-    };
+    let
+      mkHmCfg = system: let
+        pkgs = nixpkgs.legacyPackages.${system};
+        unstablePkgs = import nixpkgs-unstable {
+          inherit system;
+          config.allowUnfree = true;
+        };
+      in home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [ ./users/thibautvas/home.nix ];
+        extraSpecialArgs = {
+          inherit unstablePkgs;
+          inherit (pkgs.stdenv) isDarwin isLinux;
+        };
+      };
 
-    systems = {
-      darwin = "aarch64-darwin";
-      linux = "x86_64-linux";
-    };
-    nixPkgs = {
-      darwinUnstable = mkPkgs nixpkgs-unstable systems.darwin;
-      linuxStable = mkPkgs nixpkgs systems.linux;
-      linuxUnstable = mkPkgs nixpkgs-unstable systems.linux;
-    };
-    extraArgs = {
-      darwin = mkExtraArgs nixPkgs.darwinUnstable;
-      linux = mkExtraArgs nixPkgs.linuxUnstable;
-    };
+    in {
+      # system config: nixos
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        modules = [ ./hosts/nixos/configuration.nix ];
+      };
 
-  in {
-    # macos config: standalone home manager
-    homeConfigurations."thibautvas" = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixPkgs.darwinUnstable;
-      modules = [ ./users/thibautvas/home.nix ];
-      extraSpecialArgs = extraArgs.darwin;
+      # home-manager config: macos and nixos
+      homeConfigurations."thibautvas@macos" = mkHmCfg "aarch64-darwin";
+      homeConfigurations."thibautvas@nixos" = mkHmCfg "x86_64-linux";
     };
-
-    # nixos config: system and home manager
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      pkgs = nixPkgs.linuxStable;
-      modules = [
-        ./hosts/nixos/configuration.nix
-        home-manager.nixosModules.home-manager {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users."thibautvas" = import ./users/thibautvas/home.nix;
-            extraSpecialArgs = extraArgs.linux;
-          };
-        }
-      ];
-    };
-  };
 }

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, unstablePkgs, ... }:
 
 {
   # new imports are prepended to init.lua
@@ -15,6 +15,7 @@
 
   programs.neovim = {
     enable = true;
+    package = unstablePkgs.neovim-unwrapped;
     defaultEditor = true;
     vimdiffAlias = true;
   };

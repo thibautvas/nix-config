@@ -11,7 +11,7 @@ let
 in {
   imports = [
     ./modules/git.nix
-    ./modules/shell.nix
+    ./modules/shellrc.nix
     ./modules/direnv.nix
     ./modules/tmux
     ./modules/neovim

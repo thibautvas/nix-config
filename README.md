@@ -62,7 +62,7 @@ e.g., different window managers (or none at all).
             │   ├── settings.nix
             │   ├── telescope.nix
             │   └── treesitter.nix
-            ├── shell.nix
+            ├── shellrc.nix
             ├── tmux
             │   ├── bin.nix
             │   ├── default.nix

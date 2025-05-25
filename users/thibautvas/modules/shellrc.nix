@@ -3,31 +3,29 @@
 let
   shellPrompt = ''
     set_custom_prompt() {
-      if [[ $? -eq 0 ]]; then
-        local user_color=$(eval "echo \$$HOST_COLOR")
-      else
-        local user_color="$RED"
-      fi
+      [[ $? -eq 0 ]] &&
+      local user_color=$(eval "echo \$$HOST_COLOR") ||
+      local user_color="$RED"
+
       local active_user="[$USER@$(uname -n)]"
 
       local project
-      if project=$(git rev-parse --show-toplevel 2>/dev/null); then
-        local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-        local active_dir="$(basename "$project"):$branch $(echo "$PWD" | sed "s|^$project|~|")"
+      project=$(git rev-parse --show-toplevel 2>/dev/null) && {
+        local branch=$(git rev-parse --abbrev-ref HEAD)
+        local active_dir="$(basename "$project"):$branch $(echo "$PWD" | sed "s:^$project:~:")"
         local dir_color="$YELLOW"
-      else
-        local active_dir=$(echo "$PWD" | sed "s|^$HOME|~|")
+      } || {
+        local active_dir=$(echo "$PWD" | sed "s:^$HOME:~:")
         local dir_color="$BLUE"
-      fi
+      }
 
-      if [[ -n "$name" ]]; then
-        local active_shell="($name) "
-      elif [[ $(echo $PATH | cut -d':' -f1) == /nix/store/* ]]; then
+      [[ -n "$name" ]] &&
+      local active_shell="($name) " || {
+        [[ $(echo $PATH | cut -d':' -f1) == /nix/store/* ]] &&
         local active_shell="($(echo $PATH | cut -d'-' -f2)-env) "
-      fi
-      if [[ -n "$VIRTUAL_ENV" ]]; then
-        local active_venv="($(basename $VIRTUAL_ENV)) "
-      fi
+      }
+      [[ -n "$VIRTUAL_ENV" ]] &&
+      local active_venv="($(basename $VIRTUAL_ENV)) "
 
       PS1="$active_shell$active_venv$user_color$active_user $dir_color$active_dir\$ $DEFAULT"
     }

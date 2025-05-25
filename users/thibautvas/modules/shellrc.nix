@@ -11,7 +11,7 @@ let
 
       local project
       project=$(git rev-parse --show-toplevel 2>/dev/null) && {
-        local branch=$(git rev-parse --abbrev-ref HEAD)
+        local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         local active_dir="$(basename "$project"):$branch $(echo "$PWD" | sed "s:^$project:~:")"
         local dir_color="$YELLOW"
       } || {

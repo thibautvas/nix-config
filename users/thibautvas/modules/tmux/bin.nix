@@ -36,7 +36,7 @@ let
 
     target=$(
       printf '%s\n' "$sessions" |
-      fzf --ansi --reverse --height 10 |
+      fzf --reverse --color "fg:$HOST_COLOR, fg+:$HOST_COLOR" --height 10 |
       cut -d':' -f1
     )
 

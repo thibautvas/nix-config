@@ -64,6 +64,7 @@ in {
         "terminal.integrated.initialHint" = false;
         "extensions.ignoreRecommendations" = true;
         "git.openRepositoryInParentFolders" = "never";
+        "files.exclude"."**/.git" = false;
         "jupyter.askForKernelRestart" = false;
         "vim.smartRelativeLine" = true;
         "vim.mouseSelectionGoesIntoVisualMode" = false;
@@ -114,13 +115,13 @@ in {
         }
         {
           key = "ctrl+; ctrl+l";
-          command = "notebook.clearAllCellsOutputs";
-          when = "notebookEditorFocused";
+          command = "jupyter.interactive.clearAllCells";
+          when = "editorFocus";
         }
         {
           key = "ctrl+; ctrl+k";
           command = "jupyter.restartkernel";
-          when = "notebookEditorFocused";
+          when = "editorFocus";
         }
         {
           key = "${cmdCtrl}+e ${cmdCtrl}+f";

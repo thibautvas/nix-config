@@ -14,9 +14,7 @@ let
 
 in {
   programs.aerospace.userSettings = {
-    start-at-login = true;
     accordion-padding = 20;
-
     gaps = {
       inner = lib.genAttrs [ "horizontal" "vertical" ] (_: innerGaps);
       outer = lib.genAttrs [ "left" "right" "top" "bottom" ] (_: outerGaps);

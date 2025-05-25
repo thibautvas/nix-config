@@ -93,7 +93,7 @@ let
       )
       local target=$(
         [[ -n "$2" ]] &&
-        printf '%s\n' $results |
+        printf '%s\n' "$results" |
         fzf --filter="$2" |
         sed -n "''${3:-1}p" ||
         echo "$results" |
@@ -110,8 +110,6 @@ let
       [[ -n "$1" ]] && nvim "$1" || nvim +Telescope\ find_files
     }
 
-    alias tns='tmux-new-session'
-    alias tas='tmux-attach-session'
     alias tls='tmux list-sessions'
     alias tks='tmux kill-session'
   '';

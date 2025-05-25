@@ -69,9 +69,6 @@ let
       com (layer-toggle com)
       com_tab (tap-hold-next-release 200 tab @com)
       gmail #(t h i b a u t . v a s @ g m a i l . c o m)
-
-      ;; restart aerospace
-      ar (cmd-button "aerospace-restart")
     )
 
     (defsrc
@@ -83,7 +80,7 @@ let
     )
 
     (deflayer mod
-      grv       brdn      brup      mctl      @ar       bldn      blup      prev      pp        next      mute      vold      volu
+      grv       brdn      brup      mctl      _         bldn      blup      prev      pp        next      mute      vold      volu
                 _         _         _         _         _         _         _         _         _         _         _         _         _
       @com_tab                                                    _         _         _         _         _         _         _
       @nav_esc  @alt_a    @met_s    @sft_d    @ctl_f              @hyp_h    @ctl_j    @sft_k    @met_l    @alt_;
@@ -100,7 +97,7 @@ let
 
     (deflayer com
       _         _         _         _         _         _         _         _         _         _         _         _         _
-                brdn      brup      mctl      @ar       bldn      blup      prev      pp        next      mute      vold      volu      del
+                brdn      brup      mctl      _         bldn      blup      prev      pp        next      mute      vold      volu      del
       _                                                           _         _         _         _         -         _         @gmail
       caps      _         _         _         _                   _         _         _         _         _
                                                                             _         _         _
@@ -116,7 +113,7 @@ let
       tmux kill-session -t 'home-row-mods'
     fi
     if [[ -L /dev/input/by-id/${keychronKbd} ]]; then
-      tmux new-session -d -s 'home-row-mods' 'sudo kmonad $HOME/.config/kmonad/home_row_mod_ext.kbd'
+      tmux new-session -d -s 'home-row-mods' 'sudo kmonad $HOME/.config/kmonad/home_row_mods_ext.kbd'
     else
       tmux new-session -d -s 'home-row-mods' 'sudo kmonad $HOME/.config/kmonad/home_row_mods.kbd'
     fi

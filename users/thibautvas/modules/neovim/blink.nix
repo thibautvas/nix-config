@@ -1,8 +1,8 @@
-{ config, lib, pkgs, unstablePkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   programs.neovim = {
-    plugins = [ unstablePkgs.vimPlugins.blink-cmp ];
+    plugins = [ pkgs.vimPlugins.blink-cmp ];
     extraLuaConfig = ''
       opts = {
         keymap = { preset = "default" },

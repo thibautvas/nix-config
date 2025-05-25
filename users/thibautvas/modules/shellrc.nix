@@ -121,6 +121,6 @@ in {
   programs.zsh = {
     enable = true;
     defaultKeymap = "emacs";
-    initExtra = shellPrompt + shellInit;
+    initContent = shellPrompt + shellInit;
   };
 }

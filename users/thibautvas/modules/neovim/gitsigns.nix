@@ -4,7 +4,10 @@
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.gitsigns-nvim ];
     extraLuaConfig = ''
-      require("gitsigns").setup()
+      opts = {
+        current_line_blame_opts = { delay = 0 },
+      }
+      require("gitsigns").setup(opts)
       vim.api.nvim_set_hl(0, "GitSignsAddPreview", { bg = "#41483D" })
       vim.api.nvim_set_hl(0, "GitSignsDeletePreview", { bg = "#502D30" })
 

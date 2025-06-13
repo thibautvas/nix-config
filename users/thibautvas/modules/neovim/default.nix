@@ -15,6 +15,7 @@ in {
   imports = [
     ./catppuccin.nix
     ./gitsigns.nix
+    ./oil.nix
     ./telescope.nix
     ./treesitter.nix
     ./lspconfig.nix

@@ -59,6 +59,7 @@ e.g., different window managers (or none at all).
             │   ├── default.nix
             │   ├── gitsigns.nix
             │   ├── lspconfig.nix
+            │   ├── oil.nix
             │   ├── settings.nix
             │   ├── telescope.nix
             │   └── treesitter.nix
@@ -81,5 +82,5 @@ e.g., different window managers (or none at all).
                     ├── hyprpaper.nix
                     └── settings.nix
 
-11 directories, 36 files
+11 directories, 37 files
 ```

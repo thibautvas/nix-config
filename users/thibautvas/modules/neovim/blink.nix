@@ -4,12 +4,11 @@
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.blink-cmp ];
     extraLuaConfig = ''
-      opts = {
+      require("blink.cmp").setup({
         keymap = { preset = "default" },
         appearance = { use_nvim_cmp_as_default = true },
         signature = { enabled = true },
-      }
-      require("blink.cmp").setup(opts)
+      })
     '';
   };
 }

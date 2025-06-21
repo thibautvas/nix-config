@@ -2,16 +2,9 @@
 
 {
   programs.neovim = {
-    plugins = with pkgs.vimPlugins; [
-      plenary-nvim # dependency
-      telescope-fzf-native-nvim
-    ];
-
+    plugins = [ pkgs.vimPlugins.telescope-fzf-native-nvim ];
     extraLuaConfig = ''
-      opts = { extensions = { fzf = {} } }
-      require("telescope").setup(opts)
       require("telescope").load_extension("fzf")
-
       local builtin = require("telescope.builtin")
       vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
       vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Telescope find files in buffers" })
@@ -20,7 +13,7 @@
       vim.keymap.set("n", "<leader>fa", function()
         builtin.find_files { cwd = vim.fn.getenv("HOST_PROJECT_DIR") }
       end,
-      { desc = "Telescope find files in root directory" })
+      { desc = "Telescope find files in project directory" })
       vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
     '';
   };

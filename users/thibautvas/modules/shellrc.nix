@@ -56,8 +56,10 @@ let
       cp -a "$1" "$1_$(date +%Y%m%d).bak"
     }
 
-    alias gs='git -C "$(git rev-parse --show-toplevel)" status --short'
-    alias grs='git status --short .'
+    gs() {
+      local root="''${1:-$(git rev-parse --show-toplevel)}"
+      git -C "$root" status --short .
+    }
     gl() {
       git log --graph --oneline --max-count="''${1:-5}" \
         --pretty=format:'%C(auto)%h%Creset %cd %C(cyan)%an%Creset - %s%C(auto)%d%Creset' \

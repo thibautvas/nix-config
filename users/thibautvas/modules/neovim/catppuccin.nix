@@ -4,12 +4,11 @@
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.catppuccin-nvim ];
     extraLuaConfig = ''
-      opts = {
+      require("catppuccin").setup({
         flavour = "mocha",
         term_colors = true,
-        transparent_background = true
-      }
-      require("catppuccin").setup(opts)
+        transparent_background = true,
+      })
       require("catppuccin").load()
     '';
   };

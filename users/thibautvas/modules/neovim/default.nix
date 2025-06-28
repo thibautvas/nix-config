@@ -18,7 +18,8 @@ in {
     ./oil.nix
     ./telescope.nix
     ./treesitter.nix
-    ./lspconfig.nix
+    ./lsp.nix
+    ./lint.nix
     ./blink.nix
     ./settings.nix
   ];

@@ -10,9 +10,13 @@ in {
     profiles.default = {
       userSettings = {
         "[python]" = {
-          "editor.formatOnSave" = true;
-          "editor.defaultFormatter" = "charliermarsh.ruff";
           "editor.codeActionsOnSave"."source.fixAll" = "explicit";
+          "editor.defaultFormatter" = "charliermarsh.ruff";
+          "editor.formatOnSave" = true;
+        };
+        "[sql]" = {
+          "editor.defaultFormatter" = "dorzey.vscode-sqlfluff";
+          "editor.formatOnSave" = true;
         };
         "breadcrumbs.enabled" = false;
         "editor.accessibilitySupport" = "off";
@@ -33,6 +37,8 @@ in {
         "notebook.globalToolbar" = false;
         "notebook.output.textLineLimit" = 40;
         "python.terminal.activateEnvironment" = false;
+        "sqlfluff.linter.diagnosticSeverity" = "warning";
+        "sqlfluff.linter.run" = "onSave";
         "terminal.integrated.initialHint" = false;
         "update.mode" = "none";
         "vim.highlightedyank.enable" = true;

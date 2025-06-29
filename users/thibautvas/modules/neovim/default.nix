@@ -19,7 +19,6 @@ in {
     ./telescope.nix
     ./treesitter.nix
     ./lsp.nix
-    ./lint.nix
     ./blink.nix
     ./settings.nix
   ];

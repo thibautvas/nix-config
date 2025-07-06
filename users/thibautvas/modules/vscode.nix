@@ -44,7 +44,6 @@ in {
         "vim.highlightedyank.enable" = true;
         "vim.mouseSelectionGoesIntoVisualMode" = false;
         "vim.overrideCopy" = false;
-        "vim.smartRelativeLine" = true;
         "window.commandCenter" = false;
         "window.restoreWindows" = "none";
         "workbench.activityBar.location" = "top";

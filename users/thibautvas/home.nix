@@ -39,7 +39,6 @@ in {
     };
 
     packages = with pkgs; [
-      tree
       fzf
       fd
       ripgrep

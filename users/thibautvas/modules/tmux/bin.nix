@@ -7,7 +7,7 @@ let
       realpath "$1" ||
       fd --base-directory "$HOST_PROJECT_DIR" --type directory |
       awk -F '/' '{printf "%-20s # %s\n", $(NF-1), $0}' |
-      fzf --reverse --height 10 --preview "tree -CaL 1 $HOST_PROJECT_DIR/{3}" |
+      fzf --reverse --height 10 --preview "ls --color=always -1A $HOST_PROJECT_DIR/{3}" |
       sed "s:^.*# \(.*\)/$:$HOST_PROJECT_DIR/\1:"
     )
 

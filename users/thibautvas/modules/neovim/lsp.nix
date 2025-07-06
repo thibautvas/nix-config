@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
-  home.packages = [
-    pkgs.pyright
-    pkgs.ruff
-    pkgs.sqlfluff
+  home.packages = with pkgs; [
+    pyright
+    ruff
+    sqlfluff
   ];
 
   programs.neovim = {

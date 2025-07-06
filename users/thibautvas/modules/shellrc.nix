@@ -45,11 +45,8 @@ let
     alias ....='cd ../../..'
     alias ocd="cd $PWD"
     alias grep='grep --color=auto'
-    alias tree='tree -C'
     alias ls='ls --color=auto'
-    alias la='ls -A'
-    alias ll='ls -l'
-    alias lla='ls -lA'
+    alias la='ls -Alt'
     alias mv='mv -iv'
     alias cp='cp -iv'
     bak() {
@@ -101,7 +98,7 @@ let
         sed -n "''${3:-1}p" ||
         echo "$results" |
         awk -F '/' '{printf "%-20s # %s\n", $(NF-1), $0}' |
-        fzf --reverse --height 10 --preview "tree -CaL 1 $1/{3}" |
+        fzf --reverse --height 10 --preview "ls --color=always -1A $1/{3}" |
         sed 's/.* # //'
       )
       [[ -n "$target" ]] && cd "$1/$target"

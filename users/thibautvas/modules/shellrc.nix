@@ -66,11 +66,7 @@ let
     alias gc='git commit'
     alias gane='git commit --amend --no-edit'
     alias gd='git diff'
-    alias gds='git diff --staged'
-    alias gdc='git diff HEAD~1 HEAD'
     alias gt='git difftool'
-    alias gts='git difftool --staged'
-    alias gtc='git difftool HEAD~1 HEAD'
     alias gr='git restore'
     alias gu='git restore --staged'
 

@@ -12,12 +12,10 @@ let
     )
 
     [[ -z "$target" ]] && exit 1
-    project=$(git -C "$target" rev-parse --show-toplevel 2>/dev/null)
-    title=$(basename "''${project:-''$target}" | sed 's/\.//g')
+    title=$(basename "$target" | sed 's/\.//g')
 
     tmux new-session -d -s "$title" -c "$target" 2>/dev/null &&
     tmux new-window -t "$title":2 -c "$target" 'nvim +Telescope\ find_files' &&
-    [[ -n "$project" ]] && tmux new-window -d -t "$title":0 -c "$target" 'lazygit'
 
     tmux attach-session -t "$title" 2>/dev/null || tmux switch-client -t "$title"
   '';

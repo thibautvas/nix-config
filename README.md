@@ -58,11 +58,11 @@ e.g., different window managers (or none at all).
             │   ├── blink.nix
             │   ├── catppuccin.nix
             │   ├── default.nix
+            │   ├── fzf-lua.nix
             │   ├── gitsigns.nix
             │   ├── lsp.nix
             │   ├── oil.nix
             │   ├── settings.nix
-            │   ├── telescope.nix
             │   └── treesitter.nix
             ├── shellrc.nix
             ├── tmux

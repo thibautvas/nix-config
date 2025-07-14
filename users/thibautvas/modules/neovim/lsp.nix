@@ -1,11 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    pyright
-    ruff
-    sqlfluff
-  ];
+  home.packages = [ pkgs.pyright ];
 
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.none-ls-nvim ];

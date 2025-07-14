@@ -15,6 +15,7 @@ in {
     ./modules/lazygit.nix
     ./modules/shellrc.nix
     ./modules/direnv.nix
+    ./modules/pyproject.nix
     ./modules/tmux
     ./modules/neovim
   ] ++ lib.optionals isDesktop [

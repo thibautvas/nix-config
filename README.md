@@ -64,6 +64,7 @@ e.g., different window managers (or none at all).
             │   ├── oil.nix
             │   ├── settings.nix
             │   └── treesitter.nix
+            ├── pyproject.nix
             ├── shellrc.nix
             ├── tmux
             │   ├── bin.nix
@@ -83,5 +84,5 @@ e.g., different window managers (or none at all).
                     ├── hyprpaper.nix
                     └── settings.nix
 
-11 directories, 38 files
+11 directories, 39 files
 ```

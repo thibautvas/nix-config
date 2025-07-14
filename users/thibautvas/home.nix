@@ -3,10 +3,11 @@
 let
   username = "thibautvas";
   homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
-  projectDirectory = "${homeDirectory}/repos";
-  color = if isDarwin then "GREEN"
-          else if isDesktop then "CYAN"
-          else "MAGENTA";
+  hostProjectDir = "${homeDirectory}/repos";
+  hostColor = if isDarwin then "GREEN"
+              else if isDesktop then "CYAN"
+              else "MAGENTA";
+  pickerCmd = "FzfLua files";
 
 in {
   imports = [
@@ -35,8 +36,9 @@ in {
     inherit username homeDirectory;
 
     sessionVariables = {
-      HOST_PROJECT_DIR = projectDirectory;
-      HOST_COLOR = color;
+      HOST_PROJECT_DIR = hostProjectDir;
+      HOST_COLOR = hostColor;
+      PICKER_CMD = pickerCmd;
     };
 
     packages = with pkgs; [

@@ -103,7 +103,7 @@ let
     alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $HOST_PROJECT_DIR/git)"'
 
     vi() {
-      [[ -n "$1" ]] && nvim "$1" || nvim +Telescope\ find_files
+      [[ -n "$1" ]] && nvim "$1" || nvim +"$PICKER_CMD"
     }
 
     alias tls='tmux list-sessions'

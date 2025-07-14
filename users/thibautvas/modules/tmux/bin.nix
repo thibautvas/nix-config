@@ -15,7 +15,7 @@ let
     title=$(basename "$target" | sed 's/\.//g')
 
     tmux new-session -d -s "$title" -c "$target" 2>/dev/null &&
-    tmux new-window -t "$title":2 -c "$target" 'nvim +Telescope\ find_files' &&
+    tmux new-window -t "$title":2 -c "$target" 'nvim +"$PICKER_CMD"' &&
 
     tmux attach-session -t "$title" 2>/dev/null || tmux switch-client -t "$title"
   '';

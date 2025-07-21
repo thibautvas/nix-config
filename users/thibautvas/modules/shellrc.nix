@@ -105,9 +105,6 @@ let
     vi() {
       [[ -n "$1" ]] && nvim "$1" || nvim +"$PICKER_CMD"
     }
-
-    alias tls='tmux list-sessions'
-    alias tks='tmux kill-session'
   '';
 
 in {

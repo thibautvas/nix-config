@@ -6,6 +6,7 @@
   imports = [
     ./catppuccin.nix
     ./gitsigns.nix
+    ./neogit.nix
     ./oil.nix
     ./fzf-lua.nix
     ./treesitter.nix

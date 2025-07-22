@@ -12,7 +12,6 @@ let
 in {
   imports = [
     ./modules/git.nix
-    ./modules/lazygit.nix
     ./modules/shellrc.nix
     ./modules/direnv.nix
     ./modules/pyproject.nix

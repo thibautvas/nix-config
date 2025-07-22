@@ -52,7 +52,6 @@ e.g., different window managers (or none at all).
             ├── ghostty.nix
             ├── git.nix
             ├── kmonad.nix
-            ├── lazygit.nix
             ├── localbin.nix
             ├── neovim
             │   ├── blink.nix
@@ -61,6 +60,7 @@ e.g., different window managers (or none at all).
             │   ├── fzf-lua.nix
             │   ├── gitsigns.nix
             │   ├── lsp.nix
+            │   ├── neogit.nix
             │   ├── oil.nix
             │   ├── settings.nix
             │   └── treesitter.nix

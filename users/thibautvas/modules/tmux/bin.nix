@@ -2,18 +2,18 @@
 
 let
   ansiColors = {
-    DEFAULT = "\x1b[0m";
-    BLACK = "\x1b[30m";
-    RED = "\x1b[31m";
-    GREEN = "\x1b[32m";
-    YELLOW = "\x1b[33m";
-    BLUE = "\x1b[34m";
-    MAGENTA = "\x1b[35m";
-    CYAN = "\x1b[36m";
-    WHITE = "\x1b[37m";
+    default = "0";
+    red = "31";
+    green = "32";
+    yellow = "33";
+    blue = "34";
+    magenta = "35";
+    cyan = "36";
   };
+  fmtColors = lib.mapAttrs (_: value: "\x1b[${value}m") ansiColors;
+
   hostColor = config.home.sessionVariables.HOST_COLOR;
-  colorCode = lib.attrsets.attrByPath [hostColor] ansiColors.default ansiColors;
+  colorCode = lib.attrByPath [hostColor] fmtColors.default fmtColors;
 
   tmuxListSessions = pkgs.writeShellScriptBin "tls" ''
     results="{

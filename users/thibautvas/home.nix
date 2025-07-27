@@ -4,9 +4,9 @@ let
   username = "thibautvas";
   homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
   hostProjectDir = "${homeDirectory}/repos";
-  hostColor = if isDarwin then "GREEN"
-              else if isDesktop then "CYAN"
-              else "MAGENTA";
+  hostColor = if isDarwin then "green"
+              else if isDesktop then "cyan"
+              else "magenta";
   pickerCmd = "FzfLua files";
 
 in {

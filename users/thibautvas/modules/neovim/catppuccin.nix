@@ -9,7 +9,8 @@
         term_colors = true,
         transparent_background = true,
       })
-      require("catppuccin").load()
+
+      vim.cmd.colorscheme("catppuccin")
     '';
   };
 }

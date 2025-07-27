@@ -22,6 +22,7 @@
 
       vim.keymap.set("n", "<leader>hs", ng.open, { desc = "Neogit status" })
       vim.keymap.set("n", "<leader>hc", ng.action("commit", "commit", { "--verbose" }), { desc = "Neogit commit" })
+      vim.keymap.set("n", "<leader>he", ng.action("commit", "extend"), { desc = "Neogit extend" })
     '';
   };
 }

@@ -28,11 +28,11 @@
 
     vim.g.mapleader = " "
     vim.g.maplocalleader = " "
-    vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "yank to system clipboard" })
     vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "half page down and center" })
     vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "half page up and center" })
     vim.keymap.set("n", "n", "nzzzv", { desc = "next result and center" })
     vim.keymap.set("n", "N", "Nzzzv", { desc = "previous result and center" })
-    vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<CR>", { desc = "clear higlight" })
+    vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<CR>", { desc = "clear highlights" })
+    vim.keymap.set("v", "<leader>y", [["+y]], { desc = "yank to system clipboard" })
   '';
 }

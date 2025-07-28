@@ -1,6 +1,16 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  mkBox = cmd: x: y: {
+    text = cmd;
+    color = "0xffffffff";
+    font_size = 20;
+    position = "${x}, ${y}";
+    halign = "center";
+    valign = "top";
+  };
+
+in {
   programs.hyprlock = {
     enable = true;
     settings = {
@@ -16,46 +26,11 @@
         position = "0, 20";
       };
       label = [
-        {
-          text = "cmd[update:30] date +\"%a %b %d %H:%M\"";
-          color = "0xffffffff";
-          font_size = 20;
-          position = "0, -100";
-          halign = "center";
-          valign = "top";
-        }
-        {
-          text = "$USER";
-          color = "0xffffffff";
-          font_size = 20;
-          position = "0, -140";
-          halign = "center";
-          valign = "top";
-        }
-        {
-          text = "cmd[update:1000] echo \"$(cat /sys/class/power_supply/BAT1/capacity)%\"";
-          color = "0xffffffff";
-          font_size = 20;
-          position = "700, -180";
-          halign = "center";
-          valign = "top";
-        }
-        {
-          text = "cmd[update:1000] nmcli -g GENERAL.CONNECTION device show | head -n1";
-          color = "0xffffffff";
-          font_size = 20;
-          position = "700, -100";
-          halign = "center";
-          valign = "top";
-        }
-        {
-          text = "cmd[update:1000] bluetoothctl info | awk -F ': ' '/Name: / {print $2}'";
-          color = "0xffffffff";
-          font_size = 20;
-          position = "700, -140";
-          halign = "center";
-          valign = "top";
-        }
+        (mkBox "cmd[update:30] date +\"%a %b %d %H:%M\"" "0" "-100")
+        (mkBox "$USER" "0" "-140")
+        (mkBox "cmd[update:1000] echo \"$(cat /sys/class/power_supply/BAT1/capacity)%\"" "700" "-180")
+        (mkBox "cmd[update:1000] nmcli -g GENERAL.CONNECTION device show | head -n1" "700" "-100")
+        (mkBox "cmd[update:1000] bluetoothctl info | awk -F ': ' '/Name: / {print $2}'" "700" "-140")
       ];
     };
   };

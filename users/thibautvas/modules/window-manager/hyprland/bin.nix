@@ -23,7 +23,7 @@ let
     fi
 
     hyprctl dispatch movetoworkspace "$workspace", class:"$class"
-    hyprctl dispatch swapwindow l
+    hyprctl dispatch layoutmsg swapwithmaster
   '';
 
 in {

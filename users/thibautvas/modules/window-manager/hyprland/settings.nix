@@ -1,6 +1,16 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  browser = {
+    bin = "firefox";
+    class = "firefox";
+  };
+  terminal = {
+    bin = "ghostty";
+    class = "com.mitchellh.ghostty";
+  };
+
+in {
   wayland.windowManager.hyprland.settings = {
     exec-once = [
       "hyprsunset --temperature 2000"
@@ -17,26 +27,27 @@
       gaps_out = 0;
       border_size = 1;
       "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-      layout = "dwindle";
+      layout = "master";
     };
 
+    master.mfact = 0.5;
     decoration.blur.enabled = false;
     animations.enabled = false;
     misc.disable_hyprland_logo = true;
 
     windowrulev2 = [
       "bordersize 0, onworkspace:w[tv1]"
-      "workspace 1, class:firefox"
-      "workspace 2, class:com.mitchellh.ghostty"
+      "workspace 1, class:${browser.class}"
+      "workspace 2, class:${terminal.class}"
       "suppressevent maximize, class:.*"
       "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
     ];
 
     bind = [
-      "super, r, exec, wofi --gtk-dark --show drun"
-      "alt-ctrl-shift-super, f, exec, hyprctl-launch firefox firefox"
-      "alt-ctrl-shift-super, d, exec, hyprctl-launch ghostty com.mitchellh.ghostty"
-      "alt-ctrl-shift-super, v, exec, hyprctl-launch-alt firefox firefox 2"
+      "alt-ctrl-shift-super, f, exec, hyprctl-launch ${browser.bin} ${browser.class}"
+      "alt-ctrl-shift-super, d, exec, hyprctl-launch ${terminal.bin} ${terminal.class}"
+      "alt-ctrl-shift-super, v, exec, hyprctl-launch-alt ${browser.bin} ${browser.class} 2"
+      "alt-ctrl-shift-super, q, layoutmsg, swapwithmaster"
       "alt-ctrl-shift-super, tab, cyclenext"
       "alt, f, workspace, 1"
       "alt, d, workspace, 2"
@@ -44,6 +55,7 @@
       "alt-shift, f, movetoworkspace, 1"
       "alt-shift, d, movetoworkspace, 2"
       "alt-shift, s, movetoworkspace, 3"
+      "super, r, exec, wofi --gtk-dark --show drun"
       "super, f, togglefloating"
       "super, c, killactive"
       "super, l, exec, hyprlock"
@@ -51,7 +63,7 @@
       "super, s, exec, hyprshot -m region -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
       "shift-super, s, exec, hyprshot -m window -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
       "super, v, exec, cliphist list | wofi --gtk-dark --dmenu | cliphist decode | wl-copy"
-      "super, p, exec, sup | wofi --gtk-dark --dmenu"
+      "super, y, exec, sup | wofi --gtk-dark --dmenu"
       "super, b, exec, btc \"$(echo -e 'speakers\\n headset' | wofi --gtk-dark --dmenu)\""
     ];
 

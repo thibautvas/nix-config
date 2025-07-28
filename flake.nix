@@ -38,6 +38,6 @@
       # home-manager config: macos and nixos
       homeConfigurations."thibautvas@macos" = mkHmCfg "aarch64-darwin" true;
       homeConfigurations."thibautvas@nixos" = mkHmCfg "x86_64-linux" true;
-      homeConfigurations."thibautvas@wsl" = mkHmCfg "x86_64-linux" false;
+      homeConfigurations."thibautvas@hvm" = mkHmCfg "x86_64-linux" false;
     };
 }

@@ -1,8 +1,8 @@
 # nix-config
 
 Hi! I use this configuration on my work machine (macos), as well as on my personal machine (nixos).
-Eventually, I plan to use it on virtual machines too.
-For now I have just played with WSL a bit.
+
+I also use it on headless virtual machines, running various linux distributions.
 
 ## Modules
 
@@ -22,7 +22,7 @@ The rebuilding process is managed by [`./flake.nix`](flake.nix):
 - home-manager:
   - `home-manager switch --flake .#thibautvas@macos`
   - `home-manager switch --flake .#thibautvas@nixos`
-  - `home-manager switch --flake .#thibautvas@wsl`
+  - `home-manager switch --flake .#thibautvas@hvm`
 
 The main difference between these three configurations relates to the conditional imports that are operated in `home.nix`,
 e.g., different window managers (or none at all).

@@ -32,7 +32,7 @@
 
   users.users.thibautvas = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "libvirtd" ];
     shell = pkgs.zsh;
   };
 
@@ -49,6 +49,8 @@
     hyprland.enable = true;
     hyprlock.enable = true;
   };
+
+  virtualisation.libvirtd.enable = true;
 
   environment.systemPackages = [ pkgs.ntfs3g ];
 }

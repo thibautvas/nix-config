@@ -1,4 +1,4 @@
-{ config, lib, pkgs, isDarwin, ... }:
+{ config, lib, pkgs, unstablePkgs, isDarwin, ... }:
 
 let
   statusSumUp = pkgs.writeShellScriptBin "sup" ''
@@ -44,5 +44,8 @@ in {
   home.packages = [
     statusSumUp
     bluetoothConnect
-  ] ++ lib.optionals isDarwin [ pkgs.blueutil ];
+  ] ++ lib.optionals isDarwin [
+    unstablePkgs.raycast
+    pkgs.blueutil
+  ];
 }

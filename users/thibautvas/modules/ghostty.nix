@@ -1,4 +1,4 @@
-{ config, lib, pkgs, isDarwin, isLinux, ... }:
+{ config, lib, pkgs, isDarwin, ... }:
 
 let
   ghosttySettings = {
@@ -18,25 +18,11 @@ let
     quick-terminal-animation-duration = 0;
   };
 
-  renderSettings = name: value:
-  if lib.isList value then
-    lib.concatStringsSep "\n" (map (v: "${name} = ${toString v}") value)
-  else if lib.isBool value then
-    "${name} = ${if value then "true" else "false"}"
-  else
-    "${name} = ${toString value}";
-
-  ghosttySettingsText = lib.concatStringsSep "\n" (lib.mapAttrsToList renderSettings ghosttySettings);
-
-in lib.mkMerge [
-  (lib.mkIf isDarwin {
-    # package ghostty marked as broken on aarch64-darwin
-    xdg.configFile."ghostty/config".text = ghosttySettingsText;
-  })
-  (lib.mkIf isLinux {
-    programs.ghostty = {
-      enable = true;
-      settings = ghosttySettings;
-    };
-  })
-]
+in {
+  programs.ghostty = {
+    enable = true;
+    settings = ghosttySettings;
+  } // lib.optionalAttrs isDarwin {
+    package = null; # package ghostty broken on darwin
+  };
+}

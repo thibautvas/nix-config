@@ -46,7 +46,6 @@ e.g., different window managers (or none at all).
     └── thibautvas
         ├── home.nix
         └── modules
-            ├── darwinapps.nix
             ├── direnv.nix
             ├── firefox.nix
             ├── ghostty.nix
@@ -84,5 +83,5 @@ e.g., different window managers (or none at all).
                     ├── hyprpaper.nix
                     └── settings.nix
 
-11 directories, 39 files
+11 directories, 38 files
 ```

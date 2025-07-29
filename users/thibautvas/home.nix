@@ -24,7 +24,6 @@ in {
     ./modules/localbin.nix
   ] ++ lib.optionals isDarwin [
     ./modules/window-manager/aerospace
-    ./modules/darwinapps.nix
     ./modules/vscode.nix
   ] ++ lib.optionals (isDesktop && isLinux) [
     ./modules/window-manager/hyprland

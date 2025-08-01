@@ -7,6 +7,7 @@ let
     darwin = {
       input.base = "iokit-name";
       output = "kext";
+      hypMet = "@hyp";
       ctlMet = "M";
       altCtl = "A";
       start = "M-left";
@@ -18,6 +19,7 @@ let
         extended = "device-file \"/dev/input/by-id/${keychronKbd}\"";
       };
       output = "uinput-sink \"output\"";
+      hypMet = "lmet";
       ctlMet = "C";
       altCtl = "C";
       start = "home";
@@ -25,21 +27,24 @@ let
     };
   };
 
-  mkHomeRowMods = platform: inputDevice: let
-    platformCfg = kbdCfg.${platform};
-    inputCfg = platformCfg.input.${inputDevice};
+  mkHomeRowMods = osType: inputDevice: let
+    inherit (kbdCfg.${osType}) input output hypMet ctlMet altCtl start end;
+    inputCfg = input.${inputDevice};
   in ''
     (defcfg
       input (${inputCfg})
-      output (${platformCfg.output})
+      output (${output})
       fallthrough true
       allow-cmd true
     )
 
     (defalias
+      ;; hyper
+      hyp (around rmet (around ralt (around rctl rsft)))
+
       ;; home row mods (AMSC)
       alt_a (tap-hold-next-release 200 a lalt)
-      met_s (tap-hold-next-release 200 s lmet)
+      hym_s (tap-hold-next-release 200 s ${hypMet})
       sft_d (tap-hold-next-release 200 d lsft)
       ctl_f (tap-hold-next-release 200 f lctl)
       ctl_j (tap-hold-next-release 200 j rctl)
@@ -47,23 +52,19 @@ let
       met_l (tap-hold-next-release 200 l rmet)
       alt_; (tap-hold-next-release 200 ; ralt)
 
-      ;; hyper
-      hyp (around rmet (around ralt (around rctl rsft)))
-      hyp_h (tap-hold-next-release 200 h @hyp)
-
       ;; navigation layer
       nav (layer-toggle nav)
       nav_esc (tap-hold-next-release 200 esc @nav)
-      vim_d #(${platformCfg.ctlMet}-x)
-      vim_y #(${platformCfg.ctlMet}-c)
-      vim_p #(${platformCfg.ctlMet}-v)
-      vim_b #(${platformCfg.altCtl}-left)
-      vim_w #(${platformCfg.altCtl}-right)
-      vim_^ ${platformCfg.start}
-      vim_$ ${platformCfg.end}
-      vim_V #(${platformCfg.start} S-${platformCfg.end})
-      vim_S #(${platformCfg.end} S-${platformCfg.start} bspc)
-      vim_o #(${platformCfg.end} S-ret)
+      vim_d #(${ctlMet}-x)
+      vim_y #(${ctlMet}-c)
+      vim_p #(${ctlMet}-v)
+      vim_b #(${altCtl}-left)
+      vim_w #(${altCtl}-right)
+      vim_^ ${start}
+      vim_$ ${end}
+      vim_V #(${start} S-${end})
+      vim_S #(${end} S-${start} bspc)
+      vim_o #(${end} S-ret)
 
       ;; comfort layer: email addresses and accessible controls for 60% keyboard
       com (layer-toggle com)
@@ -83,7 +84,7 @@ let
       grv       brdn      brup      mctl      _         bldn      blup      prev      pp        next      mute      vold      volu
                 _         _         _         _         _         _         _         _         _         _         _         _         _
       @com_tab                                                    _         _         _         _         _         _         _
-      @nav_esc  @alt_a    @met_s    @sft_d    @ctl_f              @hyp_h    @ctl_j    @sft_k    @met_l    @alt_;
+      @nav_esc  @alt_a    @hym_s    @sft_d    @ctl_f              _         @ctl_j    @sft_k    @met_l    @alt_;
                                                                             _         _         _
     )
 
@@ -104,9 +105,11 @@ let
     )
   '';
 
-  homeRowModsDarwin = mkHomeRowMods "darwin" "base";
-  homeRowModsLinux = mkHomeRowMods "linux" "base";
-  homeRowModsLinuxExt = mkHomeRowMods "linux" "extended";
+  homeRowMods = {
+    darwin = mkHomeRowMods "darwin" "base";
+    linux = mkHomeRowMods "linux" "base";
+    linuxExt = mkHomeRowMods "linux" "extended";
+  };
 
   homeRowModsBin = pkgs.writeShellScriptBin "hrm" ''
     if tmux has-session -t 'home-row-mods' 2>/dev/null; then
@@ -124,11 +127,11 @@ in lib.mkMerge [
     home.packages = [ homeRowModsBin ];
   }
   (lib.mkIf isDarwin {
-    xdg.configFile."kmonad/home_row_mods.kbd".text = homeRowModsDarwin;
+    xdg.configFile."kmonad/home_row_mods.kbd".text = homeRowMods.darwin;
   })
   (lib.mkIf isLinux {
-    xdg.configFile."kmonad/home_row_mods.kbd".text = homeRowModsLinux;
-    xdg.configFile."kmonad/home_row_mods_ext.kbd".text = homeRowModsLinuxExt;
+    xdg.configFile."kmonad/home_row_mods.kbd".text = homeRowMods.linux;
+    xdg.configFile."kmonad/home_row_mods_ext.kbd".text = homeRowMods.linuxExt;
     home.packages = [ pkgs.kmonad ];
   })
 ]

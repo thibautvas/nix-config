@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, isDarwin, isLinux, ... }:
 
 let
   shellInit = ''
@@ -129,12 +129,12 @@ let
 
 in {
   programs.bash = {
-    enable = true;
+    enable = isLinux;
     initExtra = shellPrompt.bash + shellInit;
   };
 
   programs.zsh = {
-    enable = true;
+    enable = isDarwin;
     defaultKeymap = "emacs";
     initContent = shellPrompt.zsh + shellInit;
   };

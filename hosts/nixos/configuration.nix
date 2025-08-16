@@ -33,7 +33,6 @@
   users.users.thibautvas = {
     isNormalUser = true;
     extraGroups = [ "wheel" "libvirtd" ];
-    shell = pkgs.zsh;
   };
 
   security.sudo.extraRules = [{
@@ -45,7 +44,6 @@
   }];
 
   programs = {
-    zsh.enable = true;
     hyprland.enable = true;
     hyprlock.enable = true;
   };

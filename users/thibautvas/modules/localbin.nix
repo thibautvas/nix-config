@@ -13,7 +13,7 @@ let
         awk '{buf[NR]=$0} /Default Output Device: Yes/ {print buf[NR-2]}' |
         sed -e 's/^ *//' -e 's/:$//'
     '' else ''
-      echo "$(cat /sys/class/power_supply/BAT1/capacity)%"
+      echo "$(cat /sys/class/power_supply/BAT0/capacity)%"
       nmcli -g GENERAL.CONNECTION device show | head -n1
       bluetoothctl info | awk -F ': ' '/Name: / {print $2}'
     ''}

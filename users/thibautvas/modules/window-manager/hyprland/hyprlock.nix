@@ -28,7 +28,7 @@ in {
       label = [
         (mkBox "cmd[update:30] date +\"%a %b %d %H:%M\"" "0" "-100")
         (mkBox "$USER" "0" "-140")
-        (mkBox "cmd[update:1000] echo \"$(cat /sys/class/power_supply/BAT1/capacity)%\"" "700" "-180")
+        (mkBox "cmd[update:1000] echo \"$(cat /sys/class/power_supply/BAT0/capacity)%\"" "700" "-180")
         (mkBox "cmd[update:1000] nmcli -g GENERAL.CONNECTION device show | head -n1" "700" "-100")
         (mkBox "cmd[update:1000] bluetoothctl info | awk -F ': ' '/Name: / {print $2}'" "700" "-140")
       ];

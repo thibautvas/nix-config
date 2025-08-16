@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  paper = "$HOME/Pictures/Kath.png";
+  paper = "$HOME/Pictures/linux-nixos-7q-3840x2400.jpg";
 
 in {
   services.hyprpaper = {

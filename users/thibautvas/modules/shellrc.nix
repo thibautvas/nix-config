@@ -26,7 +26,7 @@ let
     }
     alias ga='git add --verbose'
     alias gc='git commit'
-    alias gane='git commit --amend --no-edit'
+    alias ge='git commit --amend --no-edit'
     alias gd='git diff'
     alias gt='git difftool'
     alias gr='git restore'

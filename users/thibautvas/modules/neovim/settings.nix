@@ -34,5 +34,6 @@
     vim.keymap.set("n", "N", "Nzzzv", { desc = "previous result and center" })
     vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<CR>", { desc = "clear highlights" })
     vim.keymap.set("v", "<leader>y", [["+y]], { desc = "yank to system clipboard" })
+    vim.keymap.set("t", "<esc>", "<C-\\><C-n>", { desc = "escape out of terminal mode" })
   '';
 }

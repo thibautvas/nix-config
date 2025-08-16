@@ -14,7 +14,7 @@ in {
   programs.hyprlock = {
     enable = true;
     settings = {
-      background.path = "$HOME/Pictures/Kath.png";
+      background.path = "$HOME/Pictures/linux-nixos-7q-3840x2400.jpg";
       input-field = {
         size = "250, 50";
         outline_thickness = 2;

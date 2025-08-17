@@ -20,7 +20,7 @@ in {
     ./modules/neovim
   ] ++ lib.optionals isDesktop [
     ./modules/ghostty.nix
-    ./modules/firefox.nix
+    ./modules/zen-twilight.nix
     ./modules/kmonad.nix
     ./modules/localbin.nix
   ] ++ lib.optionals isDarwin [

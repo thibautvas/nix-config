@@ -47,7 +47,6 @@ e.g., different window managers (or none at all).
         ├── home.nix
         └── modules
             ├── direnv.nix
-            ├── firefox.nix
             ├── ghostty.nix
             ├── git.nix
             ├── kmonad.nix
@@ -71,18 +70,19 @@ e.g., different window managers (or none at all).
             │   ├── default.nix
             │   └── settings.nix
             ├── vscode.nix
-            └── window-manager
-                ├── aerospace
-                │   ├── bin.nix
-                │   ├── default.nix
-                │   └── settings.nix
-                └── hyprland
-                    ├── bin.nix
-                    ├── default.nix
-                    ├── hypridle.nix
-                    ├── hyprlock.nix
-                    ├── hyprpaper.nix
-                    └── settings.nix
+            ├── window-manager
+            │   ├── aerospace
+            │   │   ├── bin.nix
+            │   │   ├── default.nix
+            │   │   └── settings.nix
+            │   └── hyprland
+            │       ├── bin.nix
+            │       ├── default.nix
+            │       ├── hypridle.nix
+            │       ├── hyprlock.nix
+            │       ├── hyprpaper.nix
+            │       └── settings.nix
+            └── zen-twilight.nix
 
 11 directories, 39 files
 ```

@@ -9,9 +9,17 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }:
     let
       mkHmCfg = system: isDesktop: let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -23,7 +31,7 @@
         inherit pkgs;
         modules = [ ./users/thibautvas/home.nix ];
         extraSpecialArgs = {
-          inherit unstablePkgs isDesktop;
+          inherit unstablePkgs isDesktop zen-browser;
           inherit (pkgs.stdenv) isDarwin isLinux;
         };
       };

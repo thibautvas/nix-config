@@ -2,8 +2,8 @@
 
 let
   browser = {
-    bin = "firefox";
-    class = "firefox";
+    bin = "zen-twilight";
+    class = "zen-twilight";
   };
   terminal = {
     bin = "ghostty";

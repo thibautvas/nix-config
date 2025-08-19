@@ -18,8 +18,8 @@ in {
     ];
 
     monitor = [
-      "eDP-1,1920x1200@60,0x0,1.25"
-      "HDMI-A-1,3840x2160@30,1920x0,1.5"
+      "eDP-1,1920x1200@60,0x0,1.5"
+      "HDMI-A-1,3840x2160@60,1920x0,1.5"
     ];
 
     general = {
@@ -47,6 +47,7 @@ in {
       "super, j, exec, hyprctl-launch ${browser.bin} ${browser.class}"
       "super, k, exec, hyprctl-launch ${terminal.bin} ${terminal.class}"
       "super, n, exec, hyprctl-launch-alt ${browser.bin} ${browser.class} 2"
+      "super, o, fullscreen"
       "super, p, layoutmsg, swapwithmaster"
       "super, tab, cyclenext"
       "alt, j, workspace, 1"
@@ -84,6 +85,7 @@ in {
     ];
 
     input = {
+      kb_layout = "us(mac)";
       follow_mouse = 0;
       sensitivity = 1;
       touchpad.natural_scroll = true;

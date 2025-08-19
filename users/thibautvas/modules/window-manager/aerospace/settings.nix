@@ -21,10 +21,6 @@ in {
     };
 
     mode.main.binding = {
-      "${mod1}-y" = [
-        "flatten-workspace-tree"
-        "layout h_accordion"
-      ];
       "${mod1}-u" = [
         "flatten-workspace-tree"
         "layout h_tiles"
@@ -40,7 +36,7 @@ in {
       ];
       "${mod1}-o" = [
         "flatten-workspace-tree"
-        "layout h_tiles"
+        "layout h_accordion"
       ];
       "${mod1}-p" = [
         "focus --dfs-index 0"

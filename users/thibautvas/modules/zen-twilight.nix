@@ -1,4 +1,4 @@
-{ config, lib, pkgs, zen-browser, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
   mkExtension = name: _: {
@@ -15,13 +15,14 @@ let
   extensionSettings = lib.mapAttrs mkExtension extensions;
 
 in {
-  imports = [ zen-browser.homeModules.twilight ];
+  imports = [ inputs.zen-browser.homeModules.twilight ];
   programs.zen-browser = {
     enable = true;
     policies.ExtensionSettings = extensionSettings;
     profiles.default.settings = {
       "signon.rememberSignons" = false;
       "browser.translations.neverTranslateLanguages" = "fr,es";
+      "browser.ctrlTab.sortByRecentlyUsed" = true;
       "zen.view.compact.show-sidebar-and-toolbar-on-hover" = false;
     };
   };

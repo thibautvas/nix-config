@@ -25,6 +25,9 @@
         extraSpecialArgs = {
           inherit unstablePkgs isDesktop;
           inherit (pkgs.stdenv) isDarwin isLinux;
+          inputs = {
+            inherit nixpkgs-unstable;
+          };
         };
       };
 
@@ -35,9 +38,11 @@
         modules = [ ./hosts/nixos/configuration.nix ];
       };
 
-      # home-manager config: macos and nixos
-      homeConfigurations."thibautvas@macos" = mkHmCfg "aarch64-darwin" true;
-      homeConfigurations."thibautvas@nixos" = mkHmCfg "x86_64-linux" true;
-      homeConfigurations."thibautvas@hvm" = mkHmCfg "x86_64-linux" false;
+      # home-manager config: macos, nixos, and hvm
+      homeConfigurations = {
+        "thibautvas@macos" = mkHmCfg "aarch64-darwin" true;
+        "thibautvas@nixos" = mkHmCfg "x86_64-linux" true;
+        "thibautvas@hvm" = mkHmCfg "x86_64-linux" false;
+      };
     };
 }

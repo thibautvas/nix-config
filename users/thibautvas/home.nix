@@ -1,4 +1,4 @@
-{ config, lib, pkgs, isDesktop, isDarwin, isLinux, ... }:
+{ config, lib, pkgs, inputs, isDesktop, isDarwin, isLinux, ... }:
 
 let
   username = "thibautvas";
@@ -47,6 +47,8 @@ in {
       ripgrep
     ];
   };
+
+  nix.registry.nixpkgs.flake = inputs.nixpkgs-unstable;
 
   programs.home-manager.enable = true; # let home manager manage itself
 }

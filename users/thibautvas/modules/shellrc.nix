@@ -34,10 +34,13 @@ let
 
     gco() {
       git checkout "$1" 2>/dev/null && return 0
-      local branches=$(git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads)
+      local results=$(
+        git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads
+        git log --max-count=5 --pretty=format:'%h' HEAD~1
+      )
       local target=$(
-        [[ -n "$1" ]] && echo "$branches" | grep "^$1" | head -n1 ||
-        echo "$branches" | fzf --reverse --height 7 --preview \
+        [[ -n "$1" ]] && echo "$results" | grep "^$1" | head -n1 ||
+        echo "$results" | fzf --reverse --height 7 --preview \
           "git log --color=always --oneline --max-count=5 \
           --pretty=format:'%C(cyan)%an%Creset - %s%C(auto)%d%Creset' {}"
       )

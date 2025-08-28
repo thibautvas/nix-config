@@ -106,17 +106,17 @@ in {
           command = "sqltools.executeCurrentQuery";
           when = "editorTextFocus && editorLangId == 'sql' && !config.sqltools.disableChordKeyBindings";
         }
-	{
+        {
           key = "alt+h";
           command = "workbench.action.editor.nextChange";
           when = "editorTextFocus && !textCompareEditorActive && quickDiffDecorationCount != '0'";
         }
-	{
+        {
           key = "alt+shift+h";
           command = "workbench.action.editor.previousChange";
           when = "editorTextFocus && !textCompareEditorActive && quickDiffDecorationCount != '0'";
         }
-	{
+        {
           key = "ctrl+shift+h";
           command = "git.stageSelectedRanges";
           when = "editorTextFocus && !operationInProgress && resourceScheme == 'file'";

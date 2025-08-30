@@ -11,7 +11,7 @@ This configuration is cross-platform: it works seamlessly on linux and macos mac
 Most of it is contained within the `home-manager` module, in [`./users/thibautvas/home.nix`](users/thibautvas/home.nix),
 which manages configuration files on a user level, and installs related binaries too.
 
-System configurations may be found in [`./hosts`](hosts).
+System configurations may be found in [`./machines`](machines).
 Though, as of now, I am not leveraging `nix-darwin` to configure my macos machine on a system level.
 Only my nixos configuration lives there.
 
@@ -38,10 +38,12 @@ e.g., different window managers (or none at all).
 ├── README.md
 ├── flake.lock
 ├── flake.nix
-├── hosts
+├── machines
 │   └── nixos
 │       ├── configuration.nix
-│       └── hardware-configuration.nix
+│       └── hardware
+│           ├── guest-configuration.nix
+│           └── host-configuration.nix
 └── users
     └── thibautvas
         ├── home.nix
@@ -84,5 +86,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-11 directories, 39 files
+12 directories, 40 files
 ```

@@ -21,6 +21,15 @@
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }:
     let
+      mkSysCfg = isHost:
+        nixpkgs.lib.nixosSystem {
+          pkgs = nixpkgs.legacyPackages."x86_64-linux";
+          modules = [ ./machines/nixos/configuration.nix ];
+          specialArgs = {
+            inherit isHost;
+          };
+        };
+
       mkHmCfg = system: isDesktop: let
         pkgs = nixpkgs.legacyPackages.${system};
         unstablePkgs = import nixpkgs-unstable {
@@ -41,9 +50,9 @@
 
     in {
       # system config: nixos
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
-        modules = [ ./hosts/nixos/configuration.nix ];
+      nixosConfigurations = {
+        nixos = mkSysCfg true;
+        hvm = mkSysCfg false;
       };
 
       # home-manager config: macos, nixos, and hvm

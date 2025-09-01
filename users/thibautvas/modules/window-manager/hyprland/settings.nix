@@ -23,7 +23,7 @@ in {
     ];
 
     general = {
-      gaps_in = 5;
+      gaps_in = 2;
       gaps_out = 0;
       border_size = 1;
       "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
@@ -65,7 +65,6 @@ in {
       "shift-super, s, exec, hyprshot -m window -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
       "super, v, exec, cliphist list | wofi --gtk-dark --dmenu | cliphist decode | wl-copy"
       "super, h, exec, sup | wofi --gtk-dark --dmenu"
-      "super, b, exec, btc \"$(echo -e 'speakers\\n headset' | wofi --gtk-dark --dmenu)\""
     ];
 
     bindel = [
@@ -89,6 +88,11 @@ in {
       follow_mouse = 0;
       sensitivity = 1;
       touchpad.natural_scroll = true;
+    };
+
+    cursor = {
+      hide_on_key_press = true;
+      no_warps = true;
     };
   };
 }

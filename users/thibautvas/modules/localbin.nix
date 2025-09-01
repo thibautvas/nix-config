@@ -40,10 +40,23 @@ let
     ''}
   '';
 
+  # todo: darwin version
+  wifiConnect = pkgs.writeShellScriptBin "wfc" ''
+    SSID=$(
+      nmcli -g SSID device wifi list --rescan no |
+      grep -v '^$' |
+      fzf --reverse --height 10
+    )
+    [[ -n "$SSID" ]] &&
+    read PASSWORD &&
+    sudo nmcli device wifi connect "$SSID" password "$PASSWORD"
+  '';
+
 in {
   home.packages = [
     statusSumUp
     bluetoothConnect
+    wifiConnect
   ] ++ lib.optionals isDarwin [
     unstablePkgs.raycast
     pkgs.blueutil

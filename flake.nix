@@ -21,7 +21,15 @@
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }:
     let
-      mkHmCfg = system: isDesktop: let
+      mkSysCfg = isHost: nixpkgs.lib.nixosSystem {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        modules = [ ./machines/nixos/configuration.nix ];
+        specialArgs = {
+          inherit isHost;
+        };
+      };
+
+      mkHmCfg = system: isHost: let
         pkgs = nixpkgs.legacyPackages.${system};
         unstablePkgs = import nixpkgs-unstable {
           inherit system;
@@ -31,7 +39,7 @@
         inherit pkgs;
         modules = [ ./users/thibautvas/home.nix ];
         extraSpecialArgs = {
-          inherit unstablePkgs isDesktop;
+          inherit unstablePkgs isHost;
           inherit (pkgs.stdenv) isDarwin isLinux;
           inputs = {
             inherit nixpkgs-unstable zen-browser;
@@ -40,17 +48,17 @@
       };
 
     in {
-      # system config: nixos
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
-        modules = [ ./hosts/nixos/configuration.nix ];
+      # system config: nixos host and guest
+      nixosConfigurations = {
+        host = mkSysCfg true;
+        guest = mkSysCfg false;
       };
 
-      # home-manager config: macos, nixos, and hvm
+      # home-manager config: darwin, linux host and guest
       homeConfigurations = {
-        "thibautvas@macos" = mkHmCfg "aarch64-darwin" true;
-        "thibautvas@nixos" = mkHmCfg "x86_64-linux" true;
-        "thibautvas@hvm" = mkHmCfg "x86_64-linux" false;
+        darwin = mkHmCfg "aarch64-darwin" true;
+        host = mkHmCfg "x86_64-linux" true;
+        guest = mkHmCfg "x86_64-linux" false;
       };
     };
 }

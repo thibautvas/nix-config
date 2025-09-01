@@ -11,24 +11,29 @@ This configuration is cross-platform: it works seamlessly on linux and macos mac
 Most of it is contained within the `home-manager` module, in [`./users/thibautvas/home.nix`](users/thibautvas/home.nix),
 which manages configuration files on a user level, and installs related binaries too.
 
-System configurations may be found in [`./hosts`](hosts).
+System configurations may be found in [`./machines`](machines).
 Though, as of now, I am not leveraging `nix-darwin` to configure my macos machine on a system level.
 Only my nixos configuration lives there.
 
 ## Rebuilding
 
-The rebuilding process is managed by [`./flake.nix`](flake.nix):
+The rebuilding process is managed by [`./flake.nix`](flake.nix).
 
-- home-manager:
-  - `home-manager switch --flake .#thibautvas@macos`
-  - `home-manager switch --flake .#thibautvas@nixos`
-  - `home-manager switch --flake .#thibautvas@hvm`
+The flake may be run:
+- from a local clone of the repository: `--flake .#host`
+- from its github url: `--flake github:thibautvas/nix-config#host`
+
+nixos-rebuild:
+- `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#host`
+- `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#guest`
+
+home-manager:
+- `home-manager switch --flake github:thibautvas/nix-config#darwin`
+- `home-manager switch --flake github:thibautvas/nix-config#host`
+- `home-manager switch --flake github:thibautvas/nix-config#guest`
 
 The main difference between these three configurations relates to the conditional imports that are operated in `home.nix`,
 e.g., different window managers (or none at all).
-
-- nixos system:
-  - `sudo nixos-rebuild switch --flake .#nixos`
 
 ## Project structure
 
@@ -38,10 +43,12 @@ e.g., different window managers (or none at all).
 ├── README.md
 ├── flake.lock
 ├── flake.nix
-├── hosts
+├── machines
 │   └── nixos
 │       ├── configuration.nix
-│       └── hardware-configuration.nix
+│       └── hardware
+│           ├── guest-configuration.nix
+│           └── host-configuration.nix
 └── users
     └── thibautvas
         ├── home.nix
@@ -84,5 +91,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-11 directories, 39 files
+12 directories, 40 files
 ```

@@ -1,10 +1,12 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, isHost, ... }:
 
-{
-  imports = [ ./hardware-configuration.nix ];
+let
+  role = if isHost then "host" else "guest";
+
+in {
+  imports = [ ./hardware/${role}-configuration.nix ];
 
   system.stateVersion = "24.11"; # should not be changed
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot.loader = {
     grub = {
@@ -16,19 +18,12 @@
     efi.canTouchEfiVariables = true;
   };
 
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+  };
+
   time.timeZone = "Europe/Madrid";
-
-  networking.networkmanager.enable = true;
-
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-  };
-
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
 
   users.users.thibautvas = {
     isNormalUser = true;
@@ -42,6 +37,20 @@
       options = [ "NOPASSWD" ];
     }];
   }];
+}
+
+// lib.optionalAttrs isHost {
+  networking.networkmanager.enable = true;
+
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+  };
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
 
   programs = {
     hyprland.enable = true;
@@ -49,6 +58,8 @@
   };
 
   virtualisation.libvirtd.enable = true;
+}
 
-  environment.systemPackages = [ pkgs.ntfs3g ];
+// lib.optionalAttrs (!isHost) {
+  services.openssh.enable = true;
 }

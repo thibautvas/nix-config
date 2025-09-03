@@ -5,6 +5,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    nixos-wsl = {
+      url = "github:nix-community/nixos-wsl/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,13 +24,16 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nixos-wsl, home-manager, zen-browser, ... }:
     let
-      mkSysCfg = isHost: nixpkgs.lib.nixosSystem {
+      mkSysCfg = machine: isHost: nixpkgs.lib.nixosSystem {
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
-        modules = [ ./machines/nixos/configuration.nix ];
+        modules = [ ./machines/${machine}/configuration.nix ];
         specialArgs = {
           inherit isHost;
+          inputs = {
+            inherit nixos-wsl;
+          };
         };
       };
 
@@ -50,8 +58,9 @@
     in {
       # system config: nixos host and guest
       nixosConfigurations = {
-        host = mkSysCfg true;
-        guest = mkSysCfg false;
+        host = mkSysCfg "nixos" true;
+        guest = mkSysCfg "nixos" false;
+        wsl = mkSysCfg "wsl" false;
       };
 
       # home-manager config: darwin, linux host and guest

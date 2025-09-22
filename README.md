@@ -12,8 +12,6 @@ Most of it is contained within the `home-manager` module, in [`./users/thibautva
 which manages configuration files on a user level, and installs related binaries too.
 
 System configurations may be found in [`./machines`](machines).
-Though, as of now, I am not leveraging `nix-darwin` to configure my macos machine on a system level.
-Only my nixos configuration lives there.
 
 ## Rebuilding
 
@@ -26,6 +24,9 @@ The flake may be run:
 nixos-rebuild:
 - `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#host`
 - `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#guest`
+
+darwin-rebuild:
+- `sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin`
 
 home-manager:
 - `home-manager switch --flake github:thibautvas/nix-config#darwin`
@@ -44,6 +45,8 @@ e.g., different window managers (or none at all).
 ├── flake.lock
 ├── flake.nix
 ├── machines
+│   ├── darwin
+│   │   └── configuration.nix
 │   └── nixos
 │       ├── configuration.nix
 │       └── hardware
@@ -91,5 +94,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-12 directories, 40 files
+13 directories, 41 files
 ```

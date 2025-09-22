@@ -5,6 +5,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,11 +24,16 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, zen-browser, ... }:
     let
-      mkSysCfg = isHost: nixpkgs.lib.nixosSystem {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
-        modules = [ ./machines/nixos/configuration.nix ];
+      mkSysCfg = system: isHost: let
+        pkgs = nixpkgs.legacyPackages.${system};
+        inherit (pkgs.stdenv) isDarwin;
+        inherit (if isDarwin then nix-darwin else nixpkgs) lib;
+        machine = if isDarwin then "darwin" else "nixos";
+      in lib."${machine}System" {
+        inherit pkgs;
+        modules = [ ./machines/${machine}/configuration.nix ];
         specialArgs = {
           inherit isHost;
         };
@@ -50,15 +60,20 @@
     in {
       # system config: nixos host and guest
       nixosConfigurations = {
-        host = mkSysCfg true;
-        guest = mkSysCfg false;
+        host = mkSysCfg "x86_64-linux" true;
+        guest = mkSysCfg "x86_64-linux" false;
+      };
+
+      # system config: darwin
+      darwinConfigurations = {
+        darwin = mkSysCfg "aarch64-darwin" true;
       };
 
       # home-manager config: darwin, linux host and guest
       homeConfigurations = {
-        darwin = mkHmCfg "aarch64-darwin" true;
         host = mkHmCfg "x86_64-linux" true;
         guest = mkHmCfg "x86_64-linux" false;
+        darwin = mkHmCfg "aarch64-darwin" true;
       };
     };
 }

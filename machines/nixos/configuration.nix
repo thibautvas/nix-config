@@ -2,6 +2,7 @@
 
 let
   role = if isHost then "host" else "guest";
+  primaryUser = "thibautvas";
 
 in {
   imports = [ ./hardware/${role}-configuration.nix ];
@@ -25,13 +26,13 @@ in {
 
   time.timeZone = "Europe/Madrid";
 
-  users.users.thibautvas = {
+  users.users.${primaryUser} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "libvirtd" ];
   };
 
   security.sudo.extraRules = [{
-    users = [ "thibautvas" ];
+    users = [ primaryUser];
     commands = [{
       command = "ALL";
       options = [ "NOPASSWD" ];

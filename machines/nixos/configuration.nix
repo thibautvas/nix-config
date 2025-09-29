@@ -1,12 +1,9 @@
 { config, lib, pkgs, isHost, ... }:
 
 let
-  role = if isHost then "host" else "guest";
   primaryUser = "thibautvas";
 
 in {
-  imports = [ ./hardware/${role}-configuration.nix ];
-
   system.stateVersion = "24.11"; # should not be changed
 
   boot.loader = {
@@ -32,7 +29,7 @@ in {
   };
 
   security.sudo.extraRules = [{
-    users = [ primaryUser];
+    users = [ primaryUser ];
     commands = [{
       command = "ALL";
       options = [ "NOPASSWD" ];
@@ -41,6 +38,8 @@ in {
 }
 
 // lib.optionalAttrs isHost {
+  imports = [ ./hardware/host-configuration.nix ];
+
   networking.networkmanager.enable = true;
 
   services.pipewire = {
@@ -62,5 +61,7 @@ in {
 }
 
 // lib.optionalAttrs (!isHost) {
+  imports = [ ./hardware/guest-configuration.nix ];
+
   services.openssh.enable = true;
 }

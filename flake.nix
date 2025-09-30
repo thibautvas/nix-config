@@ -10,6 +10,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-wsl = {
+      url = "github:nix-community/nixos-wsl/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,22 +29,29 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, zen-browser, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, nixos-wsl, home-manager, zen-browser, ... }:
     let
-      mkSysCfg = system: isHost: let
+      mkSysCfg = { system, isHost, isWsl ? false }: let
         pkgs = nixpkgs.legacyPackages.${system};
         inherit (pkgs.stdenv) isDarwin;
-        inherit (if isDarwin then nix-darwin else nixpkgs) lib;
-        machine = if isDarwin then "darwin" else "nixos";
-      in lib."${machine}System" {
+        libSystem = if isDarwin then nix-darwin.lib.darwinSystem
+                    else nixpkgs.lib.nixosSystem;
+        machine = if isDarwin then "darwin"
+                  else if isWsl then "wsl"
+                  else "nixos";
+      in libSystem {
         inherit pkgs;
         modules = [ ./machines/${machine}/configuration.nix ];
         specialArgs = {
           inherit isHost;
+        } // nixpkgs.lib.optionalAttrs isWsl {
+          inputs = {
+            inherit nixos-wsl;
+          };
         };
       };
 
-      mkHmCfg = system: isHost: let
+      mkHmCfg = { system, isHost }: let
         pkgs = nixpkgs.legacyPackages.${system};
         unstablePkgs = import nixpkgs-unstable {
           inherit system;
@@ -58,22 +70,49 @@
       };
 
     in {
-      # system config: nixos host and guest
-      nixosConfigurations = {
-        host = mkSysCfg "x86_64-linux" true;
-        guest = mkSysCfg "x86_64-linux" false;
+      # system config: nixos host and guest, wsl
+      nixosConfigurations = let
+        system = "x86_64-linux";
+      in {
+        host = mkSysCfg {
+          inherit system;
+          isHost = true;
+        };
+        guest = mkSysCfg {
+          inherit system;
+          isHost = false;
+        };
+        wsl = mkSysCfg {
+          inherit system;
+          isHost = false;
+          isWsl = true;
+        };
       };
 
       # system config: darwin
-      darwinConfigurations = {
-        darwin = mkSysCfg "aarch64-darwin" true;
+      darwinConfigurations = let
+        system = "aarch64-darwin";
+      in {
+        darwin = mkSysCfg {
+          inherit system;
+          isHost = true;
+        };
       };
 
-      # home-manager config: darwin, linux host and guest
+      # home-manager config: linux host and guest, darwin
       homeConfigurations = {
-        host = mkHmCfg "x86_64-linux" true;
-        guest = mkHmCfg "x86_64-linux" false;
-        darwin = mkHmCfg "aarch64-darwin" true;
+        host = mkHmCfg {
+          system = "x86_64-linux";
+          isHost = true;
+        };
+        guest = mkHmCfg {
+          system = "x86_64-linux";
+          isHost = false;
+        };
+        darwin = mkHmCfg {
+          system = "aarch64-darwin";
+          isHost = true;
+        };
       };
     };
 }

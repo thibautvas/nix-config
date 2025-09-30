@@ -24,14 +24,15 @@ The flake may be run:
 nixos-rebuild:
 - `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#host`
 - `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#guest`
+- `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#wsl`
 
 darwin-rebuild:
 - `sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin`
 
 home-manager:
-- `home-manager switch --flake github:thibautvas/nix-config#darwin`
 - `home-manager switch --flake github:thibautvas/nix-config#host`
 - `home-manager switch --flake github:thibautvas/nix-config#guest`
+- `home-manager switch --flake github:thibautvas/nix-config#darwin`
 
 The main difference between these three configurations relates to the conditional imports that are operated in `home.nix`,
 e.g., different window managers (or none at all).
@@ -47,11 +48,13 @@ e.g., different window managers (or none at all).
 ├── machines
 │   ├── darwin
 │   │   └── configuration.nix
-│   └── nixos
-│       ├── configuration.nix
-│       └── hardware
-│           ├── guest-configuration.nix
-│           └── host-configuration.nix
+│   ├── nixos
+│   │   ├── configuration.nix
+│   │   └── hardware
+│   │       ├── guest-configuration.nix
+│   │       └── host-configuration.nix
+│   └── wsl
+│       └── configuration.nix
 └── users
     └── thibautvas
         ├── home.nix
@@ -94,5 +97,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 41 files
+14 directories, 42 files
 ```

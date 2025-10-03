@@ -5,7 +5,6 @@ let
     alias ..='cd ..'
     alias ...='cd ../..'
     alias ....='cd ../../..'
-    alias ocd="cd $PWD"
     alias grep='grep --color=auto'
     alias ls='ls --color=auto'
     alias la='ls -Alt'
@@ -16,13 +15,12 @@ let
     }
 
     gs() {
-      local root="''${1:-$(git rev-parse --show-toplevel)}"
-      git -C "$root" status --short .
+      git -C "''${1:-$(git rev-parse --show-toplevel)}" status --short .
     }
     gl() {
-      git log --graph --oneline --max-count="''${1:-5}" \
-        --pretty=format:'%C(auto)%h%Creset %cd %C(cyan)%an%Creset - %s%C(auto)%d%Creset' \
-        --date=format:'%Y-%m-%d %H:%M' HEAD
+      git log --graph --oneline -n"''${1:-5}" \
+      --pretty=format:'%C(auto)%h%Creset %cd %C(cyan)%an%Creset - %s%C(auto)%d%Creset' \
+      --date=format:'%Y-%m-%d %H:%M' HEAD
     }
     alias ga='git add --verbose'
     alias gc='git commit'
@@ -32,19 +30,20 @@ let
     alias gr='git restore'
     alias gu='git restore --staged'
 
-    gco() {
-      git checkout "$1" 2>/dev/null && return 0
-      local results=$(
+    gb() {
+      local results="{
         git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads
-        git log --max-count=5 --pretty=format:'%h' HEAD~1
-      )
+        git log -n5 --pretty=format:'%h' HEAD~1
+      }"
       local target=$(
-        [[ -n "$1" ]] && echo "$results" | grep "^$1" | head -n1 ||
-        echo "$results" | fzf --reverse --height 7 --preview \
-          "git log --color=always --oneline --max-count=5 \
-          --pretty=format:'%C(cyan)%an%Creset - %s%C(auto)%d%Creset' {}"
+        [[ -n "$1" ]] && printf '%s\n-' "$(eval "$results")" | grep "^$1" | head -n1 ||
+        eval "$results" | fzf --reverse --height 7 \
+        --preview "git log --color=always --oneline -n5 \
+        --pretty=format:'%C(cyan)%an%Creset - %s%C(auto)%d%Creset' {}" \
+        --bind "ctrl-a:execute(git branch {q})+print-query" \
+        --bind "ctrl-x:execute(git branch -D {1})+reload($results)"
       )
-      git checkout "$target"
+      [[ -n "$target" ]] && git checkout "$target"
     }
 
     direct_cd() {
@@ -64,11 +63,15 @@ let
       )
       [[ -n "$target" ]] && cd "$1/$target"
     }
-    alias dcd="direct_cd $WORK_DIR"
-    alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $WORK_DIR/git)"'
+    alias jd="direct_cd $WORK_DIR"
+    alias jg='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null)"'
+    alias jl="direct_cd $HOME/Downloads"
 
     vi() {
       [[ -n "$1" ]] && nvim "$1" || nvim +"$PICKER_CMD"
+    }
+    jv() {
+      direct_cd "$WORK_DIR" "$1" && nvim +"$PICKER_CMD"
     }
   '';
 

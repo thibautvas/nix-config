@@ -64,8 +64,8 @@ let
       )
       [[ -n "$target" ]] && cd "$1/$target"
     }
-    alias dcd="direct_cd $HOST_PROJECT_DIR"
-    alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $HOST_PROJECT_DIR/git)"'
+    alias dcd="direct_cd $WORK_DIR"
+    alias gcd='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null || echo $WORK_DIR/git)"'
 
     vi() {
       [[ -n "$1" ]] && nvim "$1" || nvim +"$PICKER_CMD"
@@ -75,7 +75,7 @@ let
   mkShellPrompt = colors: ''
     set_custom_prompt() {
       [[ $? -eq 0 ]] &&
-      local user_color='${lib.attrByPath [hostColor] colors.default colors}' ||
+      local user_color='${colors.prompt}' ||
       local user_color='${colors.red}'
 
       local active_user="[$USER@$(uname -n)]"
@@ -102,6 +102,8 @@ let
     }
   '';
 
+  promptColor = config.home.sessionVariables.PROMPT_COLOR;
+
   ansiColors = {
     default = "0";
     red = "31";
@@ -110,6 +112,8 @@ let
     blue = "34";
     magenta = "35";
     cyan = "36";
+  } // {
+    prompt = ansiColors.${promptColor};
   };
 
   fmtColors = {
@@ -118,8 +122,6 @@ let
       default = "%f";
     };
   };
-
-  hostColor = config.home.sessionVariables.HOST_COLOR;
 
   shellPrompt = {
     bash = mkShellPrompt fmtColors.bash + ''

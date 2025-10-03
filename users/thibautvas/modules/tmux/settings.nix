@@ -9,8 +9,8 @@
     keyMode = "vi";
     extraConfig = ''
       set -g status-bg black
-      set -g status-fg "$HOST_COLOR"
-      set-option -g status-left-length 30
+      set -g status-fg "$PROMPT_COLOR"
+      set -g status-left-length 30
       bind-key h select-pane -L
       bind-key j select-pane -D
       bind-key k select-pane -U

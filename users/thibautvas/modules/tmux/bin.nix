@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
+  promptColor = config.home.sessionVariables.PROMPT_COLOR;
   ansiColors = {
     default = "0";
     red = "31";
@@ -9,16 +10,15 @@ let
     blue = "34";
     magenta = "35";
     cyan = "36";
+  } // {
+    prompt = ansiColors.${promptColor};
   };
-  fmtColors = lib.mapAttrs (_: value: "\x1b[${value}m") ansiColors;
-
-  hostColor = config.home.sessionVariables.HOST_COLOR;
-  colorCode = lib.attrByPath [hostColor] fmtColors.default fmtColors;
+  fmtPromptColor = "\x1b[${ansiColors.prompt}m";
 
   tmuxListSessions = pkgs.writeShellScriptBin "tls" ''
     results="{
-      tmux list-sessions | cut -d':' -f1 | sed 's/^/\${colorCode}/; s/\$/\x1b[0m/';
-      fd --base-directory \"$HOST_PROJECT_DIR\" --type directory | sed 's/\/$//';
+      tmux list-sessions | cut -d':' -f1 | sed 's/^/\${fmtPromptColor}/; s/\$/\x1b[0m/';
+      fd --base-directory \"$WORK_DIR\" --type directory | sed 's/\/$//';
     }"
 
     target=$(
@@ -30,7 +30,7 @@ let
     )
 
     [[ -z "$target" ]] && exit 1
-    [[ -d "$target" ]] && path="$target" || path="$HOST_PROJECT_DIR/$target"
+    [[ -d "$target" ]] && path="$target" || path="$WORK_DIR/$target"
     title=$(basename "$target" | sed 's/\.//g')
     tmux new-session -d -s "$title" -c "$path" 2>/dev/null &&
     tmux new-window -t "$title":2 -c "$path" 'nvim +"$PICKER_CMD"'

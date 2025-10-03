@@ -3,10 +3,10 @@
 let
   username = "thibautvas";
   homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
-  hostProjectDir = "${homeDirectory}/repos";
-  hostColor = if isDarwin then "green"
-              else if isHost then "cyan"
-              else "magenta";
+  workDir = "${homeDirectory}/repos";
+  promptColor = if isDarwin then "green"
+                else if isHost then "cyan"
+                else "magenta";
   pickerCmd = "FzfLua files";
 
 in {
@@ -36,8 +36,8 @@ in {
     inherit username homeDirectory;
 
     sessionVariables = {
-      HOST_PROJECT_DIR = hostProjectDir;
-      HOST_COLOR = hostColor;
+      WORK_DIR = workDir;
+      PROMPT_COLOR = promptColor;
       PICKER_CMD = pickerCmd;
     };
 

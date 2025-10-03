@@ -24,9 +24,9 @@
       vim.keymap.set("n", "<leader>ff", fl.buffers, { desc = "FzfLua buffers" })
       vim.keymap.set("n", "<leader>fs", fl.git_status, { desc = "FzfLua git status" })
       vim.keymap.set("n", "<leader>fa", function()
-        fl.files { cwd = vim.fn.getenv("HOST_PROJECT_DIR") }
+        fl.files { cwd = vim.fn.getenv("WORK_DIR") }
       end,
-      { desc = "FzfLua HOST_PROJECT_DIR files" })
+      { desc = "FzfLua WORK_DIR files" })
       vim.keymap.set("n", "<leader>fg", fl.live_grep_native, { desc = "FzfLua live grep" })
     '';
   };

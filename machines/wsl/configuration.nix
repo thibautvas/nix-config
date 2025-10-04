@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, flakes, ... }:
 
 let
   primaryUser = "thibautvas";
@@ -6,7 +6,7 @@ let
 in {
   system.stateVersion = "24.11"; # should not be changed
 
-  imports = [ inputs.nixos-wsl.nixosModules.wsl ];
+  imports = [ flakes.nixos-wsl.nixosModules.wsl ];
 
   wsl = {
     enable = true;

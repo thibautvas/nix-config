@@ -45,7 +45,7 @@
         specialArgs = {
           inherit isHost;
         } // nixpkgs.lib.optionalAttrs isWsl {
-          inputs = {
+          flakes = {
             inherit nixos-wsl;
           };
         };
@@ -63,7 +63,7 @@
         extraSpecialArgs = {
           inherit unstablePkgs isHost;
           inherit (pkgs.stdenv) isDarwin isLinux;
-          inputs = {
+          flakes = {
             inherit nixpkgs-unstable zen-browser;
           };
         };

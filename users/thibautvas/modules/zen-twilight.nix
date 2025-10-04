@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, flakes, ... }:
 
 let
   mkExtension = name: _: {
@@ -15,7 +15,7 @@ let
   extensionSettings = lib.mapAttrs mkExtension extensions;
 
 in {
-  imports = [ inputs.zen-browser.homeModules.twilight ];
+  imports = [ flakes.zen-browser.homeModules.twilight ];
   programs.zen-browser = {
     enable = true;
     policies.ExtensionSettings = extensionSettings;

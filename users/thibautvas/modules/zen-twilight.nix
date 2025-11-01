@@ -10,6 +10,7 @@ let
     "uBlock0@raymondhill.net" = "ublock-origin";
     "addon@darkreader.org" = "darkreader";
     "{d7742d87-e61d-4b78-b8a1-b469842139fa}" = "vimium-ff";
+    "vpn@proton.ch" = "proton-vpn-firefox-extension";
   };
 
   extensionSettings = lib.mapAttrs mkExtension extensions;

@@ -7,13 +7,9 @@ in {
   system.stateVersion = "24.11"; # should not be changed
 
   boot.loader = {
-    grub = {
-      enable = true;
-      device = "nodev";
-      useOSProber = true;
-      efiSupport = true;
-    };
+    systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
+    timeout = 0;
   };
 
   zramSwap = {

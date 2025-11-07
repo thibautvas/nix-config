@@ -16,7 +16,6 @@ in {
       "hyprsunset --temperature 2000"
       "wl-paste --type text --watch cliphist store"
       "hrm"
-      "$HOME/repos/alt/kill_leds"
     ];
 
     monitor = [

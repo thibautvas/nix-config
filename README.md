@@ -46,14 +46,15 @@ e.g., different window managers (or none at all).
 ├── flake.lock
 ├── flake.nix
 ├── machines
-│   ├── darwin
-│   │   └── configuration.nix
+│   ├── darwin
+│   │   └── configuration.nix
 │   ├── nixos
-│   │   ├── configuration.nix
-│   │   └── hardware
-│   │       ├── guest-configuration.nix
-│   │       └── host-configuration.nix
-│   └── wsl
+│   │   ├── configuration.nix
+│   │   └── hardware
+│   │       ├── guest-configuration.nix
+│   │       ├── host-configuration.nix
+│   │       └── thinkpad-leds.nix
+│   └── wsl
 │       └── configuration.nix
 └── users
     └── thibautvas
@@ -97,5 +98,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-14 directories, 42 files
+14 directories, 43 files
 ```

@@ -34,7 +34,10 @@ in {
 }
 
 // lib.optionalAttrs isHost {
-  imports = [ ./hardware/host-configuration.nix ];
+  imports = [
+    ./hardware/host-configuration.nix
+    ./hardware/thinkpad-leds.nix
+  ];
 
   networking.networkmanager.enable = true;
 

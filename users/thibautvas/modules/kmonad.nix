@@ -7,7 +7,7 @@ let
     darwin = {
       input.base = "iokit-name";
       output = "kext";
-      hypMet = "@hyp";
+      hypMet = "(around lmet (around lalt (around lctl lsft)))";
       ctlMet = "M";
       altCtl = "A";
       start = "M-left";
@@ -39,9 +39,6 @@ let
     )
 
     (defalias
-      ;; hyper
-      hyp (around rmet (around ralt (around rctl rsft)))
-
       ;; home row mods (AMSC)
       alt_a (tap-hold-next-release 200 a lalt)
       hym_s (tap-hold-next-release 200 s ${hypMet})
@@ -93,33 +90,26 @@ let
     )
   '';
 
-  homeRowMods = {
-    darwin = mkHomeRowMods "darwin" "base";
-    linux = mkHomeRowMods "linux" "base";
-    linuxExt = mkHomeRowMods "linux" "extended";
+  homeRowModsBin = let
+    homeRowMods = lib.optionalAttrs isDarwin {
+      base = pkgs.writeText "home_row_mods.kbd" (mkHomeRowMods "darwin" "base");
+    } // lib.optionalAttrs isLinux {
+      base = pkgs.writeText "home_row_mods.kbd" (mkHomeRowMods "linux" "base");
+      extended = pkgs.writeText "home_row_mods_ext.kbd" (mkHomeRowMods "linux" "extended");
+    };
+  in pkgs.writeShellApplication {
+    name = "hrm";
+    runtimeInputs = lib.optionals isLinux [ pkgs.kmonad ];
+    text = ''
+      sudo pkill -f "home_row_mods"
+      ${if isLinux then ''
+        [[ -L /dev/input/by-id/${keychronKbd} ]] &&
+        sudo -b kmonad ${homeRowMods.extended}
+      '' else ""}
+      sudo -b kmonad ${homeRowMods.base}
+    '';
   };
 
-  homeRowModsBin = pkgs.writeShellScriptBin "hrm" ''
-    if tmux has-session -t 'home-row-mods' 2>/dev/null; then
-      tmux kill-session -t 'home-row-mods'
-    fi
-    if [[ -L /dev/input/by-id/${keychronKbd} ]]; then
-      tmux new-session -d -s 'home-row-mods' 'sudo kmonad $HOME/.config/kmonad/home_row_mods_ext.kbd'
-    else
-      tmux new-session -d -s 'home-row-mods' 'sudo kmonad $HOME/.config/kmonad/home_row_mods.kbd'
-    fi
-  '';
-
-in lib.mkMerge [
-  {
-    home.packages = [ homeRowModsBin ];
-  }
-  (lib.mkIf isDarwin {
-    xdg.configFile."kmonad/home_row_mods.kbd".text = homeRowMods.darwin;
-  })
-  (lib.mkIf isLinux {
-    xdg.configFile."kmonad/home_row_mods.kbd".text = homeRowMods.linux;
-    xdg.configFile."kmonad/home_row_mods_ext.kbd".text = homeRowMods.linuxExt;
-    home.packages = [ pkgs.kmonad ];
-  })
-]
+in {
+  home.packages = [ homeRowModsBin ];
+}

@@ -16,7 +16,6 @@ in {
     ./modules/shellrc.nix
     ./modules/direnv.nix
     ./modules/pyproject.nix
-    ./modules/tmux
     ./modules/neovim
   ] ++ lib.optionals isHost [
     ./modules/ghostty.nix

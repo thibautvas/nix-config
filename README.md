@@ -79,10 +79,6 @@ e.g., different window managers (or none at all).
             ├── nix.nix
             ├── pyproject.nix
             ├── shellrc.nix
-            ├── tmux
-            │   ├── bin.nix
-            │   ├── default.nix
-            │   └── settings.nix
             ├── vscode.nix
             ├── window-manager
             │   ├── aerospace
@@ -98,5 +94,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-14 directories, 43 files
+13 directories, 40 files
 ```

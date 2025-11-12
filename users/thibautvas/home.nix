@@ -4,9 +4,6 @@ let
   username = "thibautvas";
   homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
   workDir = "${homeDirectory}/repos";
-  promptColor = if isDarwin then "green"
-                else if isHost then "cyan"
-                else "magenta";
   pickerCmd = "FzfLua files";
 
 in {
@@ -36,7 +33,6 @@ in {
 
     sessionVariables = {
       WORK_DIR = workDir;
-      PROMPT_COLOR = promptColor;
       PICKER_CMD = pickerCmd;
     };
 

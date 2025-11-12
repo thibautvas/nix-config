@@ -1,4 +1,4 @@
-{ config, lib, pkgs, isDarwin, isLinux, ... }:
+{ config, lib, pkgs, isHost, isDarwin, isLinux, ... }:
 
 let
   shellInit = ''
@@ -107,7 +107,9 @@ let
     }
   '';
 
-  promptColor = config.home.sessionVariables.PROMPT_COLOR;
+  promptColor = if isDarwin then "green"
+                else if isHost then "cyan"
+                else "magenta";
 
   ansiColors = {
     default = "0";

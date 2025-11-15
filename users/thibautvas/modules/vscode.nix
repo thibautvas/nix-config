@@ -8,6 +8,16 @@ in {
     enable = true;
     package = unstablePkgs.vscode;
     profiles.default = {
+      extensions = with unstablePkgs.vscode-extensions; [
+        ms-python.python
+        ms-python.vscode-pylance
+        ms-toolsai.jupyter
+        ms-toolsai.jupyter-renderers
+        ms-toolsai.datawrangler
+        charliermarsh.ruff
+        vscodevim.vim
+        catppuccin.catppuccin-vsc
+      ];
       userSettings = {
         "[python]" = {
           "editor.codeActionsOnSave"."source.fixAll" = "explicit";

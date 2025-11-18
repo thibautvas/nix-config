@@ -27,9 +27,14 @@
         home-manager.follows = "home-manager";
       };
     };
+
+    templates = {
+      url = "github:thibautvas/flake-templates";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, nixos-wsl, home-manager, zen-browser, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, nixos-wsl, home-manager, zen-browser, templates, ... }:
     let
       mkSysCfg = { system, isHost, isWsl ? false }: let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -64,7 +69,7 @@
           inherit unstablePkgs isHost;
           inherit (pkgs.stdenv) isDarwin isLinux;
           flakes = {
-            inherit nixpkgs-unstable zen-browser;
+            inherit nixpkgs-unstable zen-browser templates;
           };
         };
       };

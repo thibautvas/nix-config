@@ -119,7 +119,28 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "templates": "templates",
         "zen-browser": "zen-browser"
+      }
+    },
+    "templates": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1764414805,
+        "narHash": "sha256-XMPajgSsmngh0qHC23t8WNf+xcPWF2iRKNtAtNU9P2U=",
+        "owner": "thibautvas",
+        "repo": "flake-templates",
+        "rev": "d199dd859c7f6af0e85e674ea6e1119d6a93cb7b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thibautvas",
+        "repo": "flake-templates",
+        "type": "github"
       }
     },
     "zen-browser": {

@@ -77,7 +77,6 @@ e.g., different window managers (or none at all).
             │   ├── settings.nix
             │   └── treesitter.nix
             ├── nix.nix
-            ├── pyproject.nix
             ├── shellrc.nix
             ├── vscode.nix
             ├── window-manager
@@ -94,5 +93,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 40 files
+13 directories, 39 files
 ```

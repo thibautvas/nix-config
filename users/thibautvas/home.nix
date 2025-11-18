@@ -12,7 +12,6 @@ in {
     ./modules/git.nix
     ./modules/shellrc.nix
     ./modules/direnv.nix
-    ./modules/pyproject.nix
     ./modules/neovim
   ] ++ lib.optionals isHost [
     ./modules/ghostty.nix

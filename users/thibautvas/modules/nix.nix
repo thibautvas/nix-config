@@ -4,6 +4,9 @@
   nix = {
     package = pkgs.nix;
     settings.experimental-features = [ "nix-command" "flakes" ];
-    registry.nixpkgs.flake = flakes.nixpkgs-unstable;
+    registry = {
+      nixpkgs.flake = flakes.nixpkgs-unstable;
+      templates.flake = flakes.templates;
+    };
   };
 }

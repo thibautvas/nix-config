@@ -64,8 +64,9 @@ in {
       "super, m, exit"
       "super, s, exec, hyprshot -m region -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
       "shift-super, s, exec, hyprshot -m window -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
-      "super, v, exec, cliphist list | wofi --gtk-dark --dmenu | cliphist decode | wl-copy"
+      "super, v, exec, cliphist list | wofi --gtk-dark --dmenu -i | cliphist decode | wl-copy"
       "super, h, exec, sup | wofi --gtk-dark --dmenu"
+      "super, 1, exec, run-mp3"
     ];
 
     bindel = [

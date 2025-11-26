@@ -24,7 +24,9 @@ in {
       "signon.rememberSignons" = false;
       "browser.translations.neverTranslateLanguages" = "fr,es";
       "browser.ctrlTab.sortByRecentlyUsed" = true;
+      "zen.theme.content-element-separation" = 0;
       "zen.view.compact.show-sidebar-and-toolbar-on-hover" = false;
+      "zen.view.compact.animate-sidebar" = false;
     };
   };
 }

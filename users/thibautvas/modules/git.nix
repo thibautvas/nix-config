@@ -7,9 +7,11 @@ let
 in {
   programs.git = {
     enable = true;
-    userName = "thibautvas";
-    userEmail = "thibaut.vas@gmail.com";
-    extraConfig = {
+    settings = {
+      user = {
+        name = "thibautvas";
+        email = "thibaut.vas@gmail.com";
+      };
       init.defaultBranch = "main";
       diff.tool = diffEditor;
       difftool.prompt = false;

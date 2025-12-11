@@ -73,6 +73,17 @@ let
     jv() {
       direct_cd "$WORK_DIR" "$1" && nvim +"$PICKER_CMD"
     }
+
+    nsp() {
+      cmd=(nix shell)
+      for pkg in "$@"; do
+        cmd+=("nixpkgs#$pkg")
+      done
+      ''${cmd[@]}
+    }
+    nrp() {
+      nix run nixpkgs#$@
+    }
   '';
 
   mkShellPrompt = colors: let

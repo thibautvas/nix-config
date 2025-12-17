@@ -106,11 +106,9 @@ let
         local dir_color='${colors.blue}'
       }
 
-      [[ -n "$name" ]] &&
-      local active_shell="($name) " || {
-        [[ $(echo $PATH | cut -d':' -f1) == /nix/store/* ]] &&
-        local active_shell="($(echo $PATH | cut -d'-' -f2)-env) "
-      }
+      local first_path=''${PATH%%:*}
+      [[ $first_path == /nix/store/* ]] &&
+      local active_shell="($(echo "$first_path" | sed -E 's:.*/[^-]+-([^/]+)/bin:\1:')-env) "
       [[ -n "$VIRTUAL_ENV" ]] &&
       local active_venv="($(basename $VIRTUAL_ENV)) "
 

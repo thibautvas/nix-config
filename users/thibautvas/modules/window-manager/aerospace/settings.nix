@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   mkGaps = gapsBuiltin: gapsExternal: [
@@ -12,7 +17,8 @@ let
   mod2 = "alt-shift";
   mod3 = "alt";
 
-in {
+in
+{
   programs.aerospace.userSettings = {
     accordion-padding = 20;
     gaps = {

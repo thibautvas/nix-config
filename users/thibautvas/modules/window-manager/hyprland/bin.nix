@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   hyprctlLaunch = pkgs.writeShellScriptBin "hyprctl-launch" ''
@@ -37,7 +42,8 @@ let
     '';
   };
 
-in {
+in
+{
   home.packages = [
     hyprctlLaunch
     hyprctlLaunchAlt

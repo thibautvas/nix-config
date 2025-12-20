@@ -1,4 +1,12 @@
-{ config, lib, pkgs, isHost, isDarwin, isLinux, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  isHost,
+  isDarwin,
+  isLinux,
+  ...
+}:
 
 let
   shellInit = ''
@@ -86,39 +94,46 @@ let
     }
   '';
 
-  mkShellPrompt = colors: let
-    fmtPromptColor = lib.attrByPath [ promptColor ] colors.default colors;
-  in ''
-    set_custom_prompt() {
-      [[ $? -eq 0 ]] &&
-      local user_color='${fmtPromptColor}' ||
-      local user_color='${colors.red}'
+  mkShellPrompt =
+    colors:
+    let
+      fmtPromptColor = lib.attrByPath [ promptColor ] colors.default colors;
+    in
+    ''
+      set_custom_prompt() {
+        [[ $? -eq 0 ]] &&
+        local user_color='${fmtPromptColor}' ||
+        local user_color='${colors.red}'
 
-      local active_user="[$USER@$(uname -n)]"
+        local active_user="[$USER@$(uname -n)]"
 
-      local project
-      project=$(git rev-parse --show-toplevel 2>/dev/null) && {
-        local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-        local active_dir="$(basename "$project"):$branch $(echo "$PWD" | sed "s:^$project:~:")"
-        local dir_color='${colors.yellow}'
-      } || {
-        local active_dir=$(echo "$PWD" | sed "s:^$HOME:~:")
-        local dir_color='${colors.blue}'
+        local project
+        project=$(git rev-parse --show-toplevel 2>/dev/null) && {
+          local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+          local active_dir="$(basename "$project"):$branch $(echo "$PWD" | sed "s:^$project:~:")"
+          local dir_color='${colors.yellow}'
+        } || {
+          local active_dir=$(echo "$PWD" | sed "s:^$HOME:~:")
+          local dir_color='${colors.blue}'
+        }
+
+        local first_path=''${PATH%%:*}
+        [[ $first_path == /nix/store/* ]] &&
+        local active_shell="($(echo "$first_path" | sed -E 's:.*/[^-]+-([^/]+)/bin:\1:')-env) "
+        [[ -n "$VIRTUAL_ENV" ]] &&
+        local active_venv="($(basename $VIRTUAL_ENV)) "
+
+        PS1="$active_shell$active_venv$user_color$active_user $dir_color$active_dir\$ ${colors.default}"
       }
+    '';
 
-      local first_path=''${PATH%%:*}
-      [[ $first_path == /nix/store/* ]] &&
-      local active_shell="($(echo "$first_path" | sed -E 's:.*/[^-]+-([^/]+)/bin:\1:')-env) "
-      [[ -n "$VIRTUAL_ENV" ]] &&
-      local active_venv="($(basename $VIRTUAL_ENV)) "
-
-      PS1="$active_shell$active_venv$user_color$active_user $dir_color$active_dir\$ ${colors.default}"
-    }
-  '';
-
-  promptColor = if isDarwin then "green"
-                else if isHost then "cyan"
-                else "magenta";
+  promptColor =
+    if isDarwin then
+      "green"
+    else if isHost then
+      "cyan"
+    else
+      "magenta";
 
   ansiColors = {
     default = "0";
@@ -146,7 +161,8 @@ let
     '';
   };
 
-in {
+in
+{
   programs.bash = {
     enable = isLinux;
     initExtra = shellPrompt.bash + shellInit;

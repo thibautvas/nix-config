@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   mkBox = cmd: x: y: {
@@ -10,7 +15,8 @@ let
     valign = "top";
   };
 
-in {
+in
+{
   programs.hyprlock = {
     enable = true;
     settings = {

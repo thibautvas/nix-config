@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   ledScript = pkgs.writeShellScript "kill_leds" ''
@@ -11,10 +16,14 @@ let
     done
   '';
 
-in {
+in
+{
   systemd.services.ledsOnBoot = {
     description = "kill leds on boot and resume";
-    wantedBy = [ "multi-user.target" "sleep.target" ];
+    wantedBy = [
+      "multi-user.target"
+      "sleep.target"
+    ];
     after = [ "systemd-suspend.service" ];
     serviceConfig = {
       Type = "oneshot";

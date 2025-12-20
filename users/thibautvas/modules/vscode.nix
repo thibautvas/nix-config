@@ -1,9 +1,17 @@
-{ config, lib, pkgs, unstablePkgs, isDarwin, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  unstablePkgs,
+  isDarwin,
+  ...
+}:
 
 let
   cmdCtrl = if isDarwin then "cmd" else "ctrl";
 
-in {
+in
+{
   programs.vscode = {
     enable = true;
     package = unstablePkgs.vscode;

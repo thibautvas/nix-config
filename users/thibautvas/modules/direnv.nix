@@ -1,9 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   workDir = config.home.sessionVariables.WORK_DIR;
 
-in {
+in
+{
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;

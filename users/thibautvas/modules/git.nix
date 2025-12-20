@@ -1,10 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   editor = config.home.sessionVariables.EDITOR or "vim";
   diffEditor = "${editor}diff";
 
-in {
+in
+{
   programs.git = {
     enable = true;
     settings = {

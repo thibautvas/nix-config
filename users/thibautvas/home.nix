@@ -1,4 +1,12 @@
-{ config, lib, pkgs, isHost, isDarwin, isLinux, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  isHost,
+  isDarwin,
+  isLinux,
+  ...
+}:
 
 let
   username = "thibautvas";
@@ -6,22 +14,26 @@ let
   workDir = "${homeDirectory}/repos";
   pickerCmd = "FzfLua files";
 
-in {
+in
+{
   imports = [
     ./modules/nix.nix
     ./modules/git.nix
     ./modules/shellrc.nix
     ./modules/direnv.nix
     ./modules/neovim
-  ] ++ lib.optionals isHost [
+  ]
+  ++ lib.optionals isHost [
     ./modules/ghostty.nix
     ./modules/zen-twilight.nix
     ./modules/kmonad.nix
     ./modules/localbin.nix
-  ] ++ lib.optionals isDarwin [
+  ]
+  ++ lib.optionals isDarwin [
     ./modules/window-manager/aerospace
     ./modules/vscode.nix
-  ] ++ lib.optionals (isHost && isLinux) [
+  ]
+  ++ lib.optionals (isHost && isLinux) [
     ./modules/window-manager/hyprland
   ];
 

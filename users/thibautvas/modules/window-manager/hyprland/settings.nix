@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   browser = {
@@ -10,7 +15,8 @@ let
     class = "com.mitchellh.ghostty";
   };
 
-in {
+in
+{
   wayland.windowManager.hyprland.settings = {
     exec-once = [
       "hyprsunset --temperature 2000"

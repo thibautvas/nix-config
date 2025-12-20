@@ -34,75 +34,105 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, nixos-wsl, home-manager, zen-browser, templates, ... }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      nix-darwin,
+      nixos-wsl,
+      home-manager,
+      zen-browser,
+      templates,
+      ...
+    }:
     let
-      mkSysCfg = { system, isHost, isWsl ? false }: let
-        pkgs = nixpkgs.legacyPackages.${system};
-        inherit (pkgs.stdenv) isDarwin;
-        libSystem = if isDarwin then nix-darwin.lib.darwinSystem
-                    else nixpkgs.lib.nixosSystem;
-        machine = if isDarwin then "darwin"
-                  else if isWsl then "wsl"
-                  else "nixos";
-      in libSystem {
-        inherit pkgs;
-        modules = [ ./machines/${machine}/configuration.nix ];
-        specialArgs = {
-          inherit isHost;
-        } // nixpkgs.lib.optionalAttrs isWsl {
-          flakes = {
-            inherit nixos-wsl;
+      mkSysCfg =
+        {
+          system,
+          isHost,
+          isWsl ? false,
+        }:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (pkgs.stdenv) isDarwin;
+          libSystem = if isDarwin then nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
+          machine =
+            if isDarwin then
+              "darwin"
+            else if isWsl then
+              "wsl"
+            else
+              "nixos";
+        in
+        libSystem {
+          inherit pkgs;
+          modules = [ ./machines/${machine}/configuration.nix ];
+          specialArgs = {
+            inherit isHost;
+          }
+          // nixpkgs.lib.optionalAttrs isWsl {
+            flakes = {
+              inherit nixos-wsl;
+            };
           };
         };
-      };
 
-      mkHmCfg = { system, isHost }: let
-        pkgs = nixpkgs.legacyPackages.${system};
-        unstablePkgs = import nixpkgs-unstable {
-          inherit system;
-          config.allowUnfree = true;
-        };
-      in home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ ./users/thibautvas/home.nix ];
-        extraSpecialArgs = {
-          inherit unstablePkgs isHost;
-          inherit (pkgs.stdenv) isDarwin isLinux;
-          flakes = {
-            inherit nixpkgs-unstable zen-browser templates;
+      mkHmCfg =
+        { system, isHost }:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          unstablePkgs = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        in
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./users/thibautvas/home.nix ];
+          extraSpecialArgs = {
+            inherit unstablePkgs isHost;
+            inherit (pkgs.stdenv) isDarwin isLinux;
+            flakes = {
+              inherit nixpkgs-unstable zen-browser templates;
+            };
           };
         };
-      };
 
-    in {
+    in
+    {
       # system config: nixos host and guest, wsl
-      nixosConfigurations = let
-        system = "x86_64-linux";
-      in {
-        host = mkSysCfg {
-          inherit system;
-          isHost = true;
+      nixosConfigurations =
+        let
+          system = "x86_64-linux";
+        in
+        {
+          host = mkSysCfg {
+            inherit system;
+            isHost = true;
+          };
+          guest = mkSysCfg {
+            inherit system;
+            isHost = false;
+          };
+          wsl = mkSysCfg {
+            inherit system;
+            isHost = false;
+            isWsl = true;
+          };
         };
-        guest = mkSysCfg {
-          inherit system;
-          isHost = false;
-        };
-        wsl = mkSysCfg {
-          inherit system;
-          isHost = false;
-          isWsl = true;
-        };
-      };
 
       # system config: darwin
-      darwinConfigurations = let
-        system = "aarch64-darwin";
-      in {
-        darwin = mkSysCfg {
-          inherit system;
-          isHost = true;
+      darwinConfigurations =
+        let
+          system = "aarch64-darwin";
+        in
+        {
+          darwin = mkSysCfg {
+            inherit system;
+            isHost = true;
+          };
         };
-      };
 
       # home-manager config: linux host and guest, darwin
       homeConfigurations = {

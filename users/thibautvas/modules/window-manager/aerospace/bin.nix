@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   aerospaceMoveApp = pkgs.writeShellScriptBin "aerospace-move-app" ''
@@ -18,7 +23,8 @@ let
     open -a 'AeroSpace'
   '';
 
-in {
+in
+{
   home.packages = [
     aerospaceMoveApp
     aerospaceLaunchCode

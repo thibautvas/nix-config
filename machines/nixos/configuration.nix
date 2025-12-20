@@ -1,9 +1,16 @@
-{ config, lib, pkgs, isHost, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  isHost,
+  ...
+}:
 
 let
   primaryUser = "thibautvas";
 
-in {
+in
+{
   system.stateVersion = "24.11"; # should not be changed
 
   boot.loader = {
@@ -21,16 +28,23 @@ in {
 
   users.users.${primaryUser} = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "libvirtd" ];
+    extraGroups = [
+      "wheel"
+      "libvirtd"
+    ];
   };
 
-  security.sudo.extraRules = [{
-    users = [ primaryUser ];
-    commands = [{
-      command = "ALL";
-      options = [ "NOPASSWD" ];
-    }];
-  }];
+  security.sudo.extraRules = [
+    {
+      users = [ primaryUser ];
+      commands = [
+        {
+          command = "ALL";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 }
 
 // lib.optionalAttrs isHost {

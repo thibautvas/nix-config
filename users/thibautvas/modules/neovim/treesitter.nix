@@ -1,9 +1,20 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
-      (nvim-treesitter.withPlugins (p: [ p.bash p.lua p.nix p.python p.sql ]))
+      (nvim-treesitter.withPlugins (p: [
+        p.bash
+        p.lua
+        p.nix
+        p.python
+        p.sql
+      ]))
       nvim-treesitter-textobjects
     ];
     extraLuaConfig = ''

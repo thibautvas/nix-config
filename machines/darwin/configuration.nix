@@ -1,9 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   primaryUser = "thibautvas";
 
-in {
+in
+{
   system = {
     stateVersion = 6; # should not be changed
 

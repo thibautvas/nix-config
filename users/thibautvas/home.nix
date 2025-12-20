@@ -28,13 +28,10 @@ in
     ./modules/zen-twilight.nix
     ./modules/kmonad.nix
     ./modules/localbin.nix
+    ./modules/window-managers
   ]
   ++ lib.optionals isDarwin [
-    ./modules/window-manager/aerospace
     ./modules/vscode.nix
-  ]
-  ++ lib.optionals (isHost && isLinux) [
-    ./modules/window-manager/hyprland
   ];
 
   home = {

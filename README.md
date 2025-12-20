@@ -79,11 +79,12 @@ e.g., different window managers (or none at all).
             ├── nix.nix
             ├── shellrc.nix
             ├── vscode.nix
-            ├── window-manager
+            ├── window-managers
             │   ├── aerospace
             │   │   ├── bin.nix
             │   │   ├── default.nix
             │   │   └── settings.nix
+            │   ├── default.nix
             │   └── hyprland
             │       ├── bin.nix
             │       ├── default.nix
@@ -93,5 +94,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 39 files
+13 directories, 40 files
 ```

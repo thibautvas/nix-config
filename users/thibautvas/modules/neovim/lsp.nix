@@ -6,7 +6,11 @@
 }:
 
 {
-  home.packages = [ pkgs.pyright ];
+  home.packages = with pkgs; [
+    pyright
+    nixd
+    nixfmt
+  ];
 
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.none-ls-nvim ];
@@ -56,8 +60,13 @@
         },
       })
 
+      vim.lsp.config.nixd = {
+        cmd = { "nixd" },
+        filetypes = { "nix" },
+      }
+
       vim.api.nvim_create_autocmd("LspAttach", {
-        pattern = { "*.py", "*.sql" },
+        pattern = { "*.py", "*.sql", "*.nix" },
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if not client then return end
@@ -76,18 +85,18 @@
             })
           end
 
-          if client.name == "null-ls" then
+          if client.name == "nixd" or client.name == "null-ls" then
             vim.api.nvim_create_autocmd("BufWritePre", {
               buffer = args.buf,
               callback = function()
-                vim.lsp.buf.format({ bufnr = args.buf, id = client.id, async = true })
+                vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
               end,
             })
           end
         end,
       })
 
-      vim.lsp.enable({ "pyright", "ruff" })
+      vim.lsp.enable({ "pyright", "ruff", "nixd" })
       vim.diagnostic.config({ virtual_text = true })
     '';
   };

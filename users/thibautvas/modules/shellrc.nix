@@ -4,7 +4,6 @@
   pkgs,
   isHost,
   isDarwin,
-  isLinux,
   ...
 }:
 
@@ -164,7 +163,7 @@ let
 in
 {
   programs.bash = {
-    enable = isLinux;
+    enable = (!isDarwin);
     initExtra = shellPrompt.bash + shellInit;
   };
 

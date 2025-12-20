@@ -4,7 +4,6 @@
   pkgs,
   isHost,
   isDarwin,
-  isLinux,
   ...
 }:
 

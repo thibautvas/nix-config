@@ -92,7 +92,7 @@
           modules = [ ./users/thibautvas/home.nix ];
           extraSpecialArgs = {
             inherit unstablePkgs isHost;
-            inherit (pkgs.stdenv) isDarwin isLinux;
+            inherit (pkgs.stdenv) isDarwin;
             flakes = {
               inherit nixpkgs-unstable zen-browser templates;
             };

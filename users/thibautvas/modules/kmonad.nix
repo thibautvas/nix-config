@@ -3,7 +3,6 @@
   lib,
   pkgs,
   isDarwin,
-  isLinux,
   ...
 }:
 
@@ -111,21 +110,23 @@ let
   homeRowModsBin =
     let
       homeRowMods =
-        lib.optionalAttrs isDarwin {
-          base = pkgs.writeText "home_row_mods.kbd" (mkHomeRowMods "darwin" "base");
-        }
-        // lib.optionalAttrs isLinux {
-          base = pkgs.writeText "home_row_mods.kbd" (mkHomeRowMods "linux" "base");
-          extended = pkgs.writeText "home_row_mods_ext.kbd" (mkHomeRowMods "linux" "extended");
-        };
+        if isDarwin then
+          {
+            base = pkgs.writeText "home_row_mods.kbd" (mkHomeRowMods "darwin" "base");
+          }
+        else
+          {
+            base = pkgs.writeText "home_row_mods.kbd" (mkHomeRowMods "linux" "base");
+            extended = pkgs.writeText "home_row_mods_ext.kbd" (mkHomeRowMods "linux" "extended");
+          };
     in
     pkgs.writeShellApplication {
       name = "hrm";
-      runtimeInputs = lib.optionals isLinux [ pkgs.kmonad ];
+      runtimeInputs = lib.optionals (!isDarwin) [ pkgs.kmonad ];
       text = ''
         sudo pkill -f "home_row_mods"
         ${
-          if isLinux then
+          if (!isDarwin) then
             ''
               [[ -L /dev/input/by-id/${keychronKbd} ]] &&
               sudo -b kmonad ${homeRowMods.extended}

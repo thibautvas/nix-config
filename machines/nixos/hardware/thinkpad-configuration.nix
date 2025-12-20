@@ -36,4 +36,10 @@ in
     ATTR{online}=="1", \
     RUN+="/bin/sh -c 'sleep 3; ${ledScript}'"
   '';
+
+  services.fprintd.enable = true;
+  security.pam.services = {
+    login.fprintAuth = false;
+    sudo.fprintAuth = false;
+  };
 }

@@ -53,7 +53,7 @@ e.g., different window managers (or none at all).
 │   │   └── hardware
 │   │       ├── guest-configuration.nix
 │   │       ├── host-configuration.nix
-│   │       └── thinkpad-leds.nix
+│   │       └── thinkpad-configuration.nix
 │   └── wsl
 │       └── configuration.nix
 └── users

@@ -66,11 +66,31 @@ let
     '';
   };
 
+  runMp3 = pkgs.writeShellApplication {
+    name = "run-mp3";
+    runtimeInputs = with pkgs; [
+      fzf
+      (mpv.override (
+        lib.optionalAttrs (!isDarwin) {
+          scripts = [ mpvScripts.mpris ];
+        }
+      ))
+    ];
+    text = ''
+      [[ -z "''${PICKER+x}" ]] && PICKER='fzf --reverse --height 7'
+      dir="$HOME/Music"
+      input_mp3="$(find "$dir" -type f -name '*.mp3' | sed "s:^$dir/::" | $PICKER)"
+      pkill -x mpv || true
+      mpv --no-video "$dir/$input_mp3" &
+    '';
+  };
+
 in
 {
   home.packages = [
     statusSumUp
     bluetoothConnect
     wifiConnect
+    runMp3
   ];
 }

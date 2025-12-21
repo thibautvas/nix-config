@@ -71,6 +71,7 @@ in
       "${mod3}-t" = "layout floating tiling";
       "${mod3}-v" = "layout vertical horizontal";
       "${mod1}-h" = "exec-and-forget sup | choose";
+      "${mod1}-1" = "exec-and-forget PICKER=choose run-mp3";
     };
 
     on-window-detected = [

@@ -72,7 +72,7 @@ in
       "shift-super, s, exec, hyprshot -m window -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""
       "super, v, exec, cliphist list | wofi --gtk-dark --dmenu -i | cliphist decode | wl-copy"
       "super, h, exec, sup | wofi --gtk-dark --dmenu"
-      "super, 1, exec, run-mp3"
+      "super, 1, exec, PICKER='wofi --gtk-dark --dmenu -i' run-mp3"
     ];
 
     bindel = [

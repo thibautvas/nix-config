@@ -70,6 +70,7 @@ in
       "${mod3}-minus" = "resize smart -50";
       "${mod3}-t" = "layout floating tiling";
       "${mod3}-v" = "layout vertical horizontal";
+      "${mod1}-h" = "exec-and-forget sup | choose";
     };
 
     on-window-detected = [

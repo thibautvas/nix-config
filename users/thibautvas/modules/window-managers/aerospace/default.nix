@@ -12,4 +12,6 @@
   ];
 
   programs.aerospace.enable = true;
+
+  home.packages = [ pkgs.choose-gui ];
 }

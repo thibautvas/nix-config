@@ -11,7 +11,6 @@
     extraLuaConfig = ''
       local fl = require("fzf-lua")
       fl.setup({
-        fzf_opts = { ["--layout"] = "default" },
         winopts = {
           scrollbar = { hidden = true },
         },

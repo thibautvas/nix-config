@@ -93,40 +93,61 @@ let
     }
   '';
 
-  mkShellPrompt =
-    colors:
+  mkPrompt =
+    shell:
     let
-      fmtPromptColor = lib.attrByPath [ promptColor ] colors.default colors;
+      escapes = shellEscapes.${shell};
+      colors = fmtColors.${shell};
+      promptColor = lib.attrByPath [ systemColor ] colors.default colors;
     in
     ''
       set_custom_prompt() {
-        [[ $? -eq 0 ]] &&
-        local user_color='${fmtPromptColor}' ||
-        local user_color='${colors.red}'
+        local exit_status=$?
+        local active_user user_color project branch active_dir dir_color active_shell
 
-        local active_user="[$USER@$(uname -n)]"
+        active_user='[${escapes.user}@${escapes.host}]'
 
-        local project
-        project=$(git rev-parse --show-toplevel 2>/dev/null) && {
-          local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-          local active_dir="$(basename "$project"):$branch $(echo "$PWD" | sed "s:^$project:~:")"
-          local dir_color='${colors.yellow}'
-        } || {
-          local active_dir=$(echo "$PWD" | sed "s:^$HOME:~:")
-          local dir_color='${colors.blue}'
-        }
+        if [[ exit_status -eq 0 ]]; then
+          user_color='${promptColor}'
+        else
+          user_color='${colors.red}'
+        fi
 
-        local first_path=''${PATH%%:*}
-        [[ $first_path == /nix/store/* ]] &&
-        local active_shell="($(echo "$first_path" | sed -E 's:.*/[^-]+-([^/]+)/bin:\1:')-env) "
-        [[ -n "$VIRTUAL_ENV" ]] &&
-        local active_venv="($(basename $VIRTUAL_ENV)) "
+        if { read -r project; read -r branch; } < <(
+          git rev-parse --show-toplevel --abbrev-ref HEAD 2>/dev/null
+        ); then
+          active_dir="''${project##*/}:$branch ''${PWD/#$project/${escapes.home}}"
+          dir_color='${colors.yellow}'
+        else
+          active_dir='${escapes.pwd}'
+          dir_color='${colors.blue}'
+        fi
 
-        PS1="$active_shell$active_venv$user_color$active_user $dir_color$active_dir\$ ${colors.default}"
+        if [[ $PATH == /nix/store/* ]]; then
+          active_shell=''${PATH%%/bin*}
+          active_shell="(''${active_shell#*-}-env) "
+        fi
+
+        PS1="$active_shell$user_color$active_user $dir_color$active_dir\$ ${colors.default}"
       }
     '';
 
-  promptColor =
+  shellEscapes = {
+    bash = {
+      user = "\\u";
+      host = "\\h";
+      pwd = "\\w";
+      home = "'~'";
+    };
+    zsh = {
+      user = "%n";
+      host = "%m";
+      pwd = "%~";
+      home = "~";
+    };
+  };
+
+  systemColor =
     if isDarwin then
       "green"
     else if isHost then
@@ -152,10 +173,10 @@ let
   };
 
   shellPrompt = {
-    bash = mkShellPrompt fmtColors.bash + ''
+    bash = mkPrompt "bash" + ''
       PROMPT_COMMAND='set_custom_prompt'
     '';
-    zsh = mkShellPrompt fmtColors.zsh + ''
+    zsh = mkPrompt "zsh" + ''
       precmd_functions+=('set_custom_prompt')
     '';
   };

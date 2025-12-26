@@ -9,12 +9,8 @@
 let
   ghosttySettings = {
     confirm-close-surface = false;
-    macos-titlebar-style = "hidden";
-    window-padding-x = 10;
-    window-padding-y = "10,5";
     background-opacity = 0.9;
-    macos-option-as-alt = "left";
-    shell-integration-features = "no-cursor";
+    shell-integration-features = "ssh-env";
     cursor-style-blink = false;
     bold-is-bright = true;
     font-feature = [
@@ -26,6 +22,10 @@ let
     quick-terminal-position = "center";
     quick-terminal-autohide = false;
     quick-terminal-animation-duration = 0;
+  }
+  // lib.optionalAttrs isDarwin {
+    macos-titlebar-style = "hidden";
+    macos-option-as-alt = "left";
   };
 
 in

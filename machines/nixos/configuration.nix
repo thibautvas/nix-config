@@ -3,7 +3,6 @@
   lib,
   pkgs,
   isHost,
-  isThinkpad,
   ...
 }:
 
@@ -51,9 +50,7 @@ in
 // lib.optionalAttrs isHost {
   imports = [
     ./hardware/host-configuration.nix
-  ]
-  ++ lib.optionals isThinkpad [
-    ./hardware/thinkpad-configuration.nix
+    ./hardware/thinkpad-leds.nix
   ];
 
   networking.networkmanager.enable = true;

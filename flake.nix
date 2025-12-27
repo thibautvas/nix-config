@@ -51,7 +51,6 @@
         {
           system,
           isHost,
-          isThinkpad ? false,
           isWsl ? false,
         }:
         let
@@ -70,7 +69,7 @@
           inherit pkgs;
           modules = [ ./machines/${machine}/configuration.nix ];
           specialArgs = {
-            inherit isHost isThinkpad;
+            inherit isHost;
           }
           // nixpkgs.lib.optionalAttrs isWsl {
             flakes = {
@@ -80,11 +79,7 @@
         };
 
       mkHmCfg =
-        {
-          system,
-          isHost,
-          isThinkpad ? false,
-        }:
+        { system, isHost }:
         let
           pkgs = nixpkgs.legacyPackages.${system};
           unstablePkgs = import nixpkgs-unstable {
@@ -96,7 +91,7 @@
           inherit pkgs;
           modules = [ ./users/thibautvas/home.nix ];
           extraSpecialArgs = {
-            inherit unstablePkgs isHost isThinkpad;
+            inherit unstablePkgs isHost;
             inherit (pkgs.stdenv) isDarwin;
             flakes = {
               inherit nixpkgs-unstable zen-browser templates;
@@ -115,7 +110,6 @@
           host = mkSysCfg {
             inherit system;
             isHost = true;
-            isThinkpad = true;
           };
           guest = mkSysCfg {
             inherit system;
@@ -145,7 +139,6 @@
         host = mkHmCfg {
           system = "x86_64-linux";
           isHost = true;
-          isThinkpad = true;
         };
         guest = mkHmCfg {
           system = "x86_64-linux";

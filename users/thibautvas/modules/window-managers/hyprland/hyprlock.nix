@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  isThinkpad,
   ...
 }:
 
@@ -39,12 +38,6 @@ in
         (mkBox "cmd[update:1000] nmcli -g GENERAL.CONNECTION device show | head -n1" "700" "-100")
         (mkBox "cmd[update:1000] bluetoothctl info | awk -F ': ' '/Name: / {print $2}'" "700" "-140")
       ];
-    }
-    // lib.optionalAttrs isThinkpad {
-      auth.fingerprint = {
-        enabled = true;
-        retry_delay = 250;
-      };
     };
   };
 }

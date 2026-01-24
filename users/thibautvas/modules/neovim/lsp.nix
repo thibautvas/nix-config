@@ -2,16 +2,20 @@
   config,
   lib,
   pkgs,
+  unstablePkgs,
   ...
 }:
 
 {
-  home.packages = with pkgs; [
-    ty
-    ruff
-    nixd
-    nixfmt
-  ];
+  home.packages =
+    (with unstablePkgs; [
+      ty
+      ruff
+    ])
+    ++ (with pkgs; [
+      nixd
+      nixfmt
+    ]);
 
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.none-ls-nvim ];

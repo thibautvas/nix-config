@@ -23,6 +23,7 @@ in
     ./modules/neovim
   ]
   ++ lib.optionals isHost [
+    ./modules/emacs.nix
     ./modules/ghostty.nix
     ./modules/zen-twilight.nix
     ./modules/kmonad.nix

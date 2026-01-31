@@ -61,6 +61,7 @@ e.g., different window managers (or none at all).
         ├── home.nix
         └── modules
             ├── direnv.nix
+            ├── emacs.nix
             ├── ghostty.nix
             ├── git.nix
             ├── kmonad.nix
@@ -94,5 +95,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 40 files
+13 directories, 41 files
 ```

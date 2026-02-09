@@ -9,7 +9,6 @@
 let
   ghosttySettings = {
     confirm-close-surface = false;
-    background-opacity = 0.9;
     shell-integration-features = "ssh-env";
     cursor-style-blink = false;
     bold-is-bright = true;

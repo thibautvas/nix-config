@@ -75,7 +75,11 @@ let
     alias jl="direct_cd $HOME/Downloads"
 
     vi() {
-      [[ -n "$1" ]] && nvim "$1" || nvim +"$PICKER_CMD"
+      if [[ -n "$1" ]]; then
+        nvim "$1"
+      else
+        nvim +"$PICKER_CMD"
+      fi
     }
     jv() {
       direct_cd "$WORK_DIR" "$1" && nvim +"$PICKER_CMD"

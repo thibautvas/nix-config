@@ -36,6 +36,20 @@
         })
       end, { desc = "Gitsigns diff file" })
       vim.keymap.set("n", "<leader>hb", gs.blame, { desc = "Gitsigns blame file" })
+
+      vim.keymap.set("n", "<leader>hc", function()
+        vim.ui.input({ prompt = "Commit message: " }, function(msg)
+          vim.fn.system({ "git", "commit", "-m", msg })
+          print("Committed: " .. msg)
+        end)
+      end, { desc = "Git commit" })
+
+      vim.keymap.set("n", "<leader>he", function()
+        vim.fn.system({ "git", "commit", "--amend", "--no-edit" })
+        local msg = vim.fn.system({ "git", "log", "-n1", "--pretty=%B" })
+        msg = vim.trim(msg)
+        print("Extended: " .. msg)
+      end, { desc = "Git extend" })
     '';
   };
 }

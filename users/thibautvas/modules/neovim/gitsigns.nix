@@ -9,6 +9,10 @@
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.gitsigns-nvim ];
     extraLuaConfig = ''
+      local git_log = function(lb, format)
+        return vim.fn.system({ "git", "log", "-n" .. lb, "--pretty=format:" .. format })
+      end
+
       local gs = require("gitsigns")
       gs.setup()
 
@@ -30,26 +34,38 @@
 
       vim.keymap.set("n", "<leader>hd", gs.preview_hunk_inline, { desc = "Gitsigns diff hunk" })
       vim.keymap.set("n", "<leader>ht", function()
-        gs.diffthis("HEAD", {
-          vertical = true,
-          split = "belowright",
-        })
+        vim.ui.input({ prompt = git_log(5, "%h %s%d") .. "\nDiff against: " }, function(hash)
+          if not hash or hash == "" then return end
+          gs.diffthis(hash, {
+            vertical = true,
+            split = "belowright",
+          })
+        end)
       end, { desc = "Gitsigns diff file" })
-      vim.keymap.set("n", "<leader>hb", gs.blame, { desc = "Gitsigns blame file" })
 
       vim.keymap.set("n", "<leader>hc", function()
         vim.ui.input({ prompt = "Commit message: " }, function(msg)
           vim.fn.system({ "git", "commit", "-m", msg })
-          print("Committed: " .. msg)
+          vim.notify("Committed: " .. msg)
         end)
       end, { desc = "Git commit" })
 
       vim.keymap.set("n", "<leader>he", function()
         vim.fn.system({ "git", "commit", "--amend", "--no-edit" })
-        local msg = vim.fn.system({ "git", "log", "-n1", "--pretty=%B" })
-        msg = vim.trim(msg)
-        print("Extended: " .. msg)
+        local msg = git_log(1, "%s")
+        vim.notify("Extended: " .. msg)
       end, { desc = "Git extend" })
+
+      vim.keymap.set("n", "<leader>hb", function()
+        vim.ui.input({ prompt = git_log(5, "%h %s%d") .. "\nCheckout: " }, function(hash)
+          if not hash or hash == "" then return end
+          vim.fn.system({ "git", "checkout", hash })
+          vim.cmd("checktime")
+          local msg = git_log(1, "%D: %s")
+          vim.cmd("redraw")
+          vim.notify("Switched to " .. msg)
+        end)
+      end, { desc = "Git checkout" })
     '';
   };
 }

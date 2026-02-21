@@ -25,9 +25,15 @@ let
       git -C "''${1:-$(git rev-parse --show-toplevel)}" status --short .
     }
     gl() {
-      git log --graph --oneline -n"''${1:-5}" \
+      local lb
+      if [[ $1 =~ ^[a-z] ]]; then
+        lb="$1..HEAD"
+      else
+        lb="-n''${1:-5}"
+      fi
+      git log --graph --oneline \
       --pretty=format:'%C(auto)%h%Creset %cd %C(cyan)%an%Creset - %s%C(auto)%d%Creset' \
-      --date=format:'%Y-%m-%d %H:%M' HEAD
+      --date=format:'%Y-%m-%d %H:%M' $lb
     }
     alias ga='git add --verbose'
     alias gc='git commit'

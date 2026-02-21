@@ -20,6 +20,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs = {
@@ -42,6 +47,7 @@
       nix-darwin,
       nixos-wsl,
       home-manager,
+      neovim-nightly-overlay,
       zen-browser,
       templates,
       ...
@@ -94,7 +100,12 @@
             inherit unstablePkgs isHost;
             inherit (pkgs.stdenv) isDarwin;
             flakes = {
-              inherit nixpkgs-unstable zen-browser templates;
+              inherit
+                nixpkgs-unstable
+                neovim-nightly-overlay
+                zen-browser
+                templates
+                ;
             };
           };
         };

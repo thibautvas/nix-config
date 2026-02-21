@@ -2,9 +2,14 @@
   config,
   lib,
   pkgs,
+  flakes,
   ...
 }:
 
+let
+  inherit (pkgs.stdenv.hostPlatform) system;
+
+in
 {
   # new imports are prepended to init.lua
   # settings.nix is always sourced last to put the mapleader at the top of init.lua
@@ -22,6 +27,7 @@
 
   programs.neovim = {
     enable = true;
+    package = flakes.neovim-nightly-overlay.packages.${system}.default;
     defaultEditor = true;
     vimdiffAlias = true;
   };

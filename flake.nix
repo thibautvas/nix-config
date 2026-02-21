@@ -37,6 +37,11 @@
       url = "github:thibautvas/gitutils.nvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -50,6 +55,7 @@
       zen-browser,
       templates,
       gitutils-nvim,
+      neovim-nightly-overlay,
       ...
     }:
     let
@@ -105,6 +111,7 @@
                 zen-browser
                 templates
                 gitutils-nvim
+                neovim-nightly-overlay
                 ;
             };
           };

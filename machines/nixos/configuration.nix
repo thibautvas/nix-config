@@ -51,6 +51,7 @@ in
   imports = [
     ./hardware/host-configuration.nix
     ./hardware/thinkpad-leds.nix
+    ./hardware/misc.nix
   ];
 
   networking.networkmanager.enable = true;

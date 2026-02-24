@@ -53,6 +53,7 @@ e.g., different window managers (or none at all).
 │   │   └── hardware
 │   │       ├── guest-configuration.nix
 │   │       ├── host-configuration.nix
+│   │       ├── misc.nix
 │   │       └── thinkpad-leds.nix
 │   └── wsl
 │       └── configuration.nix
@@ -95,5 +96,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 41 files
+13 directories, 42 files
 ```

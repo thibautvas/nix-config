@@ -10,6 +10,7 @@
   # settings.nix is always sourced last to put the mapleader at the top of init.lua
   imports = [
     ./catppuccin.nix
+    ./gitutils.nix
     ./gitsigns.nix
     ./oil.nix
     ./fzf-lua.nix

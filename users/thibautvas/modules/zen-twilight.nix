@@ -10,6 +10,8 @@ let
   mkExtension = name: _: {
     install_url = "https://addons.mozilla.org/firefox/downloads/latest/${name}/latest.xpi";
     installation_mode = "force_installed";
+    default_area = "menupanel";
+    private_browsing = "allow";
   };
 
   extensions = {
@@ -19,7 +21,9 @@ let
     "vpn@proton.ch" = "proton-vpn-firefox-extension";
   };
 
-  extensionSettings = lib.mapAttrs mkExtension extensions;
+  extensionSettings = lib.recursiveUpdate (lib.mapAttrs mkExtension extensions) {
+    "vpn@proton.ch".default_area = "navbar";
+  };
 
 in
 {
@@ -27,13 +31,20 @@ in
   programs.zen-browser = {
     enable = true;
     policies.ExtensionSettings = extensionSettings;
-    profiles.default.settings = {
-      "signon.rememberSignons" = false;
-      "browser.translations.neverTranslateLanguages" = "fr,es";
-      "browser.ctrlTab.sortByRecentlyUsed" = true;
-      "zen.theme.content-element-separation" = 0;
-      "zen.view.compact.show-sidebar-and-toolbar-on-hover" = false;
-      "zen.view.compact.animate-sidebar" = false;
+    profiles.default = {
+      search = lib.genAttrs [ "default" "privateDefault" ] (_: "ddg") // {
+        force = true;
+      };
+      settings = {
+        "browser.ctrlTab.sortByRecentlyUsed" = true;
+        "browser.shell.checkDefaultBrowser" = false;
+        "browser.translations.neverTranslateLanguages" = "fr,es";
+        "signon.rememberSignons" = false;
+        "zen.theme.content-element-separation" = 0;
+        "zen.view.compact.animate-sidebar" = false;
+        "zen.view.compact.show-sidebar-and-toolbar-on-hover" = false;
+        "zen.welcome-screen.seen" = true;
+      };
     };
   };
 }

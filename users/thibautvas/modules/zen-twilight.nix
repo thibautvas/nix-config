@@ -34,6 +34,12 @@ in
     profiles.default = {
       search = lib.genAttrs [ "default" "privateDefault" ] (_: "ddg") // {
         force = true;
+        engines.chatgpt = {
+          name = "Chatgpt";
+          urls = [ { template = "https://chatgpt.com/?temporary-chat=true&q={searchTerms}"; } ];
+          icon = "https://chatgpt.com/cdn/assets/favicon-l4nq08hd.svg";
+          definedAliases = [ "@gp" ];
+        };
       };
       settings = {
         "browser.ctrlTab.sortByRecentlyUsed" = true;

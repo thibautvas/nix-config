@@ -58,11 +58,35 @@ let
       SSID=$(
         nmcli -g SSID device wifi list --rescan no |
         grep -v '^$' |
-        fzf --reverse --height 10
+        fzf --reverse --height 10 --bind "ctrl-x:execute(sudo nmcli connection delete {})"
       )
       [[ -n "$SSID" ]] &&
       read -r PASSWORD &&
-      sudo nmcli device wifi connect "$SSID" password "$PASSWORD"
+      sudo nmcli device wifi connect "$SSID" ''${PASSWORD:+password "$PASSWORD"}
+    '';
+  };
+
+  # todo: darwin version
+  processList = pkgs.writeShellApplication {
+    name = "pls";
+    runtimeInputs = [ pkgs.fzf ];
+    text = ''
+      ps -u "$USER" -o pid,cmd --sort=-lstart --no-headers |
+      fzf --reverse --height 10 --bind "ctrl-x:execute(kill {1})+accept"
+    '';
+  };
+
+  virshList = pkgs.writeShellApplication {
+    name = "vls";
+    runtimeInputs = [ pkgs.fzf ];
+    text = ''
+      VM=$(
+        sudo virsh list --all | sed '1,2d;$d' |
+        fzf --reverse --height 10 --bind "ctrl-a:execute(sudo virsh start {2})" \
+                                  --bind "ctrl-x:execute(sudo virsh shutdown {2})+abort" |
+        awk '{print $2}'
+      )
+      [[ -n "$VM" ]] && TERM=xterm-256color ssh "$VM" # ghostty quirk
     '';
   };
 
@@ -90,7 +114,11 @@ in
   home.packages = [
     statusSumUp
     bluetoothConnect
-    wifiConnect
     runMp3
+  ]
+  ++ lib.optionals (!isDarwin) [
+    wifiConnect
+    processList
+    virshList
   ];
 }

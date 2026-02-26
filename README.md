@@ -68,11 +68,11 @@ e.g., different window managers (or none at all).
             ├── localbin.nix
             ├── neovim
             │   ├── blink.nix
-            │   ├── catppuccin.nix
             │   ├── default.nix
             │   ├── fzf-lua.nix
             │   ├── gitsigns.nix
             │   ├── gitutils.nix
+            │   ├── kanagawa.nix
             │   ├── lsp.nix
             │   ├── oil.nix
             │   ├── settings.nix

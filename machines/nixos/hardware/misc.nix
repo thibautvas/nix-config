@@ -11,7 +11,7 @@
     SUBSYSTEM=="usb", ATTR{idVendor}=="1949", MODE="0666"
   '';
 
-  # impermanent archlinux vm
+  # impermanent qemu VMs
   virtualisation.libvirtd.hooks.qemu = {
     "reset-overlay" = lib.getExe (
       pkgs.writeShellScriptBin "reset-overlay" (
@@ -19,12 +19,13 @@
           imageDir = "/var/lib/libvirt/images";
         in
         ''
-          BASE="${imageDir}/archlinux.qcow2"
-          OVERLAY="${imageDir}/archoverlay.qcow2"
-          if [[ "$1" == 'archlinux' && "$2" == "prepare" ]]; then
-            rm "$OVERLAY"
-            qemu-img create -f qcow2 -b "$BASE" -F qcow2 "$OVERLAY"
-          fi
+          for vm in archlinux alpinelinux; do
+            if [[ "$1" == "$vm" && "$2" == 'prepare' ]]; then
+              overlay="''${vm%linux}overlay.qcow2"
+              rm "${imageDir}/$overlay"
+              qemu-img create -f qcow2 -b "${imageDir}/$vm.qcow2" -F qcow2 "${imageDir}/$overlay"
+            fi
+          done
         ''
       )
     );

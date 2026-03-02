@@ -9,19 +9,14 @@
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.gitsigns-nvim ];
     extraLuaConfig = ''
-      local git_log = function(lb, format)
-        return vim.fn.system({ "git", "log", "--reverse", "-" .. lb, "--pretty=format:" .. format })
-      end
-
       local gs = require("gitsigns")
       gs.setup()
 
       local nav_hunk = function(keymap, dir)
         vim.keymap.set("n", keymap, function()
-          gs.nav_hunk(dir, { target = "all" })
-          vim.defer_fn(function()
+          gs.nav_hunk(dir, { target = "all" }, function()
             vim.cmd("norm! zz")
-          end, 10)
+          end)
         end, { desc = "Gitsigns " .. dir .. " hunk" })
       end
       nav_hunk("<M-h>", "next")
@@ -40,7 +35,8 @@
 
       vim.keymap.set("n", "<leader>hd", gs.preview_hunk_inline, { desc = "Gitsigns diff hunk" })
       vim.keymap.set("n", "<leader>ht", function()
-        vim.ui.input({ prompt = git_log(5, "%h %s%d") .. "\nDiff against: " }, function(hash)
+        local log_5 = vim.fn.system({ "git", "log", "--reverse", "-5", "--pretty=format:%h %s%d" })
+        vim.ui.input({ prompt = log_5 .. "\nDiff against: " }, function(hash)
           if not hash or hash == "" then return end
           gs.diffthis(hash, {
             vertical = true,

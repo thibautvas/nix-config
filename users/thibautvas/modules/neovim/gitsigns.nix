@@ -13,7 +13,7 @@
       gs.setup()
 
       local nav_hunk = function(keymap, dir)
-        vim.keymap.set("n", keymap, function()
+        vim.keymap.set({ "n", "v" }, keymap, function()
           gs.nav_hunk(dir, { target = "all" }, function()
             vim.cmd("norm! zz")
           end)
@@ -34,16 +34,8 @@
       hunk_action("<leader>hr", "reset")
 
       vim.keymap.set("n", "<leader>hd", gs.preview_hunk_inline, { desc = "Gitsigns diff hunk" })
-      vim.keymap.set("n", "<leader>ht", function()
-        local log_5 = vim.fn.system({ "git", "log", "--reverse", "-5", "--pretty=format:%h %s%d" })
-        vim.ui.input({ prompt = log_5 .. "\nDiff against: " }, function(hash)
-          if not hash or hash == "" then return end
-          gs.diffthis(hash, {
-            vertical = true,
-            split = "belowright",
-          })
-        end)
-      end, { desc = "Gitsigns diff file" })
+
+      vim.keymap.set({ "o", "x" }, "ih", "<Cmd>Gitsigns select_hunk<CR>")
     '';
   };
 }

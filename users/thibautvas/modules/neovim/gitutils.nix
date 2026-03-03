@@ -11,8 +11,8 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "thibautvas";
       repo = "gitutils.nvim";
-      rev = "eb97494ea1dd6f82a4e1b86a7ceac7186cb6304e";
-      sha256 = "sha256-8c6p6ftratHBfdVXtQlrT1OOlSjz15Ez0dmaqh75mD8=";
+      rev = "92284065f53cd4f21d87e693dbf194def4c7c9e1";
+      sha256 = "sha256-BO0YKXLRCn/QdJ9Iw4VdYPriYEGBKdZ3i1puWIfBAZg=";
     };
   };
 in
@@ -36,12 +36,21 @@ in
       vim.keymap.set("n", "<leader>hx", gu.rebase, { desc = "Gitutils interactive rebase" })
       vim.keymap.set("n", "<leader>hv", gu.continue, { desc = "Gitutils rebase continue" })
 
-      vim.keymap.set("n", "<leader>hf", function()
-        gs.stage_hunk(nil, {}, function()
-          gu.extend()
-        end)
-      end, { desc = "Gitsigns stage and Gitutils extend" })
+      local stage_range = function(mode)
+        if mode == "v" then
+          return { vim.fn.line("."), vim.fn.line("v") }
+        end
+      end
 
+      for _, mode in ipairs({ "n", "v" }) do
+        vim.keymap.set(mode, "<leader>hf", function()
+          gs.stage_hunk(stage_range(mode), {}, function()
+            gu.extend()
+          end)
+        end, { desc = "Gitsigns stage and Gitutils extend" })
+      end
+
+      vim.keymap.set("n", "<leader>ht", gu.diffthis, { desc = "Gitutils diff buffer" })
       vim.keymap.set("n", "<leader>hg", gu.diff, { desc = "Gitutils diff repo" })
       vim.keymap.set("n", "]g", function()
         gu.qf_diff("next")

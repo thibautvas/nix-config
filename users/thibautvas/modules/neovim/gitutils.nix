@@ -11,8 +11,8 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "thibautvas";
       repo = "gitutils.nvim";
-      rev = "e4293f895636a204f6e31f8a7a0f4f2283a127bb";
-      sha256 = "sha256-5svD178rLfGM8GkZZ398VWFcwRfCDob2/q480nMHGPs=";
+      rev = "eb97494ea1dd6f82a4e1b86a7ceac7186cb6304e";
+      sha256 = "sha256-8c6p6ftratHBfdVXtQlrT1OOlSjz15Ez0dmaqh75mD8=";
     };
   };
 in
@@ -21,7 +21,12 @@ in
     plugins = [ gitutils-nvim ];
     extraLuaConfig = ''
       local gu = require("gitutils")
-      require("gitutils.helpers").refresh_head()
+      gu.setup()
+
+      vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
+        pattern = "*",
+        callback = require("gitutils.helpers").refresh_head
+      })
 
       vim.opt.rulerformat = '%66(%{g:gitutils_head}%= %l,%c%)'
 
@@ -36,6 +41,14 @@ in
           gu.extend()
         end)
       end, { desc = "Gitsigns stage and Gitutils extend" })
+
+      vim.keymap.set("n", "<leader>hg", gu.diff, { desc = "Gitutils diff repo" })
+      vim.keymap.set("n", "]g", function()
+        gu.qf_diff("next")
+      end, { desc = "Gitutils next diff" })
+      vim.keymap.set("n", "[g", function()
+        gu.qf_diff("prev")
+      end, { desc = "Gitutils prev diff" })
     '';
   };
 }

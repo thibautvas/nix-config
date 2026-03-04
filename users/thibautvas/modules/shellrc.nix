@@ -25,15 +25,13 @@ let
       git -C "''${1:-$(git rev-parse --show-toplevel)}" status --short .
     }
     gl() {
-      local lb
       if [[ $1 =~ ^[a-z] ]]; then
-        lb="$1..HEAD"
+        local lb="$1..HEAD"
       else
-        lb="-n''${1:-5}"
+        local lb="-n''${1:-5}"
       fi
-      git log --graph --oneline \
-      --pretty=format:'%C(auto)%h%Creset %cd %C(cyan)%an%Creset - %s%C(auto)%d%Creset' \
-      --date=format:'%Y-%m-%d %H:%M' $lb
+      git log --pretty=format:'%C(auto)%h %cd %C(cyan)%an%C(auto) - %s%d' \
+              --date=format:'%Y-%m-%d %H:%M' --graph $lb
     }
     alias ga='git add --verbose'
     alias gc='git commit'
@@ -44,41 +42,31 @@ let
     alias gu='git restore --staged'
 
     gb() {
-      local results="{
-        git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads
-        git log -n5 --pretty=format:'%h' HEAD~1
-      }"
-      local target=$(
-        [[ -n "$1" ]] && printf '%s\n-' "$(eval "$results")" | grep "^$1" | head -n1 ||
-        eval "$results" | fzf --reverse --height 7 \
-        --preview "git log --color=always --oneline -n5 \
-        --pretty=format:'%C(cyan)%an%Creset - %s%C(auto)%d%Creset' {}" \
-        --bind "ctrl-a:execute(git branch {q})+print-query" \
-        --bind "ctrl-x:execute(git branch -D {1})+reload($results)"
-      )
-      [[ -n "$target" ]] && git checkout "$target"
+      if [[ -n "$1" ]]; then
+        git checkout "$1"
+        return
+      fi
+      git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads |
+      fzf --reverse --height 7 \
+          --preview 'git log --color=always -n5 \
+          --pretty=format:"%C(cyan)%an%C(auto) - %s%d" {1}' \
+          --bind 'enter:become(git checkout {1})' \
+          --bind 'ctrl-a:become(git checkout -b {q})' \
+          --bind 'ctrl-x:become(git branch -D {1})'
     }
 
-    direct_cd() {
-      local results=$(
-        echo './'
-        fd --base-directory "$1" --type directory "^$2"
-      )
-      local target=$(
-        [[ -n "$2" ]] &&
-        printf '%s\n' "$results" |
-        fzf --filter="$2" |
-        sed -n "''${3:-1}p" ||
-        echo "$results" |
-        awk -F '/' '{printf "%-20s # %s\n", $(NF-1), $0}' |
-        fzf --reverse --height 10 --preview "ls --color=always -1A $1/{3}" |
-        sed 's/.* # //'
-      )
+    _dcd() {
+      [[ "$2" == '.' ]] && { cd "$1"; return; }
+      if [[ -n "$2" ]]; then
+        local target=$(fd -L -t d --base-directory "$1" "^$2" | fzf --filter "$2" | head -n1)
+      else
+        local target=$(fd -L -t d --base-directory "$1" | fzf --reverse --height 10)
+      fi
       [[ -n "$target" ]] && cd "$1/$target"
     }
-    alias jd="direct_cd $WORK_DIR"
-    alias jg='direct_cd "$(git rev-parse --show-toplevel 2>/dev/null)"'
-    alias jl="direct_cd $HOME/Downloads"
+    alias jd="_dcd $WORK_DIR"
+    alias jg='_dcd "$(git rev-parse --show-toplevel 2>/dev/null)"'
+    alias jl="_dcd $HOME/Downloads"
 
     vi() {
       if [[ -n "$1" ]]; then
@@ -88,7 +76,7 @@ let
       fi
     }
     jv() {
-      direct_cd "$WORK_DIR" "$1" && nvim +"$PICKER_CMD"
+      _dcd "$WORK_DIR" "$1" && nvim +"$PICKER_CMD"
     }
 
     nsp() {

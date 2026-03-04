@@ -80,13 +80,10 @@ let
     name = "vls";
     runtimeInputs = [ pkgs.fzf ];
     text = ''
-      VM=$(
-        sudo virsh list --all | sed '1,2d;$d' |
-        fzf --reverse --height 10 --bind "ctrl-a:execute(sudo virsh start {2})" \
-                                  --bind "ctrl-x:execute(sudo virsh shutdown {2})+abort" |
-        awk '{print $2}'
-      )
-      [[ -n "$VM" ]] && TERM=xterm-256color ssh "$VM" # ghostty quirk
+      sudo virsh list --all | sed '1,2d;$d' |
+      fzf --reverse --height 10 --bind "ctrl-a:become(sudo virsh start {2})" \
+                                --bind "ctrl-x:become(sudo virsh shutdown {2})" \
+                                --bind "enter:become(TERM=xterm-256color ssh {2})"
     '';
   };
 

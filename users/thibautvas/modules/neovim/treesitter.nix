@@ -18,6 +18,7 @@
       nvim-treesitter-textobjects
     ];
     extraLuaConfig = ''
+      vim.highlight.priorities.semantic_tokens = 99
       require("nvim-treesitter.configs").setup({
         auto_install = false,
         highlight = {
@@ -38,15 +39,28 @@
     '';
   };
 
-  xdg.configFile."nvim/queries/python/injections.scm".text = ''
-    ;; extends
-    (string
-      (string_content) @injection.content
-        (#vim-match? @injection.content "^\w*select|from|left join|inner join|where.*$")
-        (#set! injection.language "sql"))
-    (call
-      function: (attribute attribute: (identifier) @id (#match? @id "execute|read_sql"))
-      arguments: (argument_list
-        (string (string_content) @injection.content (#set! injection.language "sql"))))
-  '';
+  xdg.configFile =
+    let
+      injections = {
+        python = ''
+          ;; extends
+          (string
+            (string_content) @injection.content
+              (#vim-match? @injection.content "^\w*select|from|left join|inner join|where.*$")
+              (#set! injection.language "sql"))
+        '';
+        nix = ''
+          ;; extends
+          ((binding
+              attrpath: (attrpath) @_path
+              expression: (indented_string_expression
+                (string_fragment) @injection.content))
+           (#match? @_path "extraLuaConfig")
+           (#set! injection.language "lua"))
+        '';
+      };
+    in
+    lib.mapAttrs' (
+      lang: content: lib.nameValuePair "nvim/queries/${lang}/injections.scm" { text = content; }
+    ) injections;
 }

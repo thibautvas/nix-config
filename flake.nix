@@ -32,6 +32,11 @@
       url = "github:thibautvas/flake-templates";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    gitutils-nvim = {
+      url = "github:thibautvas/gitutils.nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -44,6 +49,7 @@
       home-manager,
       zen-browser,
       templates,
+      gitutils-nvim,
       ...
     }:
     let
@@ -94,7 +100,12 @@
             inherit unstablePkgs isHost;
             inherit (pkgs.stdenv) isDarwin;
             flakes = {
-              inherit nixpkgs-unstable zen-browser templates;
+              inherit
+                nixpkgs-unstable
+                zen-browser
+                templates
+                gitutils-nvim
+                ;
             };
           };
         };

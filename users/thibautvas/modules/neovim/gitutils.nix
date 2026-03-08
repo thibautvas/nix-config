@@ -2,19 +2,13 @@
   config,
   lib,
   pkgs,
+  flakes,
   ...
 }:
 
 let
-  gitutils-nvim = pkgs.vimUtils.buildVimPlugin {
-    name = "gitutils-nvim";
-    src = pkgs.fetchFromGitHub {
-      owner = "thibautvas";
-      repo = "gitutils.nvim";
-      rev = "92284065f53cd4f21d87e693dbf194def4c7c9e1";
-      sha256 = "sha256-BO0YKXLRCn/QdJ9Iw4VdYPriYEGBKdZ3i1puWIfBAZg=";
-    };
-  };
+  gitutils-nvim = flakes.gitutils-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
 in
 {
   programs.neovim = {

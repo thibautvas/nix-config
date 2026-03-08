@@ -16,6 +16,26 @@
         "type": "github"
       }
     },
+    "gitutils-nvim": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1773295080,
+        "narHash": "sha256-OCPE3uhtdGd2dGXmtc7F7oj7rmYLYgPJf3AMc0zmlmw=",
+        "owner": "thibautvas",
+        "repo": "gitutils.nvim",
+        "rev": "bfce61df9c3eb430639e8ec304fdfdab7b445b50",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thibautvas",
+        "repo": "gitutils.nvim",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -114,6 +134,7 @@
     },
     "root": {
       "inputs": {
+        "gitutils-nvim": "gitutils-nvim",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixos-wsl": "nixos-wsl",

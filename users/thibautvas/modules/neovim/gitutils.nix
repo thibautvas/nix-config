@@ -19,10 +19,10 @@ in
 
       vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
         pattern = "*",
-        callback = require("gitutils.helpers").refresh_head
+        callback = require("gitutils.helpers").refresh_head,
       })
 
-      vim.opt.rulerformat = '%66(%{g:gitutils_head}%= %l,%c%)'
+      vim.opt.rulerformat = "%50(%{g:gitutils_head}%= %l,%c%)"
 
       vim.keymap.set("n", "<leader>hc", gu.commit, { desc = "Gitutils commit" })
       vim.keymap.set("n", "<leader>he", gu.extend, { desc = "Gitutils extend" })

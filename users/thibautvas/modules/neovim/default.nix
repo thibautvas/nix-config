@@ -12,6 +12,7 @@
     ./kanagawa.nix
     ./gitutils.nix
     ./gitsigns.nix
+    ./image.nix
     ./oil.nix
     ./fzf-lua.nix
     ./treesitter.nix

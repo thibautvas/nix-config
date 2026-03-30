@@ -31,18 +31,18 @@
 
       local work_dir = vim.fn.getenv("WORK_DIR")
       vim.keymap.set("n", "<leader>fa", function()
-        fl.files { cwd = work_dir }
+        fl.files({ cwd = work_dir })
       end, { desc = "FzfLua WORK_DIR files" })
 
       vim.keymap.set("n", "<leader>fp", function()
-        fl.fzf_exec("fd -t d -d 1 -L --base-directory " .. work_dir, {
+        fl.fzf_exec("fd -t d -H -L --base-directory " .. work_dir .. " '^\\.git$' -x dirname {}", {
           winopts = { title = " Projects " },
           actions = {
             ["default"] = function(selected)
               if selected[1] then
                 local dir = table.concat({
                   work_dir,
-                  vim.fn.fnameescape(selected[1])
+                  vim.fn.fnameescape(selected[1]),
                 }, "/")
                 vim.cmd("cd " .. dir)
               end

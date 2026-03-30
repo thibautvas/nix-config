@@ -24,7 +24,7 @@
 
       local hunk_action = function(keymap, action)
         vim.keymap.set("n", keymap, gs[action .. "_hunk"], {
-          desc = "Gitsigns " .. action .. " hunk"
+          desc = "Gitsigns " .. action .. " hunk",
         })
         vim.keymap.set("v", keymap, function()
           gs[action .. "_hunk"]({ vim.fn.line("."), vim.fn.line("v") })
@@ -35,7 +35,7 @@
 
       vim.keymap.set("n", "<leader>hd", gs.preview_hunk_inline, { desc = "Gitsigns diff hunk" })
 
-      vim.keymap.set({ "o", "x" }, "ih", "<Cmd>Gitsigns select_hunk<CR>")
+      vim.keymap.set({ "o", "x" }, "ih", gs.select_hunk, { desc = "Gitsigns select hunk" })
     '';
   };
 }

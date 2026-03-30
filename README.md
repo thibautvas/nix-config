@@ -72,6 +72,7 @@ e.g., different window managers (or none at all).
             │   ├── fzf-lua.nix
             │   ├── gitsigns.nix
             │   ├── gitutils.nix
+            │   ├── image.nix
             │   ├── kanagawa.nix
             │   ├── lsp.nix
             │   ├── oil.nix
@@ -95,5 +96,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 41 files
+13 directories, 42 files
 ```

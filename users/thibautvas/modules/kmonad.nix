@@ -64,11 +64,10 @@ let
         ctl_j (tap-hold-next-release 200 j rctl)
         sft_k (tap-hold-next-release 200 k rsft)
         met_l (tap-hold-next-release 200 l rmet)
-        alt_; (tap-hold-next-release 200 ; ralt)
+        alt_; (tap-hold-next-release 200 ; (layer-toggle ralt))
 
         ;; navigation layer
-        nav (layer-toggle nav)
-        nav_esc (tap-hold-next-release 200 esc @nav)
+        nav_esc (tap-hold-next-release 200 esc (layer-toggle nav))
         vim_d #(${ctlMet}-x)
         vim_y #(${ctlMet}-c)
         vim_p #(${ctlMet}-v)
@@ -80,30 +79,56 @@ let
         vim_S #(${end} S-${start} bspc)
         vim_o #(${end} S-ret)
         gmail #(t h i b a u t . v a s @ g m a i l . c o m)
+
+        ;; right alt layer
+        rgrv (around ralt grv)
+        re (around ralt e)
+        ru (around ralt u)
+        ri (around ralt i)
+        rc (around ralt c)
+        md (around lalt d)
+        mf (around lalt f)
+        mj (around lalt j)
+        mk (around lalt k)
+        ml (around lalt l)
+        mx (around lalt x)
+        mb (around lalt b)
       )
 
       (defsrc
         esc       f1        f2        f3        f4        f5        f6        f7        f8        f9        f10       f11       f12
-                  1         2         3                   5         6         7         8         9         0         -         =         bspc
-                                                                    y         u         i         o         p         [         ]
+        grv       1         2         3                   5         6         7         8         9         0         -         =         bspc
+                                      e                             y         u         i         o         p         [         ]
         caps      a         s         d         f                   h         j         k         l         ;         '
-                                      c         v                             m         ,         .
+                            x         c         v         b                             ,         .
+                                      lalt                                                        ralt
       )
 
       (deflayer mod
         grv       brdn      brup      mctl      _         bldn      blup      prev      pp        next      mute      vold      volu
-                  _         _         _                   _         _         _         _         _         _         _         _         _
-                                                                    _         _         _         _         _         _         _
+        _         _         _         _                   _         _         _         _         _         _         _         _         _
+                                      _                             _         _         _         _         _         _         _
         @nav_esc  @alt_a    @hym_s    @sft_d    @ctl_f              _         @ctl_j    @sft_k    @met_l    @alt_;    _
-                                      _         _                             _         _         _
+                            _         _         _         _                             _         _
+                                      enter                                                       bspc
       )
 
       (deflayer nav
         _         f1        f2        f3        f4        f5        f6        f7        f8        f9        f10       f11       f12
-                  brdn      brup      mctl                bldn      blup      prev      pp        next      mute      vold      volu      del
-                                                                    @vim_y    @vim_b    @vim_w    @vim_o    @vim_p    S-@vim_b  S-@vim_w
+        _         brdn      brup      mctl                bldn      blup      prev      pp        next      mute      vold      volu      del
+                                      _                             @vim_y    @vim_b    @vim_w    @vim_o    @vim_p    S-@vim_b  S-@vim_w
         _         _         @vim_S    @vim_d    _                   left      down      up        right     _         @gmail
-                                      caps      @vim_V                        @vim_^    @vim_$    S-down
+                            _         caps      @vim_V    _                             @vim_^    @vim_$
+                                      _                                                           del
+      )
+
+      (deflayer ralt
+        _         _         _         _         _         _         _         _         _         _         _         _         _
+        @rgrv     _         _         _                   _         _         _         _         _         _         _         _         _
+                                      @re                           _         @ru       @ri       _         _         _         _
+        _         _         _         @md       @mf                 _         @mj       @mk       @ml       _         _
+                            @mx       @rc       _         @mb                           _         _
+                                      _                                                           _
       )
     '';
 

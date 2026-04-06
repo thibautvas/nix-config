@@ -7,17 +7,14 @@
 }:
 
 {
-  home.packages =
-    (with unstablePkgs; [
-      ty
-      ruff
-    ])
-    ++ (with pkgs; [
-      nixd
-      nixfmt
-      sqlfluff
-      stylua
-    ]);
+  home.packages = with pkgs; [
+    unstablePkgs.ty
+    unstablePkgs.ruff
+    nixd
+    nixfmt
+    sqlfluff
+    lua-language-server
+  ];
 
   programs.neovim = {
     plugins = [ pkgs.vimPlugins.none-ls-nvim ];
@@ -37,6 +34,15 @@
           cmd = { "nixd" },
           filetypes = { "nix" },
         },
+        lua_ls = {
+          cmd = { "lua-language-server" },
+          filetypes = { "lua" },
+          settings = {
+            Lua = {
+              format = { enable = true },
+            },
+          },
+        },
       }) do
         vim.lsp.config(name, config)
         vim.lsp.enable(name)
@@ -50,9 +56,6 @@
           }),
           nls.builtins.diagnostics.sqlfluff.with({
             extra_args = { "--dialect", "vertica" },
-          }),
-          nls.builtins.formatting.stylua.with({
-            extra_args = { "--indent-type", "Spaces", "--indent-width", "2" },
           }),
         },
       })

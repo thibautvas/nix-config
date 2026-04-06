@@ -12,17 +12,21 @@
       local gs = require("gitsigns")
       gs.setup()
 
-      local nav_hunk = function(keymap, dir)
+      for dir, keymap in pairs({
+        next = "<M-h>",
+        prev = "<M-H>",
+      }) do
         vim.keymap.set({ "n", "v" }, keymap, function()
           gs.nav_hunk(dir, { target = "all" }, function()
             vim.cmd("norm! zz")
           end)
         end, { desc = "Gitsigns " .. dir .. " hunk" })
       end
-      nav_hunk("<M-h>", "next")
-      nav_hunk("<M-H>", "prev")
 
-      local hunk_action = function(keymap, action)
+      for action, keymap in pairs({
+        stage = "<leader>ha",
+        reset = "<leader>hr",
+      }) do
         vim.keymap.set("n", keymap, gs[action .. "_hunk"], {
           desc = "Gitsigns " .. action .. " hunk",
         })
@@ -30,8 +34,6 @@
           gs[action .. "_hunk"]({ vim.fn.line("."), vim.fn.line("v") })
         end, { desc = "Gitsigns " .. action .. " hunk (visual)" })
       end
-      hunk_action("<leader>ha", "stage")
-      hunk_action("<leader>hr", "reset")
 
       vim.keymap.set("n", "<leader>hd", gs.preview_hunk_inline, { desc = "Gitsigns diff hunk" })
 

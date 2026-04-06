@@ -30,19 +30,12 @@ in
       vim.keymap.set("n", "<leader>hx", gu.rebase, { desc = "Gitutils interactive rebase" })
       vim.keymap.set("n", "<leader>hv", gu.continue, { desc = "Gitutils rebase continue" })
 
-      local stage_range = function(mode)
-        if mode == "v" then
-          return { vim.fn.line("."), vim.fn.line("v") }
-        end
-      end
-
-      for _, mode in ipairs({ "n", "v" }) do
-        vim.keymap.set(mode, "<leader>hf", function()
-          gs.stage_hunk(stage_range(mode), {}, function()
-            gu.extend()
-          end)
-        end, { desc = "Gitsigns stage and Gitutils extend" })
-      end
+      vim.keymap.set("n", "<leader>hf", function()
+        gs.stage_hunk(nil, {}, gu.extend)
+      end, { desc = "Gitsigns stage and Gitutils extend" })
+      vim.keymap.set("v", "<leader>hf", function()
+        gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }, {}, gu.extend)
+      end, { desc = "Gitsigns stage and Gitutils extend" })
 
       vim.keymap.set("n", "<leader>ht", gu.diffthis, { desc = "Gitutils diff buffer" })
       vim.keymap.set("n", "<leader>hg", gu.diff, { desc = "Gitutils diff repo" })

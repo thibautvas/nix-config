@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  unstablePkgs,
   isHost,
   isDarwin,
   ...
@@ -48,6 +49,7 @@ in
       fzf
       fd
       ripgrep
+      unstablePkgs.claude-code
     ];
   };
 

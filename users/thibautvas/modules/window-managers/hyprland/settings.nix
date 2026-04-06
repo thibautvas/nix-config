@@ -52,7 +52,6 @@ in
     bind = [
       "super, j, exec, hyprctl-launch ${browser.bin} ${browser.class}"
       "super, k, exec, hyprctl-launch ${terminal.bin} ${terminal.class}"
-      "super, n, exec, hyprctl-launch-alt ${browser.bin} ${browser.class} 2"
       "super, o, fullscreen"
       "super, p, layoutmsg, swapwithmaster"
       "super, tab, cyclenext"
@@ -62,6 +61,8 @@ in
       "alt-shift, j, movetoworkspace, 1"
       "alt-shift, k, movetoworkspace, 2"
       "alt-shift, l, movetoworkspace, 3"
+      "alt-shift, n, exec, hyprctl-move ${terminal.class} 1"
+      "alt-shift, m, exec, hyprctl-move ${browser.class} 1; hyprctl-move ${terminal.class} 2"
       "super, r, exec, wofi --gtk-dark --show drun"
       "super, f, togglefloating"
       "super, c, killactive"

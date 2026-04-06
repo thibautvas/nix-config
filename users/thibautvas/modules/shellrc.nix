@@ -25,11 +25,8 @@ let
       git -C "''${1:-$(git rev-parse --show-toplevel)}" status --short .
     }
     gl() {
-      if [[ $1 =~ ^[a-z] ]]; then
-        local lb="$1..HEAD"
-      else
-        local lb="-n''${1:-5}"
-      fi
+      local lb="-''${1:-5}"
+      [[ $1 =~ ^[[:alpha:]] ]] && lb="''${lb:1}..HEAD"
       git log --pretty=format:'%C(auto)%h %cd %C(cyan)%an%C(auto) - %s%d' \
               --date=format:'%Y-%m-%d %H:%M' --graph $lb
     }

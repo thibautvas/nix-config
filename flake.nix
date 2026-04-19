@@ -160,5 +160,19 @@
           isHost = true;
         };
       };
+
+      # exposed packages
+      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
+        in
+        {
+          nvim = import ./users/thibautvas/modules/neovim/package.nix {
+            inherit pkgs unstablePkgs gitutils-nvim;
+          };
+        }
+      );
     };
 }

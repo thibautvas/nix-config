@@ -1,12 +1,9 @@
 {
-  config,
-  lib,
-  pkgs,
   ...
 }:
 
 {
-  programs.neovim.extraLuaConfig = ''
+  extraLuaConfig = ''
     vim.opt.timeoutlen = 300
     vim.opt.splitright = true
     vim.opt.splitbelow = true

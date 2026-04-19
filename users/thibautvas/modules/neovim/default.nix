@@ -2,28 +2,16 @@
   config,
   lib,
   pkgs,
+  unstablePkgs,
+  flakes,
   ...
 }:
 
 {
-  # new imports are prepended to init.lua
-  # settings.nix is always sourced last to put the mapleader at the top of init.lua
-  imports = [
-    ./kanagawa.nix
-    ./gitutils.nix
-    ./gitsigns.nix
-    ./image.nix
-    ./oil.nix
-    ./fzf-lua.nix
-    ./treesitter.nix
-    ./lsp.nix
-    ./blink.nix
-    ./settings.nix
+  home.packages = [
+    (import ./package.nix {
+      inherit pkgs unstablePkgs;
+      inherit (flakes) gitutils-nvim;
+    })
   ];
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    vimdiffAlias = true;
-  };
 }

@@ -12,6 +12,7 @@ let
   username = "thibautvas";
   homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
   workDir = "${homeDirectory}/repos";
+  editor = "nvim";
   pickerCmd = "FzfLua files";
 
 in
@@ -42,6 +43,7 @@ in
 
     sessionVariables = {
       WORK_DIR = workDir;
+      EDITOR = editor;
       PICKER_CMD = pickerCmd;
     };
 

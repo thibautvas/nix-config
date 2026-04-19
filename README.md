@@ -76,6 +76,7 @@ e.g., different window managers (or none at all).
             │   ├── kanagawa.nix
             │   ├── lsp.nix
             │   ├── oil.nix
+            │   ├── package.nix
             │   ├── settings.nix
             │   └── treesitter.nix
             ├── nix.nix
@@ -96,5 +97,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 42 files
+13 directories, 43 files
 ```

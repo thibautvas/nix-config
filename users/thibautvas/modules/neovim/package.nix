@@ -1,6 +1,5 @@
 {
   pkgs,
-  unstablePkgs,
   neovim-nightly-overlay,
   gitutils-nvim,
   ...
@@ -18,7 +17,6 @@ let
           inherit
             lib
             pkgs
-            unstablePkgs
             neovim-nightly-overlay
             gitutils-nvim
             ;

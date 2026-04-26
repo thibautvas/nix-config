@@ -1,14 +1,13 @@
 {
   pkgs,
-  unstablePkgs,
   ...
 }:
 
 {
   plugins = [ pkgs.vimPlugins.none-ls-nvim ];
   extraPackages = with pkgs; [
-    unstablePkgs.ty
-    unstablePkgs.ruff
+    ty
+    ruff
     nixd
     nixfmt
     sqlfluff

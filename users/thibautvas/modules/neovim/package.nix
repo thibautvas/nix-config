@@ -1,12 +1,14 @@
 {
   pkgs,
   unstablePkgs,
+  neovim-nightly-overlay,
   gitutils-nvim,
   ...
 }:
 
 let
   inherit (pkgs) lib;
+  neovim-nightly = neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   configs =
     let
@@ -17,6 +19,7 @@ let
             lib
             pkgs
             unstablePkgs
+            neovim-nightly-overlay
             gitutils-nvim
             ;
         };
@@ -48,7 +51,7 @@ let
     ];
 
 in
-pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
+pkgs.wrapNeovimUnstable neovim-nightly {
   inherit
     luaRcContent
     plugins

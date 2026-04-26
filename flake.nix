@@ -20,6 +20,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs = {
@@ -47,6 +52,7 @@
       nix-darwin,
       nixos-wsl,
       home-manager,
+      neovim-nightly-overlay,
       zen-browser,
       templates,
       gitutils-nvim,
@@ -102,6 +108,7 @@
             flakes = {
               inherit
                 nixpkgs-unstable
+                neovim-nightly-overlay
                 zen-browser
                 templates
                 gitutils-nvim
@@ -173,7 +180,12 @@
             isHost = false;
           };
           nvimWrapped = import ./users/thibautvas/modules/neovim/package.nix {
-            inherit pkgs unstablePkgs gitutils-nvim;
+            inherit
+              pkgs
+              unstablePkgs
+              neovim-nightly-overlay
+              gitutils-nvim
+              ;
           };
         in
         {

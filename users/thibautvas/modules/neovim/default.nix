@@ -10,7 +10,7 @@
 {
   home.packages = [
     (import ./package.nix {
-      inherit pkgs unstablePkgs;
+      pkgs = unstablePkgs;
       inherit (flakes) neovim-nightly-overlay gitutils-nvim;
     })
   ];

@@ -22,7 +22,7 @@
 
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     zen-browser = {
@@ -180,12 +180,8 @@
             isHost = false;
           };
           nvimWrapped = import ./users/thibautvas/modules/neovim/package.nix {
-            inherit
-              pkgs
-              unstablePkgs
-              neovim-nightly-overlay
-              gitutils-nvim
-              ;
+            inherit neovim-nightly-overlay gitutils-nvim;
+            pkgs = unstablePkgs;
           };
         in
         {

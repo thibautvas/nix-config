@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   isHost,
   isDarwin,
@@ -8,6 +6,20 @@
 }:
 
 let
+  inherit (pkgs) lib;
+
+  pack = with pkgs; [
+    fd
+    fzf
+    ripgrep
+  ];
+
+  env = {
+    WORK_DIR = "${(if isDarwin then "/Users" else "/home")}/thibautvas/repos";
+    EDITOR = "nvim";
+    PICKER_CMD = "FzfLua files";
+  };
+
   shellInit = ''
     alias ..='cd ..'
     alias ...='cd ../..'
@@ -167,6 +179,9 @@ let
     };
   };
 
+in
+{
+  inherit pack env shellInit;
   shellPrompt = {
     bash = mkPrompt "bash" + ''
       PROMPT_COMMAND='set_custom_prompt'
@@ -174,18 +189,5 @@ let
     zsh = mkPrompt "zsh" + ''
       precmd_functions+=('set_custom_prompt')
     '';
-  };
-
-in
-{
-  programs.bash = {
-    enable = (!isDarwin);
-    initExtra = shellPrompt.bash + shellInit;
-  };
-
-  programs.zsh = {
-    enable = isDarwin;
-    defaultKeymap = "emacs";
-    initContent = shellPrompt.zsh + shellInit;
   };
 }

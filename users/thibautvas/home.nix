@@ -11,16 +11,13 @@
 let
   username = "thibautvas";
   homeDirectory = "${(if isDarwin then "/Users" else "/home")}/${username}";
-  workDir = "${homeDirectory}/repos";
-  editor = "nvim";
-  pickerCmd = "FzfLua files";
 
 in
 {
   imports = [
     ./modules/nix.nix
     ./modules/git.nix
-    ./modules/shellrc.nix
+    ./modules/bash
     ./modules/direnv.nix
     ./modules/neovim
   ]
@@ -41,18 +38,7 @@ in
 
     inherit username homeDirectory;
 
-    sessionVariables = {
-      WORK_DIR = workDir;
-      EDITOR = editor;
-      PICKER_CMD = pickerCmd;
-    };
-
-    packages = with pkgs; [
-      fzf
-      fd
-      ripgrep
-      unstablePkgs.claude-code
-    ];
+    packages = [ unstablePkgs.claude-code ];
   };
 
   programs.home-manager.enable = true; # let home manager manage itself

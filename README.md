@@ -60,6 +60,10 @@ e.g., different window managers (or none at all).
     └── thibautvas
         ├── home.nix
         └── modules
+            ├── bash
+            │   ├── default.nix
+            │   ├── package.nix
+            │   └── settings.nix
             ├── direnv.nix
             ├── emacs.nix
             ├── ghostty.nix
@@ -80,7 +84,6 @@ e.g., different window managers (or none at all).
             │   ├── settings.nix
             │   └── treesitter.nix
             ├── nix.nix
-            ├── shellrc.nix
             ├── vscode.nix
             ├── window-managers
             │   ├── aerospace
@@ -97,5 +100,5 @@ e.g., different window managers (or none at all).
             │       └── settings.nix
             └── zen-twilight.nix
 
-13 directories, 43 files
+14 directories, 45 files
 ```

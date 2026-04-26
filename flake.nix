@@ -167,10 +167,39 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
+          bashWrapped = import ./users/thibautvas/modules/bash/package.nix {
+            inherit pkgs;
+            inherit (pkgs.stdenv) isDarwin;
+            isHost = false;
+          };
+          nvimWrapped = import ./users/thibautvas/modules/neovim/package.nix {
+            inherit pkgs unstablePkgs gitutils-nvim;
+          };
         in
         {
-          nvim = import ./users/thibautvas/modules/neovim/package.nix {
-            inherit pkgs unstablePkgs gitutils-nvim;
+          default = pkgs.symlinkJoin {
+            name = "wrapped-bins";
+            paths = [
+              bashWrapped
+              nvimWrapped
+            ];
+          };
+        }
+      );
+
+      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pack = self.packages.${system}.default;
+        in
+        {
+          bash = {
+            type = "app";
+            program = "${pack}/bin/bash";
+          };
+          nvim = {
+            type = "app";
+            program = "${pack}/bin/nvim";
           };
         }
       );

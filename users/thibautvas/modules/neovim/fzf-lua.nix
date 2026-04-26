@@ -26,7 +26,7 @@
     vim.keymap.set("n", "<leader>fs", fl.git_status, { desc = "FzfLua git status" })
     vim.keymap.set("n", "<leader>fg", fl.live_grep_native, { desc = "FzfLua live grep" })
 
-    local work_dir = vim.fn.getenv("WORK_DIR")
+    local work_dir = vim.env.WORK_DIR or vim.env.HOME .. "/repos"
     vim.keymap.set("n", "<leader>fa", function()
       fl.files({ cwd = work_dir })
     end, { desc = "FzfLua WORK_DIR files" })

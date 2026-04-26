@@ -13,6 +13,7 @@ let
     "sql"
   ];
   tsPlugins = p: lib.attrVals fileTypes p;
+  fileTypePattern = lib.concatMapStringsSep ", " builtins.toJSON fileTypes;
 
   injections = {
     python =
@@ -58,22 +59,21 @@ in
   ];
   extraLuaConfig = ''
     vim.hl.priorities.semantic_tokens = 99
-    require("nvim-treesitter.configs").setup({
-      auto_install = false,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = { "markdown" },
-      },
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-          },
-        },
-      },
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { ${fileTypePattern} },
+      group = vim.api.nvim_create_augroup("treesitter-highlight", { clear = true }),
+      callback = function()
+        vim.treesitter.start()
+      end,
     })
+
+    for textobject, keymap in pairs({
+      ["@function.inner"] = "if",
+      ["@function.outer"] = "af",
+    }) do
+      vim.keymap.set({ "o", "x" }, keymap, function()
+        require("nvim-treesitter-textobjects.select").select_textobject(textobject, "textobjects")
+      end, { desc = "Treesitter select " .. textobject })
+    end
   '';
 }

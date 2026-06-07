@@ -42,5 +42,7 @@
     vim.keymap.set("n", "<Esc>", "<Cmd>nohlsearch<CR>", { desc = "clear highlights" })
     vim.keymap.set("v", "<leader>y", '"+y', { desc = "yank to system clipboard" })
     vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "escape out of terminal mode" })
+
+    require("vim._core.ui2").enable()
   '';
 }

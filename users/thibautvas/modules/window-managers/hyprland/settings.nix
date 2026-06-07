@@ -17,6 +17,7 @@ let
 
 in
 {
+  wayland.windowManager.hyprland.configType = "hyprlang";
   wayland.windowManager.hyprland.settings = {
     exec-once = [
       "hyprsunset --temperature 2000"
@@ -41,12 +42,9 @@ in
     animations.enabled = false;
     misc.disable_hyprland_logo = true;
 
-    windowrulev2 = [
-      "bordersize 0, onworkspace:w[tv1]"
-      "workspace 1, class:${browser.class}"
-      "workspace 2, class:${terminal.class}"
-      "suppressevent maximize, class:.*"
-      "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+    windowrule = [
+      "match:class ${browser.class}, workspace 1"
+      "match:class ${terminal.class}, workspace 2"
     ];
 
     bind = [

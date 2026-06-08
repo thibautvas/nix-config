@@ -2,21 +2,21 @@
   description = "nix configuration by thibautvas";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nixos-wsl = {
-      url = "github:nix-community/nixos-wsl/release-25.11";
+      url = "github:nix-community/nixos-wsl/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -32,6 +32,11 @@
       url = "github:thibautvas/flake-templates";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    gitutils-nvim = {
+      url = "github:thibautvas/gitutils.nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -44,6 +49,7 @@
       home-manager,
       zen-browser,
       templates,
+      gitutils-nvim,
       ...
     }:
     let
@@ -94,7 +100,12 @@
             inherit unstablePkgs isHost;
             inherit (pkgs.stdenv) isDarwin;
             flakes = {
-              inherit nixpkgs-unstable zen-browser templates;
+              inherit
+                nixpkgs-unstable
+                zen-browser
+                templates
+                gitutils-nvim
+                ;
             };
           };
         };
@@ -149,5 +160,48 @@
           isHost = true;
         };
       };
+
+      # exposed packages
+      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
+          bashWrapped = import ./users/thibautvas/modules/bash/package.nix {
+            inherit pkgs;
+            inherit (pkgs.stdenv) isDarwin;
+            isHost = false;
+          };
+          nvimWrapped = import ./users/thibautvas/modules/neovim/package.nix {
+            inherit pkgs unstablePkgs gitutils-nvim;
+          };
+        in
+        {
+          default = pkgs.symlinkJoin {
+            name = "wrapped-bins";
+            paths = [
+              bashWrapped
+              nvimWrapped
+            ];
+          };
+        }
+      );
+
+      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pack = self.packages.${system}.default;
+        in
+        {
+          bash = {
+            type = "app";
+            program = "${pack}/bin/bash";
+          };
+          nvim = {
+            type = "app";
+            program = "${pack}/bin/nvim";
+          };
+        }
+      );
     };
 }

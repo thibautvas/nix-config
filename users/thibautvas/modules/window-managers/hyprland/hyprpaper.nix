@@ -13,8 +13,11 @@ in
   services.hyprpaper = {
     enable = true;
     settings = {
-      preload = paper;
-      wallpaper = ",${paper}";
+      wallpaper = {
+        monitor = "";
+        path = paper;
+      };
+      splash = false;
     };
   };
 }

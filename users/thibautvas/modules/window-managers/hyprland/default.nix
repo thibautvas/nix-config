@@ -7,8 +7,6 @@
 
 {
   imports = [
-    ./settings.nix
-    ./bin.nix
     ./hyprpaper.nix
     ./hypridle.nix
     ./hyprlock.nix
@@ -18,6 +16,8 @@
     enable = true;
     package = null; # use system package
     portalPackage = null; # use system portalPackage
+    configType = "lua";
+    extraConfig = builtins.readFile ./settings.lua;
   };
 
   home.packages = with pkgs; [

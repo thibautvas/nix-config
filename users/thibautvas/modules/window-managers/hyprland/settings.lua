@@ -17,6 +17,8 @@ hl.config({
   },
   input = {
     kb_layout = "us(mac)",
+    repeat_delay = 200,
+    repeat_rate = 50,
     follow_mouse = 0,
     sensitivity = 1,
     touchpad = { natural_scroll = true },
@@ -101,11 +103,7 @@ hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"))
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"))
 
 hl.bind("SHIFT + SUPER + 0", function()
-  for _, m in pairs(hl.get_monitors()) do
-    if m.name == "DP-2" then
-      hl.timer(function()
-        hl.dispatch(hl.dsp.dpms({ monitor = "eDP-1" }))
-      end, { timeout = 500, type = "oneshot" })
-    end
-  end
-end)
+  hl.timer(function()
+    hl.dispatch(hl.dsp.dpms({ monitor = "eDP-1" }))
+  end, { timeout = 500, type = "oneshot" })
+end, { locked = true })

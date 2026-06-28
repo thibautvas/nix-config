@@ -92,13 +92,11 @@ e.g., different window managers (or none at all).
             │   │   └── settings.nix
             │   ├── default.nix
             │   └── hyprland
-            │       ├── bin.nix
             │       ├── default.nix
             │       ├── hypridle.nix
             │       ├── hyprlock.nix
             │       ├── hyprpaper.nix
-            │       └── settings.nix
+            │       └── settings.lua
             └── zen-twilight.nix
 
-14 directories, 45 files
-```
+14 directories, 44 files

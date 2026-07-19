@@ -4,35 +4,33 @@
   pkgs,
   isHost,
   isDarwin,
+  flakes,
   ...
 }:
 
 let
-  shellrc = import ./settings.nix {
-    inherit pkgs isHost isDarwin;
-  };
-  inherit (shellrc)
-    pack
-    env
-    shellInit
-    shellPrompt
-    ;
+  extraPkgs =
+    (import ./package.nix {
+      inherit pkgs;
+      inherit (flakes) dotfiles;
+    }).passthru.runtimeInputs;
+
+  promptColor =
+    if isDarwin then
+      "32"
+    else if isHost then
+      "36"
+    else
+      "35";
+  rawRc = builtins.readFile "${flakes.dotfiles}/bash/bashrc";
+  fmtRc = builtins.replaceStrings [ "35" ] [ promptColor ] rawRc;
 
 in
 {
-  home = {
-    packages = pack;
-    sessionVariables = env;
-  };
+  home.packages = extraPkgs;
 
   programs.bash = {
-    enable = (!isDarwin);
-    initExtra = shellPrompt.bash + shellInit;
-  };
-
-  programs.zsh = {
-    enable = isDarwin;
-    defaultKeymap = "emacs";
-    initContent = shellPrompt.zsh + shellInit;
+    enable = true;
+    initExtra = fmtRc;
   };
 }

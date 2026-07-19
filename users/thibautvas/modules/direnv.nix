@@ -6,7 +6,6 @@
 }:
 
 let
-  workDir = config.home.sessionVariables.WORK_DIR;
   homeDir = config.home.homeDirectory;
 
 in
@@ -16,7 +15,7 @@ in
     nix-direnv.enable = true;
     silent = true;
     config.whitelist.prefix = [
-      workDir
+      "${homeDir}/repos"
       "${homeDir}/Music"
       "${homeDir}/Pictures"
     ];

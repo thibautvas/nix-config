@@ -37,6 +37,11 @@
       url = "github:thibautvas/gitutils.nvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    dotfiles = {
+      url = "github:thibautvas/dotfiles";
+      flake = false;
+    };
   };
 
   outputs =
@@ -50,6 +55,7 @@
       zen-browser,
       templates,
       gitutils-nvim,
+      dotfiles,
       ...
     }:
     let
@@ -105,6 +111,7 @@
                 zen-browser
                 templates
                 gitutils-nvim
+                dotfiles
                 ;
             };
           };
@@ -167,41 +174,31 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
-          bashWrapped = import ./users/thibautvas/modules/bash/package.nix {
-            inherit pkgs;
-            inherit (pkgs.stdenv) isDarwin;
-            isHost = false;
-          };
-          nvimWrapped = import ./users/thibautvas/modules/neovim/package.nix {
-            inherit pkgs unstablePkgs gitutils-nvim;
-          };
         in
         {
-          default = pkgs.symlinkJoin {
-            name = "wrapped-bins";
-            paths = [
-              bashWrapped
-              nvimWrapped
-            ];
+          bash = import ./users/thibautvas/modules/bash/package.nix {
+            inherit pkgs dotfiles;
+          };
+          nvim = import ./users/thibautvas/modules/neovim/package.nix {
+            inherit
+              pkgs
+              unstablePkgs
+              gitutils-nvim
+              dotfiles
+              ;
           };
         }
       );
 
-      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
-        system:
-        let
-          pack = self.packages.${system}.default;
-        in
-        {
-          bash = {
-            type = "app";
-            program = "${pack}/bin/bash";
-          };
-          nvim = {
-            type = "app";
-            program = "${pack}/bin/nvim";
-          };
-        }
-      );
+      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
+        bash = {
+          type = "app";
+          program = "${self.packages.${system}.bash}/bin/bash";
+        };
+        nvim = {
+          type = "app";
+          program = "${self.packages.${system}.nvim}/bin/nvim";
+        };
+      });
     };
 }

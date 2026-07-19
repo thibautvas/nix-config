@@ -1,35 +1,25 @@
 {
   pkgs,
-  isHost,
-  isDarwin,
+  dotfiles,
   ...
 }:
 
 let
-  inherit (pkgs) lib;
-
-  shellrc = import ./settings.nix {
-    inherit pkgs isHost isDarwin;
-  };
-
-  extraBinPath = lib.makeBinPath (shellrc.pack);
-
-  envFlags = lib.concatMapAttrsStringSep " \\\n" (
-    name: value: "--set ${name} ${lib.escapeShellArg value}"
-  ) shellrc.env;
-
-  bashInitFile = pkgs.writeText "bashrc" (shellrc.shellInit + shellrc.shellPrompt.bash);
+  bashRc = "${dotfiles}/bash/bashrc";
+  runtimeInputs = with pkgs; [
+    fd
+    fzf
+    ripgrep
+  ];
 
 in
-pkgs.symlinkJoin {
-  name = "bash-wrapped";
-  paths = [ pkgs.bash ];
-  nativeBuildInputs = [ pkgs.makeWrapper ];
-  meta.mainProgram = "bash";
-  postBuild = ''
-    wrapProgram $out/bin/bash \
-      --add-flags "--rcfile ${bashInitFile}" \
-      --prefix PATH : ${extraBinPath} \
-      ${envFlags}
-  '';
-}
+(pkgs.writeShellApplication {
+  name = "bash";
+  inherit runtimeInputs;
+  text = "exec ${pkgs.bashInteractive}/bin/bash --rcfile ${bashRc}";
+}).overrideAttrs
+  (old: {
+    passthru = (old.passthru or { }) // {
+      inherit runtimeInputs;
+    };
+  })

@@ -2,49 +2,51 @@
   pkgs,
   unstablePkgs,
   gitutils-nvim,
+  dotfiles,
   ...
 }:
 
 let
-  inherit (pkgs) lib;
+  gitutils-plugin = gitutils-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  configs =
+  luaRcContent = builtins.readFile "${dotfiles}/nvim/init.lua";
+  plugins =
     let
-      imp =
-        path:
-        import path {
-          inherit
-            lib
-            pkgs
-            unstablePkgs
-            gitutils-nvim
-            ;
-        };
+      tsPlugins =
+        p: with p; [
+          bash
+          nix
+          python
+          sql
+        ];
     in
-    map imp [
-      ./settings.nix
-      ./blink.nix
-      ./fzf-lua.nix
-      ./gitsigns.nix
-      ./gitutils.nix
-      ./image.nix
-      ./kanagawa.nix
-      ./lsp.nix
-      ./oil.nix
-      ./treesitter.nix
+    with pkgs.vimPlugins;
+    [
+      (nvim-treesitter.withPlugins tsPlugins)
+      nvim-treesitter-textobjects
+      blink-cmp
+      fzf-lua
+      gitsigns-nvim
+      gitutils-plugin
+      image-nvim
+      kanagawa-nvim
+      oil-nvim
     ];
-
-  luaRcContent = lib.concatMapStringsSep "\n" (c: c.extraLuaConfig) configs;
-  plugins = lib.concatMap (c: c.plugins or [ ]) configs;
   wrapperArgs =
     let
-      extraPackages = lib.concatMap (c: c.extraPackages or [ ]) configs;
+      extraPkgs = with pkgs; [
+        unstablePkgs.ty
+        unstablePkgs.ruff
+        nixd
+        nixfmt
+        lua-language-server
+      ];
     in
-    lib.optionals (extraPackages != [ ]) [
+    [
       "--prefix"
       "PATH"
       ":"
-      (lib.makeBinPath extraPackages)
+      (pkgs.lib.makeBinPath extraPkgs)
     ];
 
 in

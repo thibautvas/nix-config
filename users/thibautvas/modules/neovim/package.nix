@@ -1,14 +1,11 @@
 {
   pkgs,
   unstablePkgs,
-  gitutils-nvim,
   dotfiles,
   ...
 }:
 
 let
-  gitutils-plugin = gitutils-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default;
-
   luaRcContent = builtins.readFile "${dotfiles}/nvim/init.lua";
   plugins =
     let
@@ -27,7 +24,7 @@ let
       blink-cmp
       fzf-lua
       gitsigns-nvim
-      gitutils-plugin
+      gitutils-nvim
       image-nvim
       kanagawa-nvim
       oil-nvim
@@ -35,6 +32,7 @@ let
   wrapperArgs =
     let
       extraPkgs = with pkgs; [
+        git
         unstablePkgs.ty
         unstablePkgs.ruff
         nixd

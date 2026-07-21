@@ -59,6 +59,12 @@
       ...
     }:
     let
+      vimOverlay = final: prev: {
+        vimPlugins = prev.vimPlugins // {
+          gitutils-nvim = gitutils-nvim.packages.${prev.stdenv.hostPlatform.system}.default;
+        };
+      };
+
       mkSysCfg =
         {
           system,
@@ -93,7 +99,7 @@
       mkHmCfg =
         { system, isHost }:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
           unstablePkgs = import nixpkgs-unstable {
             inherit system;
             config.allowUnfree = true;
@@ -110,7 +116,6 @@
                 nixpkgs-unstable
                 zen-browser
                 templates
-                gitutils-nvim
                 dotfiles
                 ;
             };
@@ -169,26 +174,17 @@
       };
 
       # exposed packages
-      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
-        system:
-        let
+      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
+        bash = import ./users/thibautvas/modules/bash/package.nix {
           pkgs = nixpkgs.legacyPackages.${system};
+          inherit dotfiles;
+        };
+        nvim = import ./users/thibautvas/modules/neovim/package.nix {
+          pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
           unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
-        in
-        {
-          bash = import ./users/thibautvas/modules/bash/package.nix {
-            inherit pkgs dotfiles;
-          };
-          nvim = import ./users/thibautvas/modules/neovim/package.nix {
-            inherit
-              pkgs
-              unstablePkgs
-              gitutils-nvim
-              dotfiles
-              ;
-          };
-        }
-      );
+          inherit dotfiles;
+        };
+      });
 
       apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
         bash = {

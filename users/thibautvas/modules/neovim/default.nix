@@ -11,7 +11,7 @@
   home.packages = [
     (import ./package.nix {
       inherit pkgs unstablePkgs;
-      inherit (flakes) gitutils-nvim dotfiles;
+      inherit (flakes) dotfiles;
     })
   ];
 }

@@ -78,7 +78,6 @@ nix run github:thibautvas/nix-config#nvim
             │   ├── default.nix
             │   └── package.nix
             ├── direnv.nix
-            ├── emacs.nix
             ├── ghostty.nix
             ├── git.nix
             ├── kmonad.nix
@@ -87,7 +86,6 @@ nix run github:thibautvas/nix-config#nvim
             │   ├── default.nix
             │   └── package.nix
             ├── nix.nix
-            ├── vscode.nix
             ├── window-managers
             │   ├── aerospace
             │   │   ├── bin.nix
@@ -102,5 +100,5 @@ nix run github:thibautvas/nix-config#nvim
             │       └── settings.lua
             └── zen-twilight.nix
 
-14 directories, 33 files
+14 directories, 31 files
 ```

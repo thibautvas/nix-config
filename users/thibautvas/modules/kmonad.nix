@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   isDarwin,
   ...
@@ -147,7 +145,7 @@ let
     in
     pkgs.writeShellApplication {
       name = "hrm";
-      runtimeInputs = lib.optionals (!isDarwin) [ pkgs.kmonad ];
+      runtimeInputs = with pkgs; lib.optionals (!isDarwin) [ kmonad ];
       text = ''
         sudo pkill -f "home_row_mods"
         ${

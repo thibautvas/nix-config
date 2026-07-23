@@ -1,18 +1,15 @@
 {
-  config,
-  lib,
   pkgs,
   isHost,
   isDarwin,
-  flakes,
+  dotfiles,
   ...
 }:
 
 let
   extraPkgs =
     (import ./package.nix {
-      inherit pkgs;
-      inherit (flakes) dotfiles;
+      inherit pkgs dotfiles;
     }).passthru.runtimeInputs;
 
   promptColor =
@@ -22,7 +19,7 @@ let
       "36"
     else
       "35";
-  rawRc = builtins.readFile "${flakes.dotfiles}/bash/bashrc";
+  rawRc = builtins.readFile "${dotfiles}/bash/bashrc";
   fmtRc = builtins.replaceStrings [ "35" ] [ promptColor ] rawRc;
 
 in

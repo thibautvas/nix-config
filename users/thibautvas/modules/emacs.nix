@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   isDarwin,
   ...
@@ -61,7 +59,7 @@
             (evil-paste-from-register ?+))))
     '';
   }
-  // lib.optionalAttrs (!isDarwin) {
+  // pkgs.lib.optionalAttrs (!isDarwin) {
     package = pkgs.emacs-pgtk;
   };
 }

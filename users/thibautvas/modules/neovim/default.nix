@@ -1,17 +1,14 @@
 {
-  config,
-  lib,
   pkgs,
   unstablePkgs,
-  flakes,
+  dotfiles,
   ...
 }:
 
 {
   home.packages = [
     (import ./package.nix {
-      inherit pkgs unstablePkgs;
-      inherit (flakes) dotfiles;
+      inherit pkgs unstablePkgs dotfiles;
     })
   ];
 }

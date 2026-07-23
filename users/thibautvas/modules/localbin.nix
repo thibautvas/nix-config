@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   isDarwin,
   ...
@@ -29,7 +27,7 @@ let
 
   bluetoothConnect = pkgs.writeShellApplication {
     name = "btc";
-    runtimeInputs = lib.optionals isDarwin [ pkgs.blueutil ];
+    runtimeInputs = with pkgs; lib.optionals isDarwin [ blueutil ];
     text = ''
       if [[ "$1" = h* ]]; then
         MAC="98:47:44:93:A6:83"
@@ -113,7 +111,7 @@ in
     bluetoothConnect
     runMp3
   ]
-  ++ lib.optionals (!isDarwin) [
+  ++ pkgs.lib.optionals (!isDarwin) [
     wifiConnect
     processList
     virshList

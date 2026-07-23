@@ -1,7 +1,5 @@
 {
-  config,
   lib,
-  pkgs,
   flakes,
   ...
 }:
@@ -21,7 +19,7 @@ let
     "vpn@proton.ch" = "proton-vpn-firefox-extension";
   };
 
-  extensionSettings = lib.recursiveUpdate (lib.mapAttrs mkExtension extensions) {
+  extensionSettings = lib.recursiveUpdate (builtins.mapAttrs mkExtension extensions) {
     "vpn@proton.ch".default_area = "navbar";
   };
 

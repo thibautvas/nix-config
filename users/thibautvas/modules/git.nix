@@ -1,8 +1,6 @@
 {
-  config,
   lib,
-  pkgs,
-  flakes,
+  dotfiles,
   ...
 }:
 
@@ -11,9 +9,9 @@
     enable = true;
     includes = [
       {
-        path = "${flakes.dotfiles}/git/config";
+        path = "${dotfiles}/git/config";
       }
     ];
-    ignores = lib.splitString "\n" (builtins.readFile "${flakes.dotfiles}/git/ignore");
+    ignores = lib.splitString "\n" (builtins.readFile "${dotfiles}/git/ignore");
   };
 }

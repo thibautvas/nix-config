@@ -105,7 +105,7 @@
           inherit pkgs;
           modules = [ ./users/thibautvas/home.nix ];
           extraSpecialArgs = {
-            inherit unstablePkgs;
+            inherit unstablePkgs dotfiles;
             inherit (pkgs.stdenv) isDarwin;
             isHost = machine != "guest";
             flakes = {
@@ -113,7 +113,6 @@
                 nixpkgs-unstable
                 zen-browser
                 templates
-                dotfiles
                 ;
             };
           };

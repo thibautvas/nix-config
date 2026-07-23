@@ -59,46 +59,42 @@
       ...
     }:
     let
+      inherit (nixpkgs) lib;
+
       vimOverlay = final: prev: {
         vimPlugins = prev.vimPlugins // {
           gitutils-nvim = gitutils-nvim.packages.${prev.stdenv.hostPlatform.system}.default;
         };
       };
 
-      mkSysCfg =
-        {
-          system,
-          isHost,
-          isWsl ? false,
-        }:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          inherit (pkgs.stdenv) isDarwin;
-          libSystem = if isDarwin then nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
-          machine =
-            if isDarwin then
-              "darwin"
-            else if isWsl then
-              "wsl"
-            else
-              "nixos";
-        in
-        libSystem {
-          inherit pkgs;
-          modules = [ ./machines/${machine}/configuration.nix ];
+    in
+    {
+      # system config: nixos host and guest
+      nixosConfigurations = lib.genAttrs [ "host" "guest" "wsl" ] (
+        machine:
+        lib.nixosSystem {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          modules = [ ./machines/nixos/configuration.nix ];
           specialArgs = {
-            inherit isHost;
-          }
-          // nixpkgs.lib.optionalAttrs isWsl {
-            flakes = {
+            isHost = machine == "host";
+            flakes = lib.optionalAttrs (machine == "wsl") {
               inherit nixos-wsl;
             };
           };
-        };
+        }
+      );
 
-      mkHmCfg =
-        { system, isHost }:
+      # system config: darwin
+      darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+        modules = [ ./machines/darwin/configuration.nix ];
+      };
+
+      # home-manager config: linux host and guest, darwin
+      homeConfigurations = lib.genAttrs [ "host" "guest" "darwin" ] (
+        machine:
         let
+          system = if machine == "darwin" then "aarch64-darwin" else "x86_64-linux";
           pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
           unstablePkgs = import nixpkgs-unstable {
             inherit system;
@@ -109,8 +105,9 @@
           inherit pkgs;
           modules = [ ./users/thibautvas/home.nix ];
           extraSpecialArgs = {
-            inherit unstablePkgs isHost;
+            inherit unstablePkgs;
             inherit (pkgs.stdenv) isDarwin;
+            isHost = machine != "guest";
             flakes = {
               inherit
                 nixpkgs-unstable
@@ -120,61 +117,11 @@
                 ;
             };
           };
-        };
-
-    in
-    {
-      # system config: nixos host and guest, wsl
-      nixosConfigurations =
-        let
-          system = "x86_64-linux";
-        in
-        {
-          host = mkSysCfg {
-            inherit system;
-            isHost = true;
-          };
-          guest = mkSysCfg {
-            inherit system;
-            isHost = false;
-          };
-          wsl = mkSysCfg {
-            inherit system;
-            isHost = false;
-            isWsl = true;
-          };
-        };
-
-      # system config: darwin
-      darwinConfigurations =
-        let
-          system = "aarch64-darwin";
-        in
-        {
-          darwin = mkSysCfg {
-            inherit system;
-            isHost = true;
-          };
-        };
-
-      # home-manager config: linux host and guest, darwin
-      homeConfigurations = {
-        host = mkHmCfg {
-          system = "x86_64-linux";
-          isHost = true;
-        };
-        guest = mkHmCfg {
-          system = "x86_64-linux";
-          isHost = false;
-        };
-        darwin = mkHmCfg {
-          system = "aarch64-darwin";
-          isHost = true;
-        };
-      };
+        }
+      );
 
       # exposed packages
-      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
+      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
         bash = import ./users/thibautvas/modules/bash/package.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit dotfiles;
@@ -186,15 +133,12 @@
         };
       });
 
-      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
-        bash = {
+      apps = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        builtins.mapAttrs (name: drv: {
           type = "app";
-          program = "${self.packages.${system}.bash}/bin/bash";
-        };
-        nvim = {
-          type = "app";
-          program = "${self.packages.${system}.nvim}/bin/nvim";
-        };
-      });
+          program = "${drv}/bin/${name}";
+        }) self.packages.${system}
+      );
     };
 }

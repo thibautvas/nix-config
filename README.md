@@ -22,20 +22,34 @@ The flake may be run:
 - from its github url: `--flake github:thibautvas/nix-config#host`
 
 nixos-rebuild:
-- `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#host`
-- `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#guest`
-- `sudo nixos-rebuild switch --flake github:thibautvas/nix-config#wsl`
+```bash
+sudo nixos-rebuild switch --flake github:thibautvas/nix-config#host
+# resp. #guest, #wsl
+```
 
 darwin-rebuild:
-- `sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin`
+```bash
+sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
+```
 
 home-manager:
-- `home-manager switch --flake github:thibautvas/nix-config#host`
-- `home-manager switch --flake github:thibautvas/nix-config#guest`
-- `home-manager switch --flake github:thibautvas/nix-config#darwin`
+```bash
+home-manager switch --flake github:thibautvas/nix-config#host
+# resp. #guest, #darwin
+```
 
 The main difference between these three configurations relates to the conditional imports that are operated in `home.nix`,
 e.g., different window managers (or none at all).
+
+## Packages
+
+Two modules are exposed as packages to be used via `nix run` or `nix build`:
+```bash
+nix run github:thibautvas/nix-config#bash
+```
+```bash
+nix run github:thibautvas/nix-config#nvim
+```
 
 ## Project structure
 
@@ -48,22 +62,21 @@ e.g., different window managers (or none at all).
 ├── machines
 │   ├── darwin
 │   │   └── configuration.nix
-│   ├── nixos
-│   │   ├── configuration.nix
-│   │   └── hardware
-│   │       ├── guest-configuration.nix
-│   │       ├── host-configuration.nix
-│   │       └── thinkpad-leds.nix
-│   └── wsl
-│       └── configuration.nix
+│   └── nixos
+│       ├── configuration.nix
+│       ├── custom
+│       │   ├── libvirtd-hooks.nix
+│       │   └── thinkpad-leds.nix
+│       └── hardware
+│           ├── guest-configuration.nix
+│           └── host-configuration.nix
 └── users
     └── thibautvas
         ├── home.nix
         └── modules
             ├── bash
             │   ├── default.nix
-            │   ├── package.nix
-            │   └── settings.nix
+            │   └── package.nix
             ├── direnv.nix
             ├── emacs.nix
             ├── ghostty.nix
@@ -71,18 +84,8 @@ e.g., different window managers (or none at all).
             ├── kmonad.nix
             ├── localbin.nix
             ├── neovim
-            │   ├── blink.nix
             │   ├── default.nix
-            │   ├── fzf-lua.nix
-            │   ├── gitsigns.nix
-            │   ├── gitutils.nix
-            │   ├── image.nix
-            │   ├── kanagawa.nix
-            │   ├── lsp.nix
-            │   ├── oil.nix
-            │   ├── package.nix
-            │   ├── settings.nix
-            │   └── treesitter.nix
+            │   └── package.nix
             ├── nix.nix
             ├── vscode.nix
             ├── window-managers
@@ -99,4 +102,5 @@ e.g., different window managers (or none at all).
             │       └── settings.lua
             └── zen-twilight.nix
 
-14 directories, 44 files
+14 directories, 33 files
+```

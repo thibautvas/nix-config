@@ -40,10 +40,12 @@ let
         lua-language-server
       ];
       gitEnvScript = ''
-        export GIT_AUTHOR_NAME="$(git config user.name || echo 'placeholder')"
-        export GIT_AUTHOR_EMAIL="$(git config user.email || echo 'place@holder.com')"
-        export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
-        export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+        git config user.name &>/dev/null ||
+          export GIT_AUTHOR_NAME='placeholder' \
+                 GIT_COMMITTER_NAME='placeholder'
+        git config user.email &>/dev/null ||
+          export GIT_AUTHOR_EMAIL='place@holder.com' \
+                 GIT_COMMITTER_EMAIL='place@holder.com'
       '';
     in
     [

@@ -26,12 +26,12 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXOS";
+    device = lib.mkDefault "/dev/disk/by-label/NIXOS";
     fsType = "ext4";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-label/BOOT";
+    device = lib.mkDefault "/dev/disk/by-label/BOOT";
     fsType = "vfat";
     options = [
       "fmask=0022"

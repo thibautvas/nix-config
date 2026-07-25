@@ -32,19 +32,27 @@ let
   wrapperArgs =
     let
       extraPkgs = with pkgs; [
-        git
+        gitMinimal
         unstablePkgs.ty
         unstablePkgs.ruff
         nixd
         nixfmt
         lua-language-server
       ];
+      gitEnvScript = ''
+        export GIT_AUTHOR_NAME="$(git config user.name || echo 'placeholder')"
+        export GIT_AUTHOR_EMAIL="$(git config user.email || echo 'place@holder.com')"
+        export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+        export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+      '';
     in
     [
       "--prefix"
       "PATH"
       ":"
       (pkgs.lib.makeBinPath extraPkgs)
+      "--run"
+      gitEnvScript
     ];
 
 in

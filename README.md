@@ -85,7 +85,6 @@ nix run github:thibautvas/nix-config#nvim
             ├── neovim
             │   ├── default.nix
             │   └── package.nix
-            ├── nix.nix
             ├── window-managers
             │   ├── aerospace
             │   │   ├── bin.nix
@@ -100,5 +99,5 @@ nix run github:thibautvas/nix-config#nvim
             │       └── settings.lua
             └── zen-twilight.nix
 
-14 directories, 31 files
+14 directories, 30 files
 ```

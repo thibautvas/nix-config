@@ -12,7 +12,6 @@ let
 in
 {
   imports = [
-    ./modules/nix.nix
     ./modules/git.nix
     ./modules/bash
     ./modules/direnv.nix

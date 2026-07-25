@@ -67,6 +67,16 @@
         };
       };
 
+      mkSpecialArgs = machine: {
+        isHost = machine == "host";
+        flakes = {
+          inherit self nixpkgs-unstable templates;
+        }
+        // lib.optionalAttrs (machine == "wsl") {
+          inherit nixos-wsl;
+        };
+      };
+
     in
     {
       # system config: nixos host and guest
@@ -75,12 +85,7 @@
         lib.nixosSystem {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = [ ./machines/nixos/configuration.nix ];
-          specialArgs = {
-            isHost = machine == "host";
-            flakes = lib.optionalAttrs (machine == "wsl") {
-              inherit nixos-wsl;
-            };
-          };
+          specialArgs = mkSpecialArgs machine;
         }
       );
 
@@ -88,6 +93,7 @@
       darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
         modules = [ ./machines/darwin/configuration.nix ];
+        specialArgs = mkSpecialArgs "darwin";
       };
 
       # home-manager config: linux host and guest, darwin
@@ -109,11 +115,7 @@
             inherit (pkgs.stdenv) isDarwin;
             isHost = machine != "guest";
             flakes = {
-              inherit
-                nixpkgs-unstable
-                zen-browser
-                templates
-                ;
+              inherit zen-browser;
             };
           };
         }

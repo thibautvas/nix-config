@@ -78,10 +78,15 @@ let
     name = "vls";
     runtimeInputs = [ pkgs.fzf ];
     text = ''
+      conn() {
+        ssh "$(sudo virsh domifaddr "$1" | awk '/ipv4/{print $4}' | cut -d/ -f1)"
+      }
+      export -f conn
+
       sudo virsh list --all | sed '1,2d;$d' |
       fzf --reverse --height 10 --bind "ctrl-a:become(sudo virsh start {2})" \
                                 --bind "ctrl-x:become(sudo virsh shutdown {2})" \
-                                --bind "enter:become(TERM=xterm-256color ssh {2})"
+                                --bind "enter:become(TERM=xterm-256color conn {2})"
     '';
   };
 

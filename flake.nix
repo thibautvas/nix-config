@@ -130,6 +130,12 @@
           unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
           inherit dotfiles;
         };
+        code = import ./users/thibautvas/modules/vscode/package.nix {
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        };
       });
 
       apps = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (

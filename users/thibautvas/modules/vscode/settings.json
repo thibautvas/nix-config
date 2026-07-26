@@ -1,0 +1,54 @@
+{
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
+    "editor.formatOnSave": true
+  },
+  "breadcrumbs.enabled": false,
+  "editor.accessibilitySupport": "off",
+  "editor.autoClosingBrackets": "never",
+  "editor.autoClosingQuotes": "never",
+  "editor.cursorBlinking": "solid",
+  "editor.cursorSurroundingLines": 10,
+  "editor.minimap.enabled": false,
+  "extensions.ignoreRecommendations": true,
+  "files.exclude": {
+    "**/.git": false
+  },
+  "files.insertFinalNewline": true,
+  "git.openRepositoryInParentFolders": "never",
+  "jupyter.askForKernelRestart": false,
+  "jupyter.interactiveWindow.codeLens.enable": false,
+  "jupyter.interactiveWindow.textEditor.executeSelection": true,
+  "jupyter.interactiveWindow.viewColumn": "beside",
+  "notebook.cellToolbarLocation": {
+    "default": "hidden"
+  },
+  "notebook.globalToolbar": false,
+  "notebook.output.textLineLimit": 40,
+  "python.terminal.activateEnvironment": false,
+  "sqlfluff.linter.diagnosticSeverity": "warning",
+  "sqlfluff.linter.run": "onSave",
+  "terminal.integrated.initialHint": false,
+  "update.mode": "none",
+  "vim.highlightedyank.enable": true,
+  "vim.mouseSelectionGoesIntoVisualMode": false,
+  "vim.overrideCopy": false,
+  "window.commandCenter": false,
+  "window.restoreWindows": "none",
+  "workbench.activityBar.location": "top",
+  "workbench.colorTheme": "Catppuccin Macchiato",
+  "workbench.editor.editorActionsLocation": "hidden",
+  "workbench.editor.empty.hint": "hidden",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.showTabs": "none",
+  "workbench.layoutControl.enabled": false,
+  "workbench.startupEditor": "none",
+  "workbench.statusBar.visible": false
+}

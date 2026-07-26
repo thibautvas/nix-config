@@ -26,9 +26,6 @@ in
     ./modules/kmonad.nix
     ./modules/localbin.nix
     ./modules/window-managers
-  ]
-  ++ lib.optionals isDarwin [
-    ./modules/vscode.nix
   ];
 
   home = {

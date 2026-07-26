@@ -1,0 +1,65 @@
+[
+  {
+    "command": "-acceptSelectedSuggestion",
+    "key": "tab",
+    "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "acceptSelectedSuggestion",
+    "key": "ctrl+y",
+    "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "command": "-acceptSelectedSuggestion",
+    "key": "enter",
+    "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus"
+  },
+  {
+    "command": "workbench.action.moveEditorToNextGroup",
+    "key": "ctrl+l"
+  },
+  {
+    "command": "workbench.action.joinAllGroups",
+    "key": "ctrl+shift+l"
+  },
+  {
+    "command": "editor.action.fontZoomIn",
+    "key": "cmd+=",
+    "when": "editorFocus"
+  },
+  {
+    "command": "editor.action.fontZoomReset",
+    "key": "cmd+-",
+    "when": "editorFocus"
+  },
+  {
+    "command": "jupyter.interactive.clearAllCells",
+    "key": "ctrl+; ctrl+l",
+    "when": "editorFocus"
+  },
+  {
+    "command": "jupyter.restartkernel",
+    "key": "ctrl+; ctrl+k",
+    "when": "editorFocus"
+  },
+  {
+    "command": "sqltools.executeCurrentQuery",
+    "key": "cmd+e cmd+f",
+    "when": "editorTextFocus && editorLangId == 'sql' && !config.sqltools.disableChordKeyBindings"
+  },
+  {
+    "command": "workbench.action.editor.nextChange",
+    "key": "alt+h",
+    "when": "editorTextFocus && !textCompareEditorActive && quickDiffDecorationCount != '0'"
+  },
+  {
+    "command": "workbench.action.editor.previousChange",
+    "key": "alt+shift+h",
+    "when": "editorTextFocus && !textCompareEditorActive && quickDiffDecorationCount != '0'"
+  },
+  {
+    "command": "git.stageSelectedRanges",
+    "key": "ctrl+shift+h",
+    "when": "editorTextFocus && !operationInProgress && resourceScheme == 'file'"
+  }
+]

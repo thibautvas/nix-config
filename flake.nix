@@ -130,6 +130,9 @@
           unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
           inherit dotfiles;
         };
+        emacs = import ./users/thibautvas/modules/emacs/package.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         code = import ./users/thibautvas/modules/vscode/package.nix {
           pkgs = import nixpkgs {
             inherit system;

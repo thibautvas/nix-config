@@ -4,7 +4,7 @@
 }:
 
 let
-  vscode = pkgs.vscode-with-extensions.override {
+  wrappedCode = pkgs.vscode-with-extensions.override {
     vscodeExtensions = with pkgs.vscode-extensions; [
       ms-python.python
       ms-python.vscode-pylance
@@ -34,5 +34,5 @@ pkgs.writeShellScriptBin "code" ''
   mkdir -p "$dir/User"
   ln -sf ${settingsJson} "$dir/User/settings.json"
   ln -sf ${keybindingsJson} "$dir/User/keybindings.json"
-  exec ${vscode}/bin/code --user-data-dir "$dir" "''${@:-.}"
+  exec ${wrappedCode}/bin/code --user-data-dir "$dir" "''${@:-.}"
 ''

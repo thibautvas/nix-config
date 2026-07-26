@@ -6,7 +6,7 @@
 let
   emacsPkgs = with pkgs; emacsPackagesFor (if stdenv.isDarwin then emacs else emacs-pgtk);
 
-  emacs = emacsPkgs.emacsWithPackages (
+  wrappedEmacs = emacsPkgs.emacsWithPackages (
     epkgs: with epkgs; [
       evil
       consult
@@ -36,7 +36,7 @@ let
 in
 pkgs.symlinkJoin {
   name = "emacs-with-config";
-  paths = [ emacs ];
+  paths = [ wrappedEmacs ];
   nativeBuildInputs = [ pkgs.makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/emacs \

@@ -122,18 +122,26 @@
       );
 
       # exposed packages
-      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
-        bash = import ./users/thibautvas/modules/bash/package.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-          inherit dotfiles;
-        };
-        nvim = import ./users/thibautvas/modules/neovim/package.nix {
-          pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
-          unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
-          inherit dotfiles;
-          wrapGit = true;
-        };
-      });
+      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        {
+          bash = import ./users/thibautvas/modules/bash/package.nix {
+            pkgs = nixpkgs.legacyPackages.${system};
+            inherit dotfiles;
+          };
+          nvim = import ./users/thibautvas/modules/neovim/package.nix {
+            pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
+            unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
+            inherit dotfiles;
+            wrapGit = true;
+          };
+        }
+        // lib.optionalAttrs (system == "x86_64-linux") {
+          Hyprland = import ./users/thibautvas/modules/window-managers/hyprland {
+            pkgs = nixpkgs.legacyPackages.${system};
+          };
+        }
+      );
 
       apps = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
         system:

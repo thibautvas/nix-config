@@ -3,23 +3,8 @@
   ...
 }:
 
-{
-  imports = [
-    ./hyprpaper.nix
-    ./hypridle.nix
-    ./hyprlock.nix
-  ];
-
-  wayland.windowManager.hyprland = {
-    enable = true;
-    package = null; # use system package
-    portalPackage = null; # use system portalPackage
-    configType = "lua";
-    extraConfig = builtins.readFile ./settings.lua;
-  };
-
-  home.packages = with pkgs; [
-    hyprsunset
+let
+  extraPkgs = with pkgs; [
     hyprshot
     wl-clipboard
     cliphist
@@ -27,4 +12,16 @@
     brightnessctl
     playerctl
   ];
+
+in
+pkgs.symlinkJoin {
+  name = "hyprland";
+  paths = [ pkgs.hyprland ];
+  nativeBuildInputs = [ pkgs.makeWrapper ];
+
+  postBuild = ''
+    wrapProgram $out/bin/Hyprland \
+      --add-flags "--config ${./hyprland.lua}" \
+      --prefix PATH : ${pkgs.lib.makeBinPath extraPkgs}
+  '';
 }

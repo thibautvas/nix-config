@@ -4,9 +4,7 @@ local browser = { bin = "zen-twilight", class = "zen-twilight" }
 local terminal = { bin = "ghostty", class = "com.mitchellh.ghostty" }
 
 hl.on("hyprland.start", function()
-  hl.exec_cmd("hyprsunset --temperature 2000")
   hl.exec_cmd("wl-paste --type text --watch cliphist store")
-  hl.exec_cmd("hrm")
 end)
 
 hl.config({
@@ -30,6 +28,11 @@ hl.config({
     layout = "master",
   },
   master = { mfact = 0.5 },
+  misc = {
+    disable_hyprland_logo = true,
+    disable_splash_rendering = true,
+    disable_watchdog_warning = true,
+  },
 })
 
 hl.monitor({ output = "eDP-1", mode = "1920x1200", position = "0x0", scale = 1.5 })

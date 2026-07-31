@@ -131,6 +131,7 @@
           pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
           unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
           inherit dotfiles;
+          wrapGit = true;
         };
       });
 

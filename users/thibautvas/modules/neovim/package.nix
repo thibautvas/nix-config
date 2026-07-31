@@ -2,11 +2,15 @@
   pkgs,
   unstablePkgs,
   dotfiles,
+  wrapGit,
   ...
 }:
 
 let
+  inherit (pkgs) lib;
+
   luaRcContent = builtins.readFile "${dotfiles}/nvim/init.lua";
+
   plugins =
     let
       tsPlugins =
@@ -29,32 +33,39 @@ let
       kanagawa-nvim
       oil-nvim
     ];
+
+  lspWrapped.extraPkgs = with pkgs; [
+    unstablePkgs.ty
+    unstablePkgs.ruff
+    nixd
+    nixfmt
+    lua-language-server
+  ];
+
+  gitWrapped = {
+    extraPkgs = [ pkgs.gitMinimal ];
+    runtimeScript = ''
+      git config user.name &>/dev/null ||
+        export GIT_AUTHOR_NAME='placeholder' \
+               GIT_COMMITTER_NAME='placeholder'
+      git config user.email &>/dev/null ||
+        export GIT_AUTHOR_EMAIL='place@holder.com' \
+               GIT_COMMITTER_EMAIL='place@holder.com'
+    '';
+  };
+
   wrapperArgs =
     let
-      extraPkgs = with pkgs; [
-        gitMinimal
-        unstablePkgs.ty
-        unstablePkgs.ruff
-        nixd
-        nixfmt
-        lua-language-server
-      ];
-      gitEnvScript = ''
-        git config user.name &>/dev/null ||
-          export GIT_AUTHOR_NAME='placeholder' \
-                 GIT_COMMITTER_NAME='placeholder'
-        git config user.email &>/dev/null ||
-          export GIT_AUTHOR_EMAIL='place@holder.com' \
-                 GIT_COMMITTER_EMAIL='place@holder.com'
-      '';
+      extraPkgs = lspWrapped.extraPkgs ++ lib.optionals wrapGit gitWrapped.extraPkgs;
+      runtimeScripts = lib.optionalString wrapGit gitWrapped.runtimeScript;
     in
     [
       "--prefix"
       "PATH"
       ":"
-      (pkgs.lib.makeBinPath extraPkgs)
+      (lib.makeBinPath extraPkgs)
       "--run"
-      gitEnvScript
+      runtimeScripts
     ];
 
 in

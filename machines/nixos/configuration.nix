@@ -93,7 +93,10 @@ let
   };
 
   guestCfg = bootCfg // {
-    imports = [ ./hardware/guest-configuration.nix ];
+    imports = [
+      ./hardware/guest-configuration.nix
+      ./custom/misc.nix
+    ];
 
     services.openssh.enable = true;
   };

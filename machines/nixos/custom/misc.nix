@@ -16,4 +16,7 @@
       push.autoSetupRemote = true;
     };
   };
+
+  virtualisation.libvirtd.enable = true;
+  users.users.thibautvas.extraGroups = [ "docker" ];
 }

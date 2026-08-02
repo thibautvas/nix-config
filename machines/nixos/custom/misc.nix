@@ -17,6 +17,6 @@
     };
   };
 
-  virtualisation.libvirtd.enable = true;
+  virtualisation.docker.enable = true;
   users.users.thibautvas.extraGroups = [ "docker" ];
 }

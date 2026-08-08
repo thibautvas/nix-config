@@ -1,13 +1,7 @@
 ---@diagnostic disable: undefined-global
 
-local browser = {
-  bin = os.getenv("BROWSER") or "firefox",
-  class = os.getenv("BROWSER") or "firefox",
-}
-local terminal = {
-  bin = os.getenv("TERMINAL_BIN") or "alacritty",
-  class = os.getenv("TERMINAL_CLASS") or "Alacritty",
-}
+local browser = os.getenv("BROWSER") or "firefox"
+local terminal = os.getenv("TERMINAL") or "Alacritty"
 
 hl.on("hyprland.start", function()
   hl.exec_cmd("wl-paste --type text --watch cliphist store")
@@ -50,16 +44,16 @@ hl.workspace_rule({ workspace = "3", monitor = "eDP-1" })
 
 hl.window_rule({
   name = "browser J",
-  match = { class = browser.class },
+  match = { class = browser },
   workspace = 1
 })
 hl.window_rule({
   name = "terminal K",
-  match = { class = terminal.class },
+  match = { class = terminal },
   workspace = 2
 })
 
-local hl_launch = function(bin, class)
+local hl_launch = function(class)
   local wins = hl.get_windows()
   for _, w in pairs(wins) do
     if w.class == class then
@@ -67,6 +61,7 @@ local hl_launch = function(bin, class)
       return
     end
   end
+  local bin = class:match("[^.]+$"):lower() -- check if robust
   hl.dispatch(hl.dsp.exec_cmd(bin))
 end
 
@@ -78,8 +73,8 @@ hl.bind("SUPER + H", hl.dsp.exec_cmd("sup | wofi --gtk-dark --dmenu"))
 hl.bind("SUPER + 1", hl.dsp.exec_cmd("PICKER='wofi --gtk-dark --dmenu -i' run-mp3"))
 hl.bind("SUPER + S", hl.dsp.exec_cmd("hyprshot -m region -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""))
 hl.bind("SHIFT + SUPER + S", hl.dsp.exec_cmd("hyprshot -m window -f \"Pictures/$(date +%Y-%m-%d-%H%M%S)_hyprshot.png\""))
-hl.bind("SUPER + J", function() hl_launch(browser.bin, browser.class) end)
-hl.bind("SUPER + K", function() hl_launch(terminal.bin, terminal.class) end)
+hl.bind("SUPER + J", function() hl_launch(browser) end)
+hl.bind("SUPER + K", function() hl_launch(terminal) end)
 hl.bind("SUPER + TAB", hl.dsp.window.cycle_next())
 hl.bind("SUPER + C", hl.dsp.window.close())
 hl.bind("SUPER + O", hl.dsp.window.fullscreen())
@@ -92,11 +87,11 @@ hl.bind("ALT + SHIFT + J", hl.dsp.window.move({ workspace = 1 }))
 hl.bind("ALT + SHIFT + K", hl.dsp.window.move({ workspace = 2 }))
 hl.bind("ALT + SHIFT + L", hl.dsp.window.move({ workspace = 3 }))
 hl.bind("ALT + SHIFT + N", function()
-  hl.dispatch(hl.dsp.window.move({ window = "class:" .. terminal.class, workspace = 1 }))
+  hl.dispatch(hl.dsp.window.move({ window = "class:" .. terminal, workspace = 1 }))
 end)
 hl.bind("ALT + SHIFT + M", function()
-  hl.dispatch(hl.dsp.window.move({ window = "class:" .. browser.class, workspace = 1 }))
-  hl.dispatch(hl.dsp.window.move({ window = "class:" .. terminal.class, workspace = 2 }))
+  hl.dispatch(hl.dsp.window.move({ window = "class:" .. browser, workspace = 1 }))
+  hl.dispatch(hl.dsp.window.move({ window = "class:" .. terminal, workspace = 2 }))
 end)
 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"))

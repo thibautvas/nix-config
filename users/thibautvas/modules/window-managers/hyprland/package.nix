@@ -1,17 +1,21 @@
 {
   pkgs,
+  defaultPkgs,
   ...
 }:
 
 let
-  extraPkgs = with pkgs; [
-    hyprshot
-    wl-clipboard
-    cliphist
-    wofi
-    brightnessctl
-    playerctl
-  ];
+  extraPkgs =
+    with pkgs;
+    [
+      hyprshot
+      wl-clipboard
+      cliphist
+      wofi
+      brightnessctl
+      playerctl
+    ]
+    ++ defaultPkgs;
 
 in
 pkgs.symlinkJoin {

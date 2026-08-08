@@ -137,8 +137,12 @@
           };
         }
         // lib.optionalAttrs (system == "x86_64-linux") {
-          Hyprland = import ./users/thibautvas/modules/window-managers/hyprland {
+          Hyprland = import ./users/thibautvas/modules/window-managers/hyprland/package.nix rec {
             pkgs = nixpkgs.legacyPackages.${system};
+            defaultPkgs = with pkgs; [
+              alacritty
+              firefox
+            ];
           };
         }
       );

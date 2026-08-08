@@ -1,7 +1,13 @@
 ---@diagnostic disable: undefined-global
 
-local browser = { bin = "zen-twilight", class = "zen-twilight" }
-local terminal = { bin = "ghostty", class = "com.mitchellh.ghostty" }
+local browser = {
+  bin = os.getenv("BROWSER") or "firefox",
+  class = os.getenv("BROWSER") or "firefox",
+}
+local terminal = {
+  bin = os.getenv("TERMINAL_BIN") or "alacritty",
+  class = os.getenv("TERMINAL_CLASS") or "Alacritty",
+}
 
 hl.on("hyprland.start", function()
   hl.exec_cmd("wl-paste --type text --watch cliphist store")

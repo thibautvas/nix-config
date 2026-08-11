@@ -1,14 +1,14 @@
 {
   pkgs,
   dotfiles,
-  wrapGit,
+  wrapGit ? false,
   ...
 }:
 
 let
   inherit (pkgs) lib;
 
-  luaRcContent = builtins.readFile "${dotfiles}/nvim/init.lua";
+  luaRcContent = builtins.readFile (dotfiles + "/nvim/init.lua");
 
   plugins =
     let
@@ -67,11 +67,18 @@ let
       runtimeScripts
     ];
 
+  wrappedNvim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
+    inherit luaRcContent plugins wrapperArgs;
+  };
+
 in
-pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
-  inherit
-    luaRcContent
-    plugins
-    wrapperArgs
-    ;
-}
+if wrapGit then
+  pkgs.symlinkJoin {
+    name = "nvim-git";
+    paths = [ wrappedNvim ];
+    postBuild = ''
+      ln -s $out/bin/nvim /$out/bin/nvim-git
+    '';
+  }
+else
+  wrappedNvim

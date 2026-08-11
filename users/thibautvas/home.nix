@@ -15,7 +15,7 @@ in
     ./modules/git.nix
     ./modules/bash
     ./modules/direnv.nix
-    ./modules/neovim
+    ./modules/nvim
   ]
   ++ lib.optionals isHost [
     ./modules/ghostty.nix

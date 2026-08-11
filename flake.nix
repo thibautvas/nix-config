@@ -116,17 +116,35 @@
       );
 
       # exposed packages
-      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
-        bash = import ./users/thibautvas/modules/bash/package.nix {
+      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
           pkgs = nixpkgs.legacyPackages.${system};
-          inherit dotfiles;
-        };
-        nvim = import ./users/thibautvas/modules/neovim/package.nix {
-          pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
-          inherit dotfiles;
-          wrapGit = true;
-        };
-      });
+          vimPkgs = pkgs.extend vimOverlay;
+
+          mkPkg =
+            module: pkgs: extraAttrs:
+            import ./users/thibautvas/modules/${module}/package.nix (
+              {
+                inherit pkgs;
+              }
+              // extraAttrs
+            );
+
+        in
+        {
+          bash = mkPkg "bash" pkgs {
+            inherit dotfiles;
+          };
+          nvim = mkPkg "nvim" vimPkgs {
+            inherit dotfiles;
+          };
+          nvim-git = mkPkg "nvim" vimPkgs {
+            inherit dotfiles;
+            wrapGit = true;
+          };
+        }
+      );
 
       apps = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
         system:

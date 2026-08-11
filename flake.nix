@@ -75,6 +75,58 @@
         };
       };
 
+      perSystem = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          vimPkgs = pkgs.extend vimOverlay;
+
+          mkPkg =
+            module: pkgs: extraAttrs:
+            import ./users/thibautvas/modules/${module}/package.nix (
+              {
+                inherit pkgs;
+              }
+              // extraAttrs
+            );
+
+        in
+        {
+          inherit pkgs;
+
+          appPkgs = {
+            bash = mkPkg "bash" pkgs {
+              inherit dotfiles;
+            };
+            nvim = mkPkg "nvim" vimPkgs {
+              inherit dotfiles;
+            };
+            nvim-git = mkPkg "nvim" vimPkgs {
+              inherit dotfiles;
+              wrapGit = true;
+            };
+            ghostty = mkPkg "ghostty" pkgs { };
+          }
+          // lib.optionalAttrs pkgs.stdenv.isDarwin {
+            aero = mkPkg "aerospace" pkgs { };
+          }
+          // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+            Hyprland = mkPkg "hyprland" pkgs {
+              env = {
+                browser = "zen-twilight";
+                terminal = "com.mitchellh.ghostty";
+                sunset = 2000;
+              };
+            };
+          };
+
+          bldPkgs = {
+            kmonad = mkPkg "kmonad" pkgs { };
+            localbin = mkPkg "localbin" pkgs { };
+          };
+        }
+      );
+
     in
     {
       # system config: nixos host and guest
@@ -116,42 +168,33 @@
       );
 
       # exposed packages
-      packages = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
-        system:
+      packages = builtins.mapAttrs (
+        system: p:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
-          vimPkgs = pkgs.extend vimOverlay;
-
-          mkPkg =
-            module: pkgs: extraAttrs:
-            import ./users/thibautvas/modules/${module}/package.nix (
-              {
-                inherit pkgs;
-              }
-              // extraAttrs
-            );
-
+          allPkgs = p.appPkgs // p.bldPkgs;
         in
-        {
-          bash = mkPkg "bash" pkgs {
-            inherit dotfiles;
-          };
-          nvim = mkPkg "nvim" vimPkgs {
-            inherit dotfiles;
-          };
-          nvim-git = mkPkg "nvim" vimPkgs {
-            inherit dotfiles;
-            wrapGit = true;
+        allPkgs
+        // {
+          all = p.pkgs.symlinkJoin {
+            name = "all-wrapped";
+            paths = builtins.attrValues allPkgs;
           };
         }
-      );
+      ) perSystem;
 
-      apps = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
-        system:
-        builtins.mapAttrs (name: drv: {
-          type = "app";
-          program = "${drv}/bin/${name}";
-        }) self.packages.${system}
-      );
+      apps = builtins.mapAttrs (
+        system: p:
+        let
+          drvApps = builtins.mapAttrs (name: drv: {
+            type = "app";
+            program = "${drv}/bin/${name}";
+          }) p.appPkgs;
+          localbinApps = lib.genAttrs p.bldPkgs.localbin.passthru.binaries (name: {
+            type = "app";
+            program = "${p.bldPkgs.localbin}/bin/${name}";
+          });
+        in
+        drvApps // localbinApps
+      ) perSystem;
     };
 }

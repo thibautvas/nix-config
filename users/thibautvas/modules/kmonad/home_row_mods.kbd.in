@@ -1,0 +1,87 @@
+(defcfg
+  input (@INPUT@)
+  output (@OUTPUT@)
+  fallthrough true
+  allow-cmd true
+)
+
+(defalias
+  ;; home row mods (AMSC)
+  alt_a (tap-hold-next-release 200 a lalt)
+  hym_s (tap-hold-next-release 200 s @HYP_MET@)
+  sft_d (tap-hold-next-release 200 d lsft)
+  ctl_f (tap-hold-next-release 200 f lctl)
+  ctl_j (tap-hold-next-release 200 j rctl)
+  sft_k (tap-hold-next-release 200 k rsft)
+  met_l (tap-hold-next-release 200 l rmet)
+  alt_; (tap-hold-next-release 200 ; (layer-toggle ralt))
+
+  ;; navigation layer
+  nav_esc (tap-hold-next-release 200 esc (layer-toggle nav))
+  vim_d #(@CTL_MET@-x)
+  vim_y #(@CTL_MET@-c)
+  vim_p #(@CTL_MET@-v)
+  vim_b #(@ALT_CTL@-left)
+  vim_w #(@ALT_CTL@-right)
+  vim_^ @START@
+  vim_$ @END@
+  vim_V #(@START@ S-@END@)
+  vim_S #(@END@ S-@START@ bspc)
+  vim_o #(@END@ S-ret)
+  gmail #(t h i b a u t . v a s @ g m a i l . c o m)
+
+  ;; right alt layer
+  rgrv (around ralt grv)
+  re (around ralt e)
+  ru (around ralt u)
+  ri (around ralt i)
+  rc (around ralt c)
+  rn (around ralt n)
+  md (around lalt d)
+  mf (around lalt f)
+  mj (around lalt j)
+  mk (around lalt k)
+  ml (around lalt l)
+  mx (around lalt x)
+  mb (around lalt b)
+
+  ;; thumb keys
+  mod_e (tap-hold-next-release 200 enter l@THM_MOD@)
+  mod_b (tap-hold-next-release 200 backspace r@THM_MOD@)
+)
+
+(defsrc
+  esc       f1        f2        f3        f4        f5        f6        f7        f8        f9        f10       f11       f12
+  grv       1         2         3                   5         6         7         8         9         0         -         =         bspc
+                                e                             y         u         i         o         p         [         ]
+  caps      a         s         d         f                   h         j         k         l         ;         '
+                      x         c         v         b         n                   ,         .
+                                l@THM_MOD@                                                  r@THM_MOD@
+)
+
+(deflayer mod
+  grv       brdn      brup      mctl      _         bldn      blup      prev      pp        next      mute      vold      volu
+  _         _         _         _                   _         _         _         _         _         _         _         _         _
+                                _                             _         _         _         _         _         _         _
+  @nav_esc  @alt_a    @hym_s    @sft_d    @ctl_f              _         @ctl_j    @sft_k    @met_l    @alt_;    _
+                      _         _         _         _         _                   _         _
+                                @mod_e                                                      @mod_b
+)
+
+(deflayer nav
+  _         f1        f2        f3        f4        f5        f6        f7        f8        f9        f10       f11       f12
+  _         brdn      brup      mctl                bldn      blup      prev      pp        next      mute      vold      volu      del
+                                _                             @vim_y    @vim_b    @vim_w    @vim_o    @vim_p    S-@vim_b  S-@vim_w
+  _         _         @vim_S    @vim_d    _                   left      down      up        right     _         @gmail
+                      _         caps      @vim_V    _         _                   @vim_^    @vim_$
+                                _                                                           del
+)
+
+(deflayer ralt
+  _         _         _         _         _         _         _         _         _         _         _         _         _
+  @rgrv     _         _         _                   _         _         _         _         _         _         _         _         _
+                                @re                           _         @ru       @ri       _         _         _         _
+  _         _         _         @md       @mf                 _         @mj       @mk       @ml       _         _
+                      @mx       @rc       _         @mb       @rn                    _         _
+                                _                                                           _
+)

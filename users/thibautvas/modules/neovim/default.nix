@@ -1,6 +1,5 @@
 {
   pkgs,
-  unstablePkgs,
   dotfiles,
   ...
 }:
@@ -8,7 +7,7 @@
 {
   home.packages = [
     (import ./package.nix {
-      inherit pkgs unstablePkgs dotfiles;
+      inherit pkgs dotfiles;
       wrapGit = false;
     })
   ];

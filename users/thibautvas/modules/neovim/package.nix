@@ -1,6 +1,5 @@
 {
   pkgs,
-  unstablePkgs,
   dotfiles,
   wrapGit,
   ...
@@ -35,8 +34,8 @@ let
     ];
 
   lspWrapped.extraPkgs = with pkgs; [
-    unstablePkgs.ty
-    unstablePkgs.ruff
+    ty
+    ruff
     nixd
     nixfmt
     lua-language-server

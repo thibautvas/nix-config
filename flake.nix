@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
@@ -48,7 +47,6 @@
     {
       self,
       nixpkgs,
-      nixpkgs-unstable,
       nix-darwin,
       nixos-wsl,
       home-manager,
@@ -70,7 +68,7 @@
       mkSpecialArgs = machine: {
         isHost = machine == "host";
         flakes = {
-          inherit self nixpkgs-unstable templates;
+          inherit self templates;
         }
         // lib.optionalAttrs (machine == "wsl") {
           inherit nixos-wsl;
@@ -102,16 +100,12 @@
         let
           system = if machine == "darwin" then "aarch64-darwin" else "x86_64-linux";
           pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
-          unstablePkgs = import nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./users/thibautvas/home.nix ];
           extraSpecialArgs = {
-            inherit unstablePkgs dotfiles;
+            inherit dotfiles;
             inherit (pkgs.stdenv) isDarwin;
             isHost = machine != "guest";
             flakes = {
@@ -129,7 +123,6 @@
         };
         nvim = import ./users/thibautvas/modules/neovim/package.nix {
           pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
-          unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
           inherit dotfiles;
           wrapGit = true;
         };

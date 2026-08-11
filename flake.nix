@@ -66,6 +66,7 @@
       };
 
       mkSpecialArgs = machine: {
+        inherit dotfiles;
         isHost = machine == "host";
         flakes = {
           inherit self templates;
@@ -94,16 +95,19 @@
         {
           inherit pkgs;
 
-          appPkgs = {
+          flkPkgs = {
             bash = mkPkg "bash" pkgs {
-              inherit dotfiles;
-            };
-            nvim = mkPkg "nvim" vimPkgs {
               inherit dotfiles;
             };
             nvim-git = mkPkg "nvim" vimPkgs {
               inherit dotfiles;
               wrapGit = true;
+            };
+          };
+
+          appPkgs = {
+            nvim = mkPkg "nvim" vimPkgs {
+              inherit dotfiles;
             };
             ghostty = mkPkg "ghostty" pkgs { };
           }
@@ -143,7 +147,7 @@
       darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
         modules = [ ./machines/darwin/configuration.nix ];
-        specialArgs = mkSpecialArgs "darwin";
+        specialArgs = mkSpecialArgs "host";
       };
 
       # home-manager config: linux host and guest, darwin
@@ -151,14 +155,11 @@
         machine:
         let
           system = if machine == "darwin" then "aarch64-darwin" else "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.${system}.extend vimOverlay;
         in
         home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
+          pkgs = nixpkgs.legacyPackages.${system};
           modules = [ ./users/thibautvas/home.nix ];
           extraSpecialArgs = {
-            inherit dotfiles;
-            inherit (pkgs.stdenv) isDarwin;
             isHost = machine != "guest";
             flakes = {
               inherit zen-browser;
@@ -171,10 +172,15 @@
       packages = builtins.mapAttrs (
         system: p:
         let
-          allPkgs = p.appPkgs // p.bldPkgs;
+          impPkgs = p.appPkgs // p.bldPkgs;
+          allPkgs = impPkgs // p.flkPkgs;
         in
         allPkgs
         // {
+          imp = p.pkgs.symlinkJoin {
+            name = "imp-wrapped";
+            paths = builtins.attrValues impPkgs;
+          };
           all = p.pkgs.symlinkJoin {
             name = "all-wrapped";
             paths = builtins.attrValues allPkgs;
@@ -185,10 +191,11 @@
       apps = builtins.mapAttrs (
         system: p:
         let
+          drvPkgs = p.appPkgs // p.flkPkgs;
           drvApps = builtins.mapAttrs (name: drv: {
             type = "app";
             program = "${drv}/bin/${name}";
-          }) p.appPkgs;
+          }) drvPkgs;
           localbinApps = lib.genAttrs p.bldPkgs.localbin.passthru.binaries (name: {
             type = "app";
             program = "${p.bldPkgs.localbin}/bin/${name}";

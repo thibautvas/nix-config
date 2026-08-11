@@ -1,17 +1,14 @@
 {
-  isHost,
-  flakes,
   ...
 }:
 
 let
   primaryUser = "thibautvas";
-  common = import ../nixos/configuration.nix {
-    inherit isHost flakes;
-  };
 
 in
 {
+  imports = [ ../common/packages.nix ];
+
   system = {
     stateVersion = 6; # should not be changed
 
@@ -38,7 +35,7 @@ in
     };
   };
 
-  inherit (common) nix nixpkgs time;
+  time.timeZone = "Europe/Madrid";
 
   homebrew = {
     enable = true;

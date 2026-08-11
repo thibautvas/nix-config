@@ -7,6 +7,8 @@
 let
   primaryUser = "thibautvas";
 
+  commonImp = [ ../common/packages.nix ];
+
   commonCfg = {
     system.stateVersion = "24.11";
 
@@ -37,17 +39,6 @@ let
         ];
       }
     ];
-
-    nix = {
-      settings.experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      registry = {
-        templates.flake = flakes.templates;
-        tv.flake = flakes.self;
-      };
-    };
   };
 
   bootCfg.boot = {
@@ -60,7 +51,7 @@ let
   };
 
   hostCfg = bootCfg // {
-    imports = [
+    imports = commonImp ++ [
       ./hardware/host-configuration.nix
       ./custom/thinkpad-leds.nix
       ./custom/libvirtd-hooks.nix
@@ -68,9 +59,12 @@ let
 
     networking.networkmanager.enable = true;
 
-    services.pipewire = {
-      enable = true;
-      pulse.enable = true;
+    services = {
+      graphical-desktop.enable = true;
+      pipewire = {
+        enable = true;
+        pulse.enable = true;
+      };
     };
 
     hardware.bluetooth = {
@@ -78,22 +72,17 @@ let
       powerOnBoot = true;
     };
 
-    programs = {
-      hyprland.enable = true;
-      hyprlock.enable = true;
-    };
-
     virtualisation.libvirtd.enable = true;
   };
 
   guestCfg = bootCfg // {
-    imports = [ ./hardware/guest-configuration.nix ];
+    imports = commonImp ++ [ ./hardware/guest-configuration.nix ];
 
     services.openssh.enable = true;
   };
 
   wslCfg = {
-    imports = [ flakes.nixos-wsl.nixosModules.wsl ];
+    imports = commonImp ++ [ flakes.nixos-wsl.nixosModules.wsl ];
 
     wsl = {
       enable = true;

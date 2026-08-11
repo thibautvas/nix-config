@@ -6,20 +6,35 @@ I also use it on headless virtual machines, running various linux distributions.
 
 ## Modules
 
-This configuration is cross-platform: it works seamlessly on linux and macos machines, provided that `nix` is installed.
+This configuration is cross-platform: it works seamlessly across linux and macos machines,
+provided that `nix` is installed.
 
-Most of it is contained within the `home-manager` module, in [`./users/thibautvas/home.nix`](users/thibautvas/home.nix),
-which manages configuration files on a user level, and installs related binaries too.
+With few exceptions, modules may be run individually:
+```bash
+nix run github:thibautvas/nix-config#nvim
+```
 
-System configurations may be found in [`./machines`](machines).
+Or built all at once:
+```bash
+nix build github:thibautvas/nix-config#all
+```
 
 ## Rebuilding
 
-The rebuilding process is managed by [`./flake.nix`](flake.nix).
+Machine-specific configuration values are declared in
+[`nixos/configuration.nix`](./machines/nixos/configuration.nix),
+and [`darwin/configuration.nix`](./machines/darwin/configuration.nix).
 
-The flake may be run:
-- from a local clone of the repository: `--flake .#host`
-- from its github url: `--flake github:thibautvas/nix-config#host`
+Unless a bare install is advised (e.g., adhoc vm),
+the same packages are sourced in system rebuilds:
+[`common/packages.nix`](./machines/common/packages.nix).
+
+One notable exception is `bash`, which is sourced from
+[`bash/default.nix`](./users/thibautvas/modules/bash/default.nix),
+as wrapping a new shell from scratch is not trivial.
+
+The few modules that are not exposed as packages are also used in system rebuilds,
+namely [`git.nix`](./users/thibautvas/modules/git.nix).
 
 nixos-rebuild:
 ```bash
@@ -38,19 +53,6 @@ home-manager switch --flake github:thibautvas/nix-config#host
 # resp. #guest, #darwin
 ```
 
-The main difference between these three configurations relates to the conditional imports that are operated in `home.nix`,
-e.g., different window managers (or none at all).
-
-## Packages
-
-Two modules are exposed as packages to be used via `nix run` or `nix build`:
-```bash
-nix run github:thibautvas/nix-config#bash
-```
-```bash
-nix run github:thibautvas/nix-config#nvim
-```
-
 ## Project structure
 
 ```text
@@ -60,6 +62,8 @@ nix run github:thibautvas/nix-config#nvim
 ├── flake.lock
 ├── flake.nix
 ├── machines
+│   ├── common
+│   │   └── packages.nix
 │   ├── darwin
 │   │   └── configuration.nix
 │   └── nixos
@@ -74,30 +78,27 @@ nix run github:thibautvas/nix-config#nvim
     └── thibautvas
         ├── home.nix
         └── modules
+            ├── aerospace
+            │   ├── aerospace.toml
+            │   └── package.nix
             ├── bash
             │   ├── default.nix
             │   └── package.nix
             ├── direnv.nix
-            ├── ghostty.nix
-            ├── git.nix
-            ├── kmonad.nix
-            ├── localbin.nix
-            ├── neovim
-            │   ├── default.nix
+            ├── ghostty
             │   └── package.nix
-            ├── window-managers
-            │   ├── aerospace
-            │   │   ├── bin.nix
-            │   │   ├── default.nix
-            │   │   └── settings.nix
-            │   ├── default.nix
-            │   └── hyprland
-            │       ├── default.nix
-            │       ├── hypridle.nix
-            │       ├── hyprlock.nix
-            │       ├── hyprpaper.nix
-            │       └── settings.lua
+            ├── git.nix
+            ├── hyprland
+            │   ├── hyprland.lua
+            │   └── package.nix
+            ├── kmonad
+            │   ├── home_row_mods.kbd.in
+            │   └── package.nix
+            ├── localbin
+            │   └── package.nix
+            ├── nvim
+            │   └── package.nix
             └── zen-twilight.nix
 
-14 directories, 30 files
+17 directories, 26 files
 ```

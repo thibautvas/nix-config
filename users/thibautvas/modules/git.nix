@@ -1,17 +1,18 @@
 {
+  pkgs,
   lib,
   dotfiles,
   ...
 }:
 
 {
-  programs.git = {
-    enable = true;
-    includes = [
+  environment = {
+    systemPackages = lib.optionals (!pkgs.stdenv.isDarwin) [ pkgs.gitMinimal ]; # config issue on darwin
+    etc.gitconfig.text = lib.concatMapStringsSep "\n" lib.generators.toGitINI [
       {
-        path = "${dotfiles}/git/config";
+        include.path = dotfiles + "/git/config";
+        core.excludesFile = dotfiles + "/git/ignore";
       }
     ];
-    ignores = lib.splitString "\n" (builtins.readFile "${dotfiles}/git/ignore");
   };
 }

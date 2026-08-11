@@ -1,33 +1,35 @@
 {
   pkgs,
   isHost,
-  isDarwin,
   dotfiles,
   ...
 }:
 
 let
-  extraPkgs =
-    (import ./package.nix {
+  inherit
+    ((import ./package.nix {
       inherit pkgs dotfiles;
-    }).passthru.runtimeInputs;
+    }).passthru
+    )
+    extraPkgs
+    ;
 
   promptColor =
-    if isDarwin then
+    if pkgs.stdenv.isDarwin then
       "32"
     else if isHost then
       "36"
     else
       "35";
-  rawRc = builtins.readFile "${dotfiles}/bash/bashrc";
+  rawRc = builtins.readFile (dotfiles + "/bash/bashrc");
   fmtRc = builtins.replaceStrings [ "35" ] [ promptColor ] rawRc;
 
 in
 {
-  home.packages = extraPkgs;
+  environment.systemPackages = extraPkgs;
 
   programs.bash = {
     enable = true;
-    initExtra = fmtRc;
+    interactiveShellInit = fmtRc;
   };
 }

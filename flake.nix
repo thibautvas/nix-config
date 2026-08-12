@@ -14,19 +14,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-      };
-    };
-
     templates = {
       url = "github:thibautvas/flake-templates";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -49,8 +36,6 @@
       nixpkgs,
       nix-darwin,
       nixos-wsl,
-      home-manager,
-      zen-browser,
       templates,
       gitutils-nvim,
       dotfiles,
@@ -110,6 +95,7 @@
               inherit dotfiles;
             };
             ghostty = mkPkg "ghostty" pkgs { };
+            zen = mkPkg "zen" pkgs { };
           }
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             aero = mkPkg "aerospace" pkgs { };
@@ -117,7 +103,7 @@
           // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
             Hyprland = mkPkg "hyprland" pkgs {
               env = {
-                browser = "zen-twilight";
+                browser = "zen";
                 terminal = "com.mitchellh.ghostty";
                 sunset = 2000;
               };
@@ -149,24 +135,6 @@
         modules = [ ./machines/darwin/configuration.nix ];
         specialArgs = mkSpecialArgs "host";
       };
-
-      # home-manager config: linux host and guest, darwin
-      homeConfigurations = lib.genAttrs [ "host" "guest" "darwin" ] (
-        machine:
-        let
-          system = if machine == "darwin" then "aarch64-darwin" else "x86_64-linux";
-        in
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
-          modules = [ ./users/thibautvas/home.nix ];
-          extraSpecialArgs = {
-            isHost = machine != "guest";
-            flakes = {
-              inherit zen-browser;
-            };
-          };
-        }
-      );
 
       # exposed packages
       packages = builtins.mapAttrs (

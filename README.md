@@ -47,12 +47,6 @@ darwin-rebuild:
 sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
 ```
 
-home-manager:
-```bash
-home-manager switch --flake github:thibautvas/nix-config#host
-# resp. #guest, #darwin
-```
-
 ## Project structure
 
 ```text
@@ -76,7 +70,6 @@ home-manager switch --flake github:thibautvas/nix-config#host
 │           └── host-configuration.nix
 └── users
     └── thibautvas
-        ├── home.nix
         └── modules
             ├── aerospace
             │   ├── aerospace.toml
@@ -98,7 +91,9 @@ home-manager switch --flake github:thibautvas/nix-config#host
             │   └── package.nix
             ├── nvim
             │   └── package.nix
-            └── zen-twilight.nix
+            └── zen
+                ├── build.nix
+                └── package.nix
 
-17 directories, 26 files
+18 directories, 26 files
 ```

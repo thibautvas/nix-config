@@ -27,14 +27,7 @@ and [`darwin/configuration.nix`](./machines/darwin/configuration.nix).
 
 Unless a bare install is advised (e.g., adhoc vm),
 the same packages are sourced in system rebuilds:
-[`common/packages.nix`](./machines/common/packages.nix).
-
-One notable exception is `bash`, which is sourced from
-[`bash/default.nix`](./users/thibautvas/modules/bash/default.nix),
-as wrapping a new shell from scratch is not trivial.
-
-The few modules that are not exposed as packages are also used in system rebuilds,
-namely [`git.nix`](./users/thibautvas/modules/git.nix).
+[`common/base.nix`](./machines/common/base.nix).
 
 nixos-rebuild:
 ```bash
@@ -57,7 +50,8 @@ sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
 ├── flake.nix
 ├── machines
 │   ├── common
-│   │   └── packages.nix
+│   │   ├── base.nix
+│   │   └── settings.nix
 │   ├── darwin
 │   │   └── configuration.nix
 │   └── nixos
@@ -68,32 +62,20 @@ sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
 │       └── hardware
 │           ├── guest-configuration.nix
 │           └── host-configuration.nix
-└── users
-    └── thibautvas
-        └── modules
-            ├── aerospace
-            │   ├── aerospace.toml
-            │   └── package.nix
-            ├── bash
-            │   ├── default.nix
-            │   └── package.nix
-            ├── direnv.nix
-            ├── ghostty
-            │   └── package.nix
-            ├── git.nix
-            ├── hyprland
-            │   ├── hyprland.lua
-            │   └── package.nix
-            ├── kmonad
-            │   ├── home_row_mods.kbd.in
-            │   └── package.nix
-            ├── localbin
-            │   └── package.nix
-            ├── nvim
-            │   └── package.nix
-            └── zen
-                ├── build.nix
-                └── package.nix
+└── modules
+    ├── aerospace.nix
+    ├── bash.nix
+    ├── ext
+    │   ├── aerospace.toml
+    │   ├── hyprland.lua
+    │   ├── kmonad_hrm.kbd.in
+    │   └── zen_build.nix
+    ├── ghostty.nix
+    ├── hyprland.nix
+    ├── kmonad.nix
+    ├── localbin.nix
+    ├── nvim.nix
+    └── zen.nix
 
-18 directories, 26 files
+9 directories, 24 files
 ```

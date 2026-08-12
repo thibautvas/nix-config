@@ -7,7 +7,10 @@
 let
   primaryUser = "thibautvas";
 
-  commonImp = [ ../common/packages.nix ];
+  commonImp = [
+    ../common/base.nix
+    ../common/settings.nix
+  ];
 
   commonCfg = {
     system.stateVersion = "24.11";

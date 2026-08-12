@@ -69,7 +69,7 @@
 
           mkPkg =
             module: pkgs: extraAttrs:
-            import ./users/thibautvas/modules/${module}/package.nix (
+            import ./modules/${module}.nix (
               {
                 inherit pkgs;
               }

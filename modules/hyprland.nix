@@ -32,7 +32,7 @@ pkgs.symlinkJoin {
   nativeBuildInputs = [ pkgs.makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/Hyprland \
-      --add-flags "-c ${./hyprland.lua}" \
+      --add-flags "-c ${./ext/hyprland.lua}" \
       --prefix PATH : ${lib.makeBinPath extraPkgs} \
       ${wrapperEnv}
     ln -s ../../../share/hypr/hypridle.conf $out/etc/xdg/hypr/hypridle.conf

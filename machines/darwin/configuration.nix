@@ -7,7 +7,10 @@ let
 
 in
 {
-  imports = [ ../common/packages.nix ];
+  imports = [
+    ../common/base.nix
+    ../common/settings.nix
+  ];
 
   system = {
     stateVersion = 6; # should not be changed

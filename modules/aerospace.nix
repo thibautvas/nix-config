@@ -19,6 +19,6 @@ pkgs.symlinkJoin {
     chmod +x $out/bin/aero
 
     mkdir -p $out/etc/xdg/aerospace
-    cp ${./aerospace.toml} $out/etc/xdg/aerospace/aerospace.toml
+    cp ${./ext/aerospace.toml} $out/etc/xdg/aerospace/aerospace.toml
   '';
 }

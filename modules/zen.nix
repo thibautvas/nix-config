@@ -4,7 +4,7 @@
 }:
 
 let
-  zen-browser = import ./build.nix {
+  zen-browser = import ./ext/zen_build.nix {
     inherit pkgs;
   };
 

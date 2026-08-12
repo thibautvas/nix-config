@@ -8,7 +8,7 @@ let
   inherit (pkgs.stdenv) isDarwin;
 
   kbdId = "usb-Keychron_Keychron_V4-event-kbd";
-  kbdTmpl = builtins.readFile ./home_row_mods.kbd.in;
+  kbdTmpl = builtins.readFile ./ext/kmonad_hrm.kbd.in;
 
   kbdCfg = {
     darwin = {

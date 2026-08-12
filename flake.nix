@@ -9,11 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-wsl = {
-      url = "github:nix-community/nixos-wsl/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     templates = {
       url = "github:thibautvas/flake-templates";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -35,7 +30,6 @@
       self,
       nixpkgs,
       nix-darwin,
-      nixos-wsl,
       templates,
       gitutils-nvim,
       dotfiles,
@@ -55,9 +49,6 @@
         isHost = machine == "host";
         flakes = {
           inherit self templates;
-        }
-        // lib.optionalAttrs (machine == "wsl") {
-          inherit nixos-wsl;
         };
       };
 
@@ -120,7 +111,7 @@
     in
     {
       # system config: nixos host and guest
-      nixosConfigurations = lib.genAttrs [ "host" "guest" "wsl" ] (
+      nixosConfigurations = lib.genAttrs [ "host" "guest" ] (
         machine:
         lib.nixosSystem {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;

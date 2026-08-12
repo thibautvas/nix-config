@@ -32,7 +32,7 @@ the same packages are sourced in system rebuilds:
 nixos-rebuild:
 ```bash
 sudo nixos-rebuild switch --flake github:thibautvas/nix-config#host
-# resp. #guest, #wsl
+# resp. #guest
 ```
 
 darwin-rebuild:

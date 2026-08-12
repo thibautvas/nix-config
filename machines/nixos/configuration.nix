@@ -1,6 +1,6 @@
 {
+  lib,
   isHost,
-  flakes,
   ...
 }:
 
@@ -12,39 +12,11 @@ let
     ../common/settings.nix
   ];
 
-  commonCfg = {
-    system.stateVersion = "24.11";
+in
+{
+  system.stateVersion = "24.11";
 
-    zramSwap = {
-      enable = true;
-      memoryPercent = 50;
-    };
-
-    time.timeZone = "Europe/Madrid";
-
-    users.users.${primaryUser} = {
-      isNormalUser = true;
-      extraGroups = [
-        "wheel"
-        "libvirtd"
-      ];
-      initialPassword = "secret";
-    };
-
-    security.sudo.extraRules = [
-      {
-        users = [ primaryUser ];
-        commands = [
-          {
-            command = "ALL";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }
-    ];
-  };
-
-  bootCfg.boot = {
+  boot = {
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -53,53 +25,62 @@ let
     tmp.cleanOnBoot = true;
   };
 
-  hostCfg = bootCfg // {
-    imports = commonImp ++ [
-      ./hardware/host-configuration.nix
-      ./custom/thinkpad-leds.nix
-      ./custom/libvirtd-hooks.nix
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+  };
+
+  time.timeZone = "Europe/Madrid";
+
+  users.users.${primaryUser} = {
+    isNormalUser = true;
+    extraGroups = [
+      "wheel"
+      "libvirtd"
     ];
+    initialPassword = "secret";
+  };
 
-    networking.networkmanager.enable = true;
+  security.sudo.extraRules = [
+    {
+      users = [ primaryUser ];
+      commands = [
+        {
+          command = "ALL";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
+}
 
-    services = {
-      graphical-desktop.enable = true;
-      pipewire = {
-        enable = true;
-        pulse.enable = true;
-      };
-    };
+// lib.optionalAttrs isHost {
+  imports = commonImp ++ [
+    ./hardware/host-configuration.nix
+    ./custom/thinkpad-leds.nix
+    ./custom/libvirtd-hooks.nix
+  ];
 
-    hardware.bluetooth = {
+  networking.networkmanager.enable = true;
+
+  services = {
+    graphical-desktop.enable = true;
+    pipewire = {
       enable = true;
-      powerOnBoot = true;
-    };
-
-    virtualisation.libvirtd.enable = true;
-  };
-
-  guestCfg = bootCfg // {
-    imports = commonImp ++ [ ./hardware/guest-configuration.nix ];
-
-    services.openssh.enable = true;
-  };
-
-  wslCfg = {
-    imports = commonImp ++ [ flakes.nixos-wsl.nixosModules.wsl ];
-
-    wsl = {
-      enable = true;
-      defaultUser = primaryUser;
+      pulse.enable = true;
     };
   };
 
-in
-commonCfg
-// (
-  if flakes ? nixos-wsl then
-    wslCfg
-  else if isHost then
-    hostCfg
-  else
-    guestCfg
-)
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
+  virtualisation.libvirtd.enable = true;
+}
+
+// lib.optionalAttrs (!isHost) {
+  imports = commonImp ++ [ ./hardware/guest-configuration.nix ];
+
+  services.openssh.enable = true;
+}

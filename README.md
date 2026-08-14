@@ -68,8 +68,7 @@ sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
     ├── ext
     │   ├── aerospace.toml
     │   ├── hyprland.lua
-    │   ├── kmonad_hrm.kbd.in
-    │   └── zen_build.nix
+    │   └── kmonad_hrm.kbd.in
     ├── ghostty.nix
     ├── hyprland.nix
     ├── kmonad.nix
@@ -77,5 +76,4 @@ sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
     ├── nvim.nix
     └── zen.nix
 
-9 directories, 24 files
-```
+9 directories, 23 files

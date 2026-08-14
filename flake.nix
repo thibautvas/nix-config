@@ -19,6 +19,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zen-build = {
+      url = "github:thibautvas/zen-build";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     dotfiles = {
       url = "github:thibautvas/dotfiles";
       flake = false;
@@ -32,6 +37,7 @@
       nix-darwin,
       templates,
       gitutils-nvim,
+      zen-build,
       dotfiles,
       ...
     }:
@@ -86,7 +92,9 @@
               inherit dotfiles;
             };
             ghostty = mkPkg "ghostty" pkgs { };
-            zen = mkPkg "zen" pkgs { };
+            zen = mkPkg "zen" pkgs {
+              inherit zen-build;
+            };
           }
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             aero = mkPkg "aerospace" pkgs { };

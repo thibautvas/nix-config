@@ -1,12 +1,12 @@
 {
   pkgs,
+  zen-build,
   ...
 }:
 
 let
-  zen-browser = import ./ext/zen_build.nix {
-    inherit pkgs;
-  };
+  inherit (pkgs.stdenv.hostPlatform) system;
+  zen-browser = zen-build.packages.${system}.default;
 
   extensions = {
     "uBlock0@raymondhill.net" = "ublock-origin";

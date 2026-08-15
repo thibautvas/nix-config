@@ -76,6 +76,7 @@
             zen = mkPkg "zen" pkgs {
               inherit zen-build;
             };
+            emacs = mkPkg "emacs" pkgs { };
           }
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             aero = mkPkg "aerospace" pkgs { };

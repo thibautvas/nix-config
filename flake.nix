@@ -49,6 +49,10 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           vimPkgs = pkgs.extend vimOverlay;
+          unfreePkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
 
           mkPkg =
             module: pkgs: extraAttrs:
@@ -77,6 +81,7 @@
               inherit zen-build;
             };
             emacs = mkPkg "emacs" pkgs { };
+            code = mkPkg "vscode" unfreePkgs { };
           }
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             aero = mkPkg "aerospace" pkgs { };

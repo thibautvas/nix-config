@@ -82,6 +82,7 @@
             };
             emacs = mkPkg "emacs" pkgs { };
             code = mkPkg "vscode" unfreePkgs { };
+            firefox = mkPkg "firefox" pkgs { };
           }
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             aero = mkPkg "aerospace" pkgs { };

@@ -5,8 +5,7 @@
 }:
 
 let
-  inherit (pkgs) lib;
-  inherit (pkgs.stdenv) isDarwin;
+  kernel = pkgs.stdenv.hostPlatform.parsed.kernel.name;
 
   kbdId = "usb-Keychron_Keychron_V4-event-kbd";
   kbdTmpl = builtins.readFile (self + /dotfiles/kmonad.kbd.in);
@@ -25,14 +24,14 @@ let
     linux = {
       input = {
         base = "device-file \"/dev/input/by-path/platform-i8042-serio-0-event-kbd\"";
-        extended = "device-file \"/dev/input/by-id/${kbdId}\"";
+        ext = "device-file \"/dev/input/by-id/${kbdId}\"";
       };
       output = "uinput-sink \"output\"";
       hypMet = "lmet";
       ctlMet = "C";
       altMet = {
         base = "alt";
-        extended = "met";
+        ext = "met";
       };
       altCtl = "C";
       start = "home";
@@ -40,10 +39,10 @@ let
     };
   };
 
-  mkHomeRowMods =
-    osType: inputDevice:
+  perKernelKbd =
+    kernel: kbd:
     let
-      inherit (kbdCfg.${osType})
+      inherit (kbdCfg.${kernel})
         input
         output
         hypMet
@@ -53,8 +52,8 @@ let
         start
         end
         ;
-      inputCfg = input.${inputDevice};
-      thmMod = altMet.${inputDevice};
+      inputCfg = input.${kbd};
+      thmMod = altMet.${kbd};
     in
     builtins.replaceStrings
       [
@@ -79,31 +78,34 @@ let
       ]
       kbdTmpl;
 
-  homeRowMods = lib.genAttrs [ "linux" "darwin" ] (
-    osType:
-    {
-      base = pkgs.writeText "home_row_mods.kbd" (mkHomeRowMods osType "base");
-    }
-    // lib.optionalAttrs (osType == "linux") {
-      extended = pkgs.writeText "home_row_mods_ext.kbd" (mkHomeRowMods osType "extended");
-    }
-  );
+  hrmTxt = {
+    darwin.base = pkgs.writeText "hrm_base.kbd" (perKernelKbd "darwin" "base");
+    linux = {
+      base = pkgs.writeText "hrm_base.kbd" (perKernelKbd "linux" "base");
+      ext = pkgs.writeText "hrm_ext.kbd" (perKernelKbd "linux" "ext");
+    };
+  };
+
+  hrmCmd = {
+    darwin = "sudo -b kmonad ${hrmTxt.darwin.base}";
+    linux = ''
+      [[ -L /dev/input/by-id/${kbdId} ]] &&
+        sudo -b kmonad ${hrmTxt.linux.ext}
+      sudo -b kmonad ${hrmTxt.linux.base}
+    '';
+  };
+
+  runtimeInputs = {
+    darwin = [ ];
+    linux = [ pkgs.kmonad ];
+  };
 
 in
 pkgs.writeShellApplication {
   name = "hrm";
-  runtimeInputs = lib.optionals (!isDarwin) [ pkgs.kmonad ];
+  runtimeInputs = runtimeInputs.${kernel};
   text = ''
-    sudo pkill -f "home_row_mods"
-    ${
-      if (!isDarwin) then
-        ''
-          [[ -L /dev/input/by-id/${kbdId} ]] &&
-          sudo -b kmonad ${homeRowMods.linux.extended}
-        ''
-      else
-        ""
-    }
-    sudo -b kmonad ${homeRowMods.${if isDarwin then "darwin" else "linux"}.base}
+    sudo pkill -x kmonad # kill previous process
+    ${hrmCmd.${kernel}}
   '';
 }

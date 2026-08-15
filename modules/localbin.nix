@@ -4,7 +4,7 @@
 }:
 
 let
-  osType = if pkgs.stdenv.isDarwin then "darwin" else "linux";
+  kernel = pkgs.stdenv.hostPlatform.parsed.kernel.name;
 
   localApps = {
     statusSumUp = {
@@ -123,7 +123,7 @@ in
 pkgs.symlinkJoin rec {
   name = "localbin-wrapped";
   paths = builtins.filter (x: x != null) (
-    pkgs.lib.mapAttrsToList (_: app: app.${osType} or null) localApps
+    pkgs.lib.mapAttrsToList (_: app: app.${kernel} or null) localApps
   );
   passthru.binaries = map (drv: drv.pname or drv.name) paths;
 }

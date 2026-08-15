@@ -4,27 +4,31 @@
 }:
 
 let
+  inherit (pkgs) lib;
   inherit (pkgs.stdenv) isDarwin;
 
   ghosttyBin = if isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
-  ghosttyCfg = pkgs.writeText "config.ghostty" (
-    ''
-      bold-is-bright = true
-      confirm-close-surface = false
-      cursor-style-blink = false
-      font-feature = -calt
-      font-feature = -dlig
-      font-feature = -liga
-      keybind = global:ctrl+grave_accent=toggle_quick_terminal
-      quick-terminal-animation-duration = 0
-      quick-terminal-autohide = false
-      quick-terminal-position = center
-      shell-integration-features = no-cursor, ssh-env
-    ''
-    + pkgs.lib.optionalString isDarwin ''
-      macos-titlebar-style = "hidden";
-      macos-option-as-alt = "left";
-    ''
+
+  ghosttyCfg = {
+    bold-color = "bright";
+    confirm-close-surface = false;
+    cursor-style-blink = false;
+    font-feature = [
+      "-calt"
+      "-dlig"
+      "-liga"
+    ];
+    shell-integration-features = "no-cursor, ssh-env";
+  }
+  // lib.optionalAttrs isDarwin {
+    macos-option-as-alt = "left";
+    macos-titlebar-style = "hidden";
+  };
+
+  ghosttyCfgPath = pkgs.writeText "config.ghostty" (
+    lib.generators.toKeyValue {
+      listsAsDuplicateKeys = true;
+    } ghosttyCfg
   );
 
 in
@@ -34,6 +38,6 @@ pkgs.symlinkJoin {
   nativeBuildInputs = [ pkgs.makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/ghostty \
-      --add-flags "--config-file=${ghosttyCfg}"
+      --add-flags "--config-file=${ghosttyCfgPath}"
   '';
 }

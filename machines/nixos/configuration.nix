@@ -1,20 +1,29 @@
 {
+  machine,
   lib,
-  isHost,
   ...
 }:
 
 let
   primaryUser = "thibautvas";
 
-  commonImp = [
-    ../common/base.nix
-    ../common/settings.nix
-  ];
+  perMachineImp =
+    machine:
+    [
+      ../common/base.nix
+      ../common/settings.nix
+      ./hardware/${machine}-configuration.nix
+    ]
+    ++ lib.optionals (machine == "host") [
+      ./custom/thinkpad-leds.nix
+      ./custom/libvirtd-hooks.nix
+    ];
 
 in
 {
   system.stateVersion = "24.11";
+
+  imports = perMachineImp machine;
 
   boot = {
     loader = {
@@ -54,13 +63,7 @@ in
   ];
 }
 
-// lib.optionalAttrs isHost {
-  imports = commonImp ++ [
-    ./hardware/host-configuration.nix
-    ./custom/thinkpad-leds.nix
-    ./custom/libvirtd-hooks.nix
-  ];
-
+// lib.optionalAttrs (machine == "host") {
   networking.networkmanager.enable = true;
 
   services = {
@@ -79,8 +82,6 @@ in
   virtualisation.libvirtd.enable = true;
 }
 
-// lib.optionalAttrs (!isHost) {
-  imports = commonImp ++ [ ./hardware/guest-configuration.nix ];
-
+// lib.optionalAttrs (machine == "guest") {
   services.openssh.enable = true;
 }

@@ -1,4 +1,5 @@
 {
+  self,
   pkgs,
   env,
   ...
@@ -7,7 +8,7 @@
 let
   inherit (pkgs) lib;
 
-  hyprRc = ../dotfiles/hyprland.lua;
+  hyprRc = self + /dotfiles/hyprland.lua;
 
   extraPkgs = with pkgs; [
     hyprshot
@@ -37,6 +38,6 @@ pkgs.symlinkJoin {
       --add-flags "-c ${hyprRc}" \
       --prefix PATH : ${lib.makeBinPath extraPkgs} \
       ${wrapperEnv}
-    ln -s ../../../share/hypr/hypridle.conf $out/etc/xdg/hypr/hypridle.conf
+    ln -s $out/share/hypr/hypridle.conf $out/etc/xdg/hypr/hypridle.conf
   '';
 }

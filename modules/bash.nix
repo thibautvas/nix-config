@@ -1,10 +1,11 @@
 {
+  self,
   pkgs,
   ...
 }:
 
 let
-  bashRc = ../dotfiles/bashrc;
+  bashRc = self + /dotfiles/bashrc;
 
   extraPkgs = with pkgs; [
     fd

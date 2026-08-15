@@ -1,4 +1,5 @@
 {
+  self,
   pkgs,
   wrapGit ? false,
   ...
@@ -7,7 +8,7 @@
 let
   inherit (pkgs) lib;
 
-  luaRcContent = builtins.readFile ../dotfiles/nvim.lua;
+  luaRcContent = builtins.readFile (self + /dotfiles/nvim.lua);
 
   plugins =
     let

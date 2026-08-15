@@ -44,13 +44,6 @@
         };
       };
 
-      mkSpecialArgs = machine: {
-        isHost = machine == "host";
-        flakes = {
-          inherit self templates;
-        };
-      };
-
       perSystem = lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
         system:
         let
@@ -61,7 +54,7 @@
             module: pkgs: extraAttrs:
             import ./modules/${module}.nix (
               {
-                inherit pkgs;
+                inherit self pkgs;
               }
               // extraAttrs
             );
@@ -112,7 +105,9 @@
         lib.nixosSystem {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = [ ./machines/nixos/configuration.nix ];
-          specialArgs = mkSpecialArgs machine;
+          specialArgs = {
+            inherit self templates machine;
+          };
         }
       );
 
@@ -120,7 +115,10 @@
       darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
         modules = [ ./machines/darwin/configuration.nix ];
-        specialArgs = mkSpecialArgs "host";
+        specialArgs = {
+          inherit self templates;
+          machine = "darwin";
+        };
       };
 
       # exposed packages

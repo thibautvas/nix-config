@@ -1,5 +1,6 @@
 {
-  flakes,
+  self,
+  templates,
   ...
 }:
 
@@ -10,8 +11,8 @@
       "flakes"
     ];
     registry = {
-      templates.flake = flakes.templates;
-      tv.flake = flakes.self;
+      templates.flake = templates;
+      tv.flake = self;
     };
   };
 }

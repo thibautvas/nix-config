@@ -1,41 +1,39 @@
 {
+  self,
+  machine,
   pkgs,
   lib,
-  isHost,
-  flakes,
   ...
 }:
 
 let
-  inherit (pkgs.stdenv) isDarwin;
   inherit (pkgs.stdenv.hostPlatform) system;
 
-  impPkgs = lib.optionals isHost [ flakes.self.packages.${system}.imp ];
+  impPkgs = lib.optionals (machine != "guest") [ self.packages.${system}.imp ];
 
   gitWrapped = {
-    extraPkgs = lib.optionals (!isDarwin) [ pkgs.gitMinimal ]; # config issue on darwin
-    cfgPath = ../../dotfiles/gitconfig;
+    extraPkgs = lib.optionals (machine != "darwin") [ pkgs.gitMinimal ]; # config issue on darwin
+    cfgPath = self + /dotfiles/gitconfig;
   };
 
   bashWrapped = {
     inherit
-      ((import ../../modules/bash.nix {
-        inherit pkgs;
+      ((import (self + /modules/bash.nix) {
+        inherit self pkgs;
       }).passthru
       )
       extraPkgs
       ;
     cfg =
       let
-        promptColor =
-          if isDarwin then
-            "32"
-          else if isHost then
-            "36"
-          else
-            "35";
+        bashRc = builtins.readFile (self + /dotfiles/bashrc);
+        promptColor = {
+          host = "36"; # cyan
+          guest = "35"; # magenta
+          darwin = "32"; # green
+        };
       in
-      builtins.replaceStrings [ "35" ] [ promptColor ] (builtins.readFile ../../dotfiles/bashrc);
+      builtins.replaceStrings [ "35" ] [ promptColor.${machine} ] bashRc;
   };
 
 in

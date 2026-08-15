@@ -1,10 +1,11 @@
 {
+  self,
   pkgs,
   ...
 }:
 
 let
-  aeroRc = ../dotfiles/aerospace.toml;
+  aeroRc = self + /dotfiles/aerospace.toml;
 
 in
 pkgs.symlinkJoin {

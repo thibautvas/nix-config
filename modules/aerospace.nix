@@ -3,6 +3,10 @@
   ...
 }:
 
+let
+  aeroRc = ../dotfiles/aerospace.toml;
+
+in
 pkgs.symlinkJoin {
   name = "aerospace-wrapped";
   paths = [
@@ -19,6 +23,6 @@ pkgs.symlinkJoin {
     chmod +x $out/bin/aero
 
     mkdir -p $out/etc/xdg/aerospace
-    cp ${./ext/aerospace.toml} $out/etc/xdg/aerospace/aerospace.toml
+    cp ${aeroRc} $out/etc/xdg/aerospace/aerospace.toml
   '';
 }

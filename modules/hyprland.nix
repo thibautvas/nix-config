@@ -7,6 +7,8 @@
 let
   inherit (pkgs) lib;
 
+  hyprRc = ../dotfiles/hyprland.lua;
+
   extraPkgs = with pkgs; [
     hyprshot
     hyprsunset
@@ -32,7 +34,7 @@ pkgs.symlinkJoin {
   nativeBuildInputs = [ pkgs.makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/Hyprland \
-      --add-flags "-c ${./ext/hyprland.lua}" \
+      --add-flags "-c ${hyprRc}" \
       --prefix PATH : ${lib.makeBinPath extraPkgs} \
       ${wrapperEnv}
     ln -s ../../../share/hypr/hypridle.conf $out/etc/xdg/hypr/hypridle.conf

@@ -2,7 +2,6 @@
   pkgs,
   lib,
   isHost,
-  dotfiles,
   flakes,
   ...
 }:
@@ -15,18 +14,13 @@ let
 
   gitWrapped = {
     extraPkgs = lib.optionals (!isDarwin) [ pkgs.gitMinimal ]; # config issue on darwin
-    cfg = lib.concatMapStringsSep "\n" lib.generators.toGitINI [
-      {
-        include.path = dotfiles + "/git/config";
-        core.excludesFile = dotfiles + "/git/ignore";
-      }
-    ];
+    cfgPath = ../../dotfiles/gitconfig;
   };
 
   bashWrapped = {
     inherit
       ((import ../../modules/bash.nix {
-        inherit pkgs dotfiles;
+        inherit pkgs;
       }).passthru
       )
       extraPkgs
@@ -41,14 +35,14 @@ let
           else
             "35";
       in
-      builtins.replaceStrings [ "35" ] [ promptColor ] (builtins.readFile (dotfiles + "/bash/bashrc"));
+      builtins.replaceStrings [ "35" ] [ promptColor ] (builtins.readFile ../../dotfiles/bashrc);
   };
 
 in
 {
   environment.systemPackages = impPkgs ++ bashWrapped.extraPkgs ++ gitWrapped.extraPkgs;
 
-  environment.etc.gitconfig.text = gitWrapped.cfg;
+  environment.etc.gitconfig.source = gitWrapped.cfgPath;
 
   programs.bash = {
     enable = true;

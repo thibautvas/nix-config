@@ -1,11 +1,11 @@
 {
   pkgs,
-  dotfiles,
   ...
 }:
 
 let
-  bashRc = dotfiles + "/bash/bashrc";
+  bashRc = ../dotfiles/bashrc;
+
   extraPkgs = with pkgs; [
     fd
     fzf

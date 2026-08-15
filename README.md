@@ -46,6 +46,13 @@ sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
 .
 ├── .gitignore
 ├── README.md
+├── dotfiles
+│   ├── aerospace.toml
+│   ├── bashrc
+│   ├── gitconfig
+│   ├── hyprland.lua
+│   ├── kmonad.kbd.in
+│   └── nvim.lua
 ├── flake.lock
 ├── flake.nix
 ├── machines
@@ -65,10 +72,6 @@ sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
 └── modules
     ├── aerospace.nix
     ├── bash.nix
-    ├── ext
-    │   ├── aerospace.toml
-    │   ├── hyprland.lua
-    │   └── kmonad_hrm.kbd.in
     ├── ghostty.nix
     ├── hyprland.nix
     ├── kmonad.nix
@@ -76,4 +79,5 @@ sudo darwin-rebuild switch --flake github:thibautvas/nix-config#darwin
     ├── nvim.nix
     └── zen.nix
 
-9 directories, 23 files
+9 directories, 26 files
+```

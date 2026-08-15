@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "dotfiles": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1784507822,
-        "narHash": "sha256-LxG16DH+Nlzx1LIxDShDv1EnlhKOu4dXeZ2RkhraVqg=",
-        "owner": "thibautvas",
-        "repo": "dotfiles",
-        "rev": "1f776c986ae667319c853486ddcca40cb54fe581",
-        "type": "github"
-      },
-      "original": {
-        "owner": "thibautvas",
-        "repo": "dotfiles",
-        "type": "github"
-      }
-    },
     "gitutils-nvim": {
       "inputs": {
         "nixpkgs": [
@@ -75,7 +59,6 @@
     },
     "root": {
       "inputs": {
-        "dotfiles": "dotfiles",
         "gitutils-nvim": "gitutils-nvim",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",

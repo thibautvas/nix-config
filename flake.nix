@@ -23,11 +23,6 @@
       url = "github:thibautvas/zen-build";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    dotfiles = {
-      url = "github:thibautvas/dotfiles";
-      flake = false;
-    };
   };
 
   outputs =
@@ -38,7 +33,6 @@
       templates,
       gitutils-nvim,
       zen-build,
-      dotfiles,
       ...
     }:
     let
@@ -51,7 +45,6 @@
       };
 
       mkSpecialArgs = machine: {
-        inherit dotfiles;
         isHost = machine == "host";
         flakes = {
           inherit self templates;
@@ -78,19 +71,14 @@
           inherit pkgs;
 
           flkPkgs = {
-            bash = mkPkg "bash" pkgs {
-              inherit dotfiles;
-            };
+            bash = mkPkg "bash" pkgs { };
             nvim-git = mkPkg "nvim" vimPkgs {
-              inherit dotfiles;
               wrapGit = true;
             };
           };
 
           appPkgs = {
-            nvim = mkPkg "nvim" vimPkgs {
-              inherit dotfiles;
-            };
+            nvim = mkPkg "nvim" vimPkgs { };
             ghostty = mkPkg "ghostty" pkgs { };
             zen = mkPkg "zen" pkgs {
               inherit zen-build;

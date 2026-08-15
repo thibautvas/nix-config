@@ -42,6 +42,10 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           vimPkgs = pkgs.extend vimOverlay;
+          unfreePkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
 
           inherit (pkgs.stdenv) isDarwin;
 
@@ -86,6 +90,10 @@
                 extraAttrs = lib.optionalAttrs (!isDarwin) {
                   emacs = pkgs.emacs-pgtk;
                 };
+              };
+              code = {
+                module = ./modules/vscode.nix;
+                pkgs = unfreePkgs;
               };
             }
             // lib.optionalAttrs isDarwin {

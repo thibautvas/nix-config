@@ -81,6 +81,12 @@
                 };
               };
               firefox.module = ./modules/firefox.nix;
+              emacs = {
+                module = ./modules/emacs.nix;
+                extraAttrs = lib.optionalAttrs (!isDarwin) {
+                  emacs = pkgs.emacs-pgtk;
+                };
+              };
             }
             // lib.optionalAttrs isDarwin {
               aero.module = ./modules/aerospace.nix;

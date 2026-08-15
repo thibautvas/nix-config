@@ -105,7 +105,7 @@ pkgs.writeShellApplication {
   name = "hrm";
   runtimeInputs = runtimeInputs.${kernel};
   text = ''
-    sudo pkill -x kmonad # kill previous process
+    sudo pkill -x kmonad || true # kill previous process
     ${hrmCmd.${kernel}}
   '';
 }

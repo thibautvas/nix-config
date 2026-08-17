@@ -5,6 +5,7 @@
 }:
 
 let
+  inherit (pkgs) lib;
   kernel = pkgs.stdenv.hostPlatform.parsed.kernel.name;
 
   kbdId = "usb-Keychron_Keychron_V4-event-kbd";
@@ -12,100 +13,77 @@ let
 
   kbdCfg = {
     darwin = {
-      input.base = "iokit-name";
-      output = "kext";
-      hypMet = "(around lmet (around lalt (around lctl lsft)))";
-      ctlMet = "M";
-      altMet.base = "met";
-      altCtl = "A";
-      start = "M-left";
-      end = "M-right";
-    };
-    linux = {
-      input = {
-        base = "device-file \"/dev/input/by-path/platform-i8042-serio-0-event-kbd\"";
-        ext = "device-file \"/dev/input/by-id/${kbdId}\"";
+      base = {
+        input = "iokit-name";
+        output = "kext";
+        hypMet = "(around lmet (around lalt (around lctl lsft)))";
+        ctlMet = "M";
+        altCtl = "A";
+        start = "M-left";
+        end = "M-right";
+        thmMod = "met";
       };
-      output = "uinput-sink \"output\"";
-      hypMet = "lmet";
-      ctlMet = "C";
-      altMet = {
-        base = "alt";
-        ext = "met";
-      };
-      altCtl = "C";
-      start = "home";
-      end = "end";
     };
+    linux = lib.genAttrs [ "base" "ext" ] (
+      kbd:
+      {
+        output = "uinput-sink \"output\"";
+        hypMet = "lmet";
+        ctlMet = "C";
+        altCtl = "C";
+        start = "home";
+        end = "end";
+      }
+      // lib.optionalAttrs (kbd == "base") {
+        input = "device-file \"/dev/input/by-path/platform-i8042-serio-0-event-kbd\"";
+        thmMod = "alt";
+      }
+      // lib.optionalAttrs (kbd == "ext") {
+        input = "device-file \"/dev/input/by-id/${kbdId}\"";
+        thmMod = "met";
+      }
+    );
   };
 
   perKernelKbd =
     kernel: kbd:
     let
-      inherit (kbdCfg.${kernel})
-        input
-        output
-        hypMet
-        ctlMet
-        altMet
-        altCtl
-        start
-        end
-        ;
-      inputCfg = input.${kbd};
-      thmMod = altMet.${kbd};
+      cfg = kbdCfg.${kernel}.${kbd};
+      fmtKbd =
+        builtins.replaceStrings
+          [
+            "@INPUT@"
+            "@OUTPUT@"
+            "@HYP_MET@"
+            "@CTL_MET@"
+            "@ALT_CTL@"
+            "@START@"
+            "@END@"
+            "@THM_MOD@"
+          ]
+          (map (name: cfg.${name}) [
+            "input"
+            "output"
+            "hypMet"
+            "ctlMet"
+            "altCtl"
+            "start"
+            "end"
+            "thmMod"
+          ])
+          kbdTmpl;
     in
-    builtins.replaceStrings
-      [
-        "@INPUT@"
-        "@OUTPUT@"
-        "@HYP_MET@"
-        "@CTL_MET@"
-        "@ALT_CTL@"
-        "@START@"
-        "@END@"
-        "@THM_MOD@"
-      ]
-      [
-        inputCfg
-        output
-        hypMet
-        ctlMet
-        altCtl
-        start
-        end
-        thmMod
-      ]
-      kbdTmpl;
-
-  hrmTxt = {
-    darwin.base = pkgs.writeText "hrm_base.kbd" (perKernelKbd "darwin" "base");
-    linux = {
-      base = pkgs.writeText "hrm_base.kbd" (perKernelKbd "linux" "base");
-      ext = pkgs.writeText "hrm_ext.kbd" (perKernelKbd "linux" "ext");
-    };
-  };
-
-  hrmCmd = {
-    darwin = "sudo -b kmonad ${hrmTxt.darwin.base}";
-    linux = ''
-      [[ -L /dev/input/by-id/${kbdId} ]] &&
-        sudo -b kmonad ${hrmTxt.linux.ext}
-      sudo -b kmonad ${hrmTxt.linux.base}
-    '';
-  };
-
-  runtimeInputs = {
-    darwin = [ ];
-    linux = [ pkgs.kmonad ];
-  };
+    pkgs.writeText "hrm-${kernel}-${kbd}.kbd" fmtKbd;
 
 in
 pkgs.writeShellApplication {
   name = "hrm";
-  runtimeInputs = runtimeInputs.${kernel};
+  runtimeInputs = lib.optionals (kernel == "linux") [ pkgs.kmonad ];
   text = ''
-    sudo pkill -x kmonad || true # kill previous process
-    ${hrmCmd.${kernel}}
+    sudo pkill -x kmonad || true
+    sudo -b kmonad ${perKernelKbd kernel "base"}
+  ''
+  + lib.optionalString (kernel == "linux") ''
+    sudo -b kmonad ${perKernelKbd kernel "ext"} 2>/dev/null
   '';
 }

@@ -17,13 +17,7 @@ let
   };
 
   bashWrapped = {
-    inherit
-      ((import (self + /modules/bash.nix) {
-        inherit self pkgs;
-      }).passthru
-      )
-      extraPkgs
-      ;
+    inherit (self.packages.${system}.bash.passthru) extraPkgs;
     cfg =
       let
         bashRc = builtins.readFile (self + /dotfiles/bashrc);

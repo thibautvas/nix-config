@@ -80,15 +80,17 @@ let
       name = "vls";
       runtimeInputs = [ pkgs.fzf ];
       text = ''
-        conn() {
-          ssh "$(sudo virsh domifaddr "$1" | awk '/ipv4/{print $4}' | cut -d/ -f1)"
+        addr() {
+          virsh --connect qemu:///system --quiet domifaddr "$1" |
+            awk '/ipv4/{print $4}' | cut -d/ -f1
         }
-        export -f conn
+        export -f addr
 
-        sudo virsh list --all | sed '1,2d;$d' |
+        virsh --connect qemu:///system --quiet list --all |
           fzf --reverse --height 10 --bind "ctrl-a:become(sudo virsh start {2})" \
                                     --bind "ctrl-x:become(sudo virsh shutdown {2})" \
-                                    --bind "enter:become(TERM=xterm-256color conn {2})"
+                                    --bind "enter:become(TERM=xterm-256color ssh \$(addr {2}))" \
+                                    --bind "ctrl-r:become(TERM=xterm-256color ssh root@\$(addr {2}))"
       '';
     };
 

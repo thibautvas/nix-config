@@ -47,7 +47,6 @@ in
       "wheel"
       "libvirtd"
     ];
-    initialPassword = "secret";
   };
 
   security.sudo.extraRules = [

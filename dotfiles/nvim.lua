@@ -285,6 +285,12 @@ init("kanagawa", function(kw)
       }) do
         t[key] = { bold = false }
       end
+      for _, key in ipairs({
+        "LineNr",
+        "SignColumn",
+      }) do
+        t[key] = { bg = "none" }
+      end
       return t
     end,
   })

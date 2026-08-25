@@ -10,6 +10,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprsunset -t " .. os.getenv("SUNSET"))
   end)
   pcall(hl.exec_cmd, "hrm")
+  pcall(hl.exec_cmd, "foot --server")
 end)
 
 hl.config({

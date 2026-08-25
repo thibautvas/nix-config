@@ -20,7 +20,11 @@ let
     inherit (self.packages.${system}.bash.passthru) extraPkgs;
     cfg =
       let
-        bashRc = builtins.readFile (self + /dotfiles/bashrc);
+        bashRc =
+          builtins.readFile (self + /dotfiles/bashrc)
+          + lib.optionals (machine == "host") ''
+            PROMPT_COMMAND+=('echo -ne "\e]7;file://$HOSTNAME$PWD\e\\"')
+          '';
         promptColor = {
           host = "36"; # cyan
           guest = "35"; # magenta

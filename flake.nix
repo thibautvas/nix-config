@@ -81,10 +81,11 @@
             aero = mkPkg "aerospace" pkgs { };
           }
           // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+            foot = mkPkg "foot" pkgs { };
             Hyprland = mkPkg "hyprland" pkgs {
               env = {
                 browser = "zen";
-                terminal = "com.mitchellh.ghostty";
+                terminal = "footclient";
                 sunset = 2000;
               };
             };

@@ -83,7 +83,7 @@ nrp() {
 
 set_custom_prompt() {
   local exit_status=$?
-  local active_user user_color project branch active_dir dir_color active_shell
+  local active_user user_color project branch active_dir dir_color
 
   active_user='[\u@\h]'
 
@@ -103,12 +103,7 @@ set_custom_prompt() {
     dir_color='\[\e[34m\]'
   fi
 
-  if [[ $PATH == /nix/store/* ]]; then
-    active_shell=${PATH%%/bin*}
-    active_shell="(${active_shell#*-}-env) "
-  fi
-
-  PS1="$active_shell$user_color$active_user $dir_color$active_dir\$ \[\e[0m\]"
+  PS1="$user_color$active_user $dir_color$active_dir\$ \[\e[0m\]"
 }
 
 PROMPT_COMMAND='set_custom_prompt'

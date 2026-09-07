@@ -22,7 +22,7 @@ let
       let
         bashRc =
           builtins.readFile (self + /dotfiles/bashrc)
-          + lib.optionals (machine == "host") ''
+          + lib.optionalString (machine == "host") ''
             PROMPT_COMMAND+=('echo -ne "\e]7;file://$HOSTNAME$PWD\e\\"')
           '';
         promptColor = {

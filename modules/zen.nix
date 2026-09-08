@@ -20,6 +20,7 @@ let
     "browser.shell.checkDefaultBrowser" = false;
     "browser.translations.neverTranslateLanguages" = "es,fr";
     "signon.rememberSignons" = false;
+    "ui.systemUsesDarkTheme" = 1;
     "zen.theme.content-element-separation" = 0;
     "zen.view.compact.animate-sidebar" = false;
     "zen.view.compact.show-sidebar-and-toolbar-on-hover" = false;
@@ -30,7 +31,7 @@ let
     install_url = "https://addons.mozilla.org/firefox/downloads/latest/${value}/latest.xpi";
     installation_mode = "force_installed";
     default_area = if name == "vpn@proton.ch" then "navbar" else "menupanel";
-    private_browsing = "allow";
+    private_browsing = true;
   }) extensions;
 
   extraPrefs = pkgs.lib.concatMapAttrsStringSep "\n" (

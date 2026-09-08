@@ -36,12 +36,12 @@ let
 
 in
 {
-  environment.systemPackages = impPkgs ++ bashWrapped.extraPkgs ++ gitWrapped.extraPkgs;
+  home.packages = impPkgs ++ bashWrapped.extraPkgs ++ gitWrapped.extraPkgs;
 
-  environment.etc.gitconfig.source = gitWrapped.cfgPath;
+  xdg.configFile."git/config".source = gitWrapped.cfgPath;
 
   programs.bash = {
     enable = true;
-    interactiveShellInit = bashWrapped.cfg;
+    initExtra = bashWrapped.cfg;
   };
 }

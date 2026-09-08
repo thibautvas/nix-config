@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     templates = {
       url = "github:thibautvas/flake-templates";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,6 +30,7 @@
       self,
       nixpkgs,
       nix-darwin,
+      home-manager,
       templates,
       gitutils-nvim,
     }:
@@ -128,6 +134,31 @@
           machine = "darwin";
         };
       };
+
+      # home-manager config: linux host and guest, darwin
+      homeConfigurations = lib.genAttrs [ "host" "guest" "darwin" ] (
+        machine:
+        let
+          system = if machine == "darwin" then "aarch64-darwin" else "x86_64-linux";
+        in
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${system};
+          modules = [
+            ./machines/common/base.nix
+            ./machines/common/settings.nix
+            {
+              home = rec {
+                stateVersion = "24.11"; # should not be changed
+                username = "thibautvas";
+                homeDirectory = "${(if machine == "darwin" then "/Users" else "/home")}/${username}";
+              };
+            }
+          ];
+          extraSpecialArgs = {
+            inherit self templates machine;
+          };
+        }
+      );
 
       # exposed packages
       packages = builtins.mapAttrs (

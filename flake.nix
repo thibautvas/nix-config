@@ -18,11 +18,6 @@
       url = "github:thibautvas/gitutils.nvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    zen-build = {
-      url = "github:thibautvas/zen-build";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -32,7 +27,6 @@
       nix-darwin,
       templates,
       gitutils-nvim,
-      zen-build,
       ...
     }:
     let
@@ -73,9 +67,7 @@
           appPkgs = {
             nvim = mkPkg "nvim" vimPkgs { };
             ghostty = mkPkg "ghostty" pkgs { };
-            zen = mkPkg "zen" pkgs {
-              inherit zen-build;
-            };
+            firefox = mkPkg "firefox" pkgs { };
           }
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             aero = mkPkg "aerospace" pkgs { };
@@ -84,7 +76,7 @@
             foot = mkPkg "foot" pkgs { };
             Hyprland = mkPkg "hyprland" pkgs {
               env = {
-                browser = "zen";
+                browser = "firefox";
                 terminal = "footclient";
                 sunset = 2000;
               };

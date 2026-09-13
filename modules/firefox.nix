@@ -5,7 +5,6 @@
 
 let
   inherit (pkgs) lib;
-  kernel = pkgs.stdenv.hostPlatform.parsed.kernel.name;
 
   defaultSearchEngine = "DuckDuckGo";
 
@@ -92,21 +91,12 @@ let
     };
   };
 
-  runtimeScript =
-    let
-      profilesGlob = {
-        darwin = "$HOME/Library/Application Support/Firefox/Profiles";
-        linux = "$HOME/.config/mozilla/firefox";
-      };
-    in
-    ''
-      profiles=(${profilesGlob.${kernel}}/*.default)
-      profile="''${profiles[0]}"
-      if [[ -d "$profile" ]]; then
-        mkdir -p "$profile/chrome"
-        ln -sf ${userChrome} "$profile/chrome/userChrome.css"
-      fi
-    '';
+  profileDir = "$HOME/.local/share/firefox-declarative/nx01dclv.default";
+
+  runtimeScript = ''
+    mkdir -p "${profileDir}/chrome"
+    ln -sf ${userChrome} "${profileDir}/chrome/userChrome.css"
+  '';
 
 in
 pkgs.symlinkJoin {
@@ -115,6 +105,7 @@ pkgs.symlinkJoin {
   nativeBuildInputs = [ pkgs.makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/firefox \
-      --run ${lib.escapeShellArg runtimeScript}
+      --run ${lib.escapeShellArg runtimeScript} \
+      --add-flags ${lib.escapeShellArg "--profile ${profileDir}"}
   '';
 }

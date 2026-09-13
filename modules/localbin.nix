@@ -1,14 +1,22 @@
 {
-  pkgs,
+  lib,
+  stdenv,
+  blueutil,
+  fzf,
+  mpv,
+  mpvScripts,
+  writeShellApplication,
+  writeShellScriptBin,
+  symlinkJoin,
   ...
 }:
 
 let
-  kernel = pkgs.stdenv.hostPlatform.parsed.kernel.name;
+  kernel = stdenv.hostPlatform.parsed.kernel.name;
 
   localApps = {
     statusSumUp = {
-      darwin = pkgs.writeShellScriptBin "sup" ''
+      darwin = writeShellScriptBin "sup" ''
         date +"%a %b %d %H:%M"
         pmset -g batt | grep -Eo '[0-9]+%'
         ipconfig getsummary en0 | awk -F ': ' '/ SSID : / {print $2}'
@@ -16,7 +24,7 @@ let
           awk '{buf[NR]=$0} /Default Output Device: Yes/ {print buf[NR-2]}' |
           sed -e 's/^ *//' -e 's/:$//'
       '';
-      linux = pkgs.writeShellScriptBin "sup" ''
+      linux = writeShellScriptBin "sup" ''
         date +"%a %b %d %H:%M"
         echo "$(cat /sys/class/power_supply/BAT0/capacity)%"
         nmcli -g GENERAL.CONNECTION device show | head -n1
@@ -28,7 +36,7 @@ let
       let
         shellApp =
           runtimeInputs: connect:
-          pkgs.writeShellApplication {
+          writeShellApplication {
             name = "btc";
             inherit runtimeInputs;
             text = ''
@@ -41,7 +49,7 @@ let
           };
       in
       {
-        darwin = shellApp [ pkgs.blueutil ] ''
+        darwin = shellApp [ blueutil ] ''
           blueutil --power 1
           blueutil --connect "$MAC"
         '';
@@ -51,9 +59,9 @@ let
       };
 
     # todo: darwin version
-    wifiConnect.linux = pkgs.writeShellApplication {
+    wifiConnect.linux = writeShellApplication {
       name = "wfc";
-      runtimeInputs = [ pkgs.fzf ];
+      runtimeInputs = [ fzf ];
       text = ''
         SSID=$(
           nmcli -g SSID device wifi list --rescan no |
@@ -67,18 +75,18 @@ let
     };
 
     # todo: darwin version
-    processList.linux = pkgs.writeShellApplication {
+    processList.linux = writeShellApplication {
       name = "pls";
-      runtimeInputs = [ pkgs.fzf ];
+      runtimeInputs = [ fzf ];
       text = ''
         ps -u "$USER" -o pid,cmd --sort=-lstart --no-headers |
           fzf --reverse --height 10 --bind "ctrl-x:execute(kill {1})+accept"
       '';
     };
 
-    virshList.linux = pkgs.writeShellApplication {
+    virshList.linux = writeShellApplication {
       name = "vls";
-      runtimeInputs = [ pkgs.fzf ];
+      runtimeInputs = [ fzf ];
       text = ''
         addr() {
           virsh --connect qemu:///system --quiet domifaddr "$1" |
@@ -98,11 +106,11 @@ let
       let
         shellApp =
           new:
-          pkgs.writeShellApplication {
+          writeShellApplication {
             name = "run-mp3";
             runtimeInputs = [
-              pkgs.fzf
-              (pkgs.mpv.override new)
+              fzf
+              (mpv.override new)
             ];
             text = ''
               [[ -z "''${PICKER+x}" ]] && PICKER='fzf --reverse --height 7'
@@ -116,16 +124,16 @@ let
       {
         darwin = shellApp { };
         linux = shellApp {
-          scripts = [ pkgs.mpvScripts.mpris ];
+          scripts = [ mpvScripts.mpris ];
         };
       };
   };
 
 in
-pkgs.symlinkJoin rec {
+symlinkJoin rec {
   name = "localbin-wrapped";
   paths = builtins.filter (x: x != null) (
-    pkgs.lib.mapAttrsToList (_: app: app.${kernel} or null) localApps
+    lib.mapAttrsToList (_: app: app.${kernel} or null) localApps
   );
   passthru.binaries = map (drv: drv.pname or drv.name) paths;
 }

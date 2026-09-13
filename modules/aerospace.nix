@@ -1,6 +1,9 @@
 {
   self,
-  pkgs,
+  aerospace,
+  bashInteractive,
+  choose-gui,
+  symlinkJoin,
   ...
 }:
 
@@ -8,16 +11,16 @@ let
   aeroRc = self + /dotfiles/aerospace.toml;
 
 in
-pkgs.symlinkJoin {
+symlinkJoin {
   name = "aerospace-wrapped";
   paths = [
-    pkgs.aerospace
-    pkgs.choose-gui
+    aerospace
+    choose-gui
   ];
   postBuild = ''
     mkdir -p $out/bin
     cat > $out/bin/aero <<EOF
-    #!${pkgs.bashInteractive}/bin/bash
+    #!${bashInteractive}/bin/bash
     export XDG_CONFIG_HOME="$out/etc/xdg"
     exec /usr/bin/open "$out/Applications/AeroSpace.app" "\$@"
     EOF

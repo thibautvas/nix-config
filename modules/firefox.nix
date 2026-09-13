@@ -1,11 +1,13 @@
 {
-  pkgs,
+  lib,
+  firefox,
+  writeText,
+  symlinkJoin,
+  makeWrapper,
   ...
 }:
 
 let
-  inherit (pkgs) lib;
-
   defaultSearchEngine = "DuckDuckGo";
 
   extensions = {
@@ -42,7 +44,7 @@ let
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
   };
 
-  userChrome = pkgs.writeText "userChrome.css" ''
+  userChrome = writeText "userChrome.css" ''
     #nav-bar {
       max-height: 0 !important;
       min-height: 0 !important;
@@ -73,7 +75,7 @@ let
     }
   '';
 
-  firefoxOvr = pkgs.firefox.override {
+  firefoxOvr = firefox.override {
     extraPolicies = policies // {
       ExtensionSettings = builtins.mapAttrs (_: value: {
         install_url = "https://addons.mozilla.org/firefox/downloads/latest/${value}/latest.xpi";
@@ -99,10 +101,10 @@ let
   '';
 
 in
-pkgs.symlinkJoin {
+symlinkJoin {
   name = "firefox-wrapped";
   paths = [ firefoxOvr ];
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  nativeBuildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/firefox \
       --run ${lib.escapeShellArg runtimeScript} \

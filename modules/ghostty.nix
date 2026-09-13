@@ -1,14 +1,13 @@
 {
-  pkgs,
+  lib,
+  ghostty,
+  writeText,
+  symlinkJoin,
+  makeWrapper,
   ...
 }:
 
 let
-  inherit (pkgs) lib;
-  inherit (pkgs.stdenv) isDarwin;
-
-  ghosttyBin = if isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
-
   ghosttyCfg = {
     bold-color = "bright";
     confirm-close-surface = false;
@@ -19,23 +18,21 @@ let
       "-liga"
     ];
     shell-integration-features = "no-cursor, ssh-env";
-  }
-  // lib.optionalAttrs isDarwin {
     macos-option-as-alt = "left";
     macos-titlebar-style = "hidden";
   };
 
-  ghosttyCfgPath = pkgs.writeText "config.ghostty" (
+  ghosttyCfgPath = writeText "config.ghostty" (
     lib.generators.toKeyValue {
       listsAsDuplicateKeys = true;
     } ghosttyCfg
   );
 
 in
-pkgs.symlinkJoin {
+symlinkJoin {
   name = "ghostty-wrapped";
-  paths = [ ghosttyBin ];
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  paths = [ ghostty ];
+  nativeBuildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/ghostty \
       --add-flags "--config-file=${ghosttyCfgPath}"

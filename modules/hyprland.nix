@@ -1,16 +1,26 @@
 {
   self,
-  pkgs,
+  lib,
   env,
+  hypridle,
+  hyprland,
+  hyprlock,
+  hyprshot,
+  hyprsunset,
+  brightnessctl,
+  playerctl,
+  cliphist,
+  wl-clipboard,
+  wofi,
+  symlinkJoin,
+  makeWrapper,
   ...
 }:
 
 let
-  inherit (pkgs) lib;
-
   hyprRc = self + /dotfiles/hyprland.lua;
 
-  extraPkgs = with pkgs; [
+  extraPkgs = [
     hyprshot
     hyprsunset
     wl-clipboard
@@ -25,14 +35,14 @@ let
   ) env;
 
 in
-pkgs.symlinkJoin {
+symlinkJoin {
   name = "hyprland-wrapped";
-  paths = with pkgs; [
+  paths = [
     hyprland
     hyprlock
     hypridle
   ];
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  nativeBuildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/Hyprland \
       --add-flags "-c ${hyprRc}" \

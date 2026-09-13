@@ -27,7 +27,6 @@
       nix-darwin,
       templates,
       gitutils-nvim,
-      ...
     }:
     let
       inherit (nixpkgs) lib;
@@ -44,48 +43,64 @@
           pkgs = nixpkgs.legacyPackages.${system};
           vimPkgs = pkgs.extend vimOverlay;
 
-          mkPkg =
-            module: pkgs: extraAttrs:
-            import ./modules/${module}.nix (
+          inherit (pkgs.stdenv) isDarwin;
+
+          mkPkgSet = builtins.mapAttrs (
+            _: value:
+            (value.pkgs or pkgs).callPackage value.module (
               {
-                inherit self pkgs;
+                inherit self;
               }
-              // extraAttrs
-            );
+              // (value.extraAttrs or { })
+            )
+          );
 
         in
         {
           inherit pkgs;
 
-          flkPkgs = {
-            bash = mkPkg "bash" pkgs { };
-            nvim-git = mkPkg "nvim" vimPkgs {
-              wrapGit = true;
+          flkPkgs = mkPkgSet {
+            bash.module = ./modules/bash.nix;
+            nvim-git = {
+              module = ./modules/nvim.nix;
+              pkgs = vimPkgs;
+              extraAttrs.wrapGit = true;
             };
           };
 
-          appPkgs = {
-            nvim = mkPkg "nvim" vimPkgs { };
-            ghostty = mkPkg "ghostty" pkgs { };
-            firefox = mkPkg "firefox" pkgs { };
-          }
-          // lib.optionalAttrs pkgs.stdenv.isDarwin {
-            aero = mkPkg "aerospace" pkgs { };
-          }
-          // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
-            foot = mkPkg "foot" pkgs { };
-            Hyprland = mkPkg "hyprland" pkgs {
-              env = {
-                browser = "firefox";
-                terminal = "footclient";
-                sunset = 2000;
+          appPkgs = mkPkgSet (
+            {
+              nvim = {
+                module = ./modules/nvim.nix;
+                pkgs = vimPkgs;
               };
-            };
-          };
+              ghostty = {
+                module = ./modules/ghostty.nix;
+                extraAttrs = lib.optionalAttrs isDarwin {
+                  ghostty = pkgs.ghostty-bin;
+                };
+              };
+              firefox.module = ./modules/firefox.nix;
+            }
+            // lib.optionalAttrs isDarwin {
+              aero.module = ./modules/aerospace.nix;
+            }
+            // lib.optionalAttrs (!isDarwin) {
+              foot.module = ./modules/foot.nix;
+              Hyprland = {
+                module = ./modules/hyprland.nix;
+                extraAttrs.env = {
+                  browser = "firefox";
+                  terminal = "footclient";
+                  sunset = 2000;
+                };
+              };
+            }
+          );
 
-          bldPkgs = {
-            kmonad = mkPkg "kmonad" pkgs { };
-            localbin = mkPkg "localbin" pkgs { };
+          bldPkgs = mkPkgSet {
+            kmonad.module = ./modules/kmonad.nix;
+            localbin.module = ./modules/localbin.nix;
           };
         }
       );

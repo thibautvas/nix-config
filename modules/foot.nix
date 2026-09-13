@@ -1,11 +1,17 @@
 {
-  pkgs,
+  lib,
+  foot,
+  makeFontsConf,
+  nerd-fonts,
+  writeText,
+  symlinkJoin,
+  makeWrapper,
   ...
 }:
 
 let
-  fontCfg = pkgs.makeFontsConf {
-    fontDirectories = [ pkgs.nerd-fonts.jetbrains-mono ];
+  fontCfg = makeFontsConf {
+    fontDirectories = [ nerd-fonts.jetbrains-mono ];
   };
 
   footCfg = {
@@ -34,13 +40,13 @@ let
     };
   };
 
-  footCfgPath = pkgs.writeText "foot.ini" (pkgs.lib.generators.toINI { } footCfg);
+  footCfgPath = writeText "foot.ini" (lib.generators.toINI { } footCfg);
 
 in
-pkgs.symlinkJoin {
+symlinkJoin {
   name = "foot-wrapped";
-  paths = [ pkgs.foot ];
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  paths = [ foot ];
+  nativeBuildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/foot \
       --set FONTCONFIG_FILE ${fontCfg}

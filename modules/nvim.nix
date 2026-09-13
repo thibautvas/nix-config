@@ -1,13 +1,21 @@
 {
   self,
-  pkgs,
+  lib,
+  vimPlugins,
+  neovim-unwrapped,
+  gitMinimal,
+  lua-language-server,
+  nixd,
+  nixfmt,
+  ruff,
+  ty,
+  wrapNeovimUnstable,
+  symlinkJoin,
   wrapGit ? false,
   ...
 }:
 
 let
-  inherit (pkgs) lib;
-
   luaRcContent = builtins.readFile (self + /dotfiles/nvim.lua);
 
   plugins =
@@ -20,7 +28,7 @@ let
           sql
         ];
     in
-    with pkgs.vimPlugins;
+    with vimPlugins;
     [
       (nvim-treesitter.withPlugins tsPlugins)
       nvim-treesitter-textobjects
@@ -33,7 +41,7 @@ let
       oil-nvim
     ];
 
-  lspWrapped.extraPkgs = with pkgs; [
+  lspWrapped.extraPkgs = [
     ty
     ruff
     nixd
@@ -42,7 +50,7 @@ let
   ];
 
   gitWrapped = {
-    extraPkgs = [ pkgs.gitMinimal ];
+    extraPkgs = [ gitMinimal ];
     runtimeScript = ''
       git config user.name &>/dev/null ||
         export GIT_AUTHOR_NAME='placeholder' \
@@ -67,13 +75,13 @@ let
       runtimeScripts
     ];
 
-  wrappedNvim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
+  wrappedNvim = wrapNeovimUnstable neovim-unwrapped {
     inherit luaRcContent plugins wrapperArgs;
   };
 
 in
 if wrapGit then
-  pkgs.symlinkJoin {
+  symlinkJoin {
     name = "nvim-git";
     paths = [ wrappedNvim ];
     postBuild = ''

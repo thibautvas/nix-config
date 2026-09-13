@@ -1,12 +1,15 @@
 {
   self,
-  pkgs,
+  lib,
+  stdenv,
+  kmonad,
+  writeShellApplication,
+  writeText,
   ...
 }:
 
 let
-  inherit (pkgs) lib;
-  kernel = pkgs.stdenv.hostPlatform.parsed.kernel.name;
+  kernel = stdenv.hostPlatform.parsed.kernel.name;
 
   kbdId = "usb-Keychron_Keychron_V4-event-kbd";
   kbdTmpl = builtins.readFile (self + /dotfiles/kmonad.kbd.in);
@@ -73,12 +76,12 @@ let
           ])
           kbdTmpl;
     in
-    pkgs.writeText "hrm-${kernel}-${kbd}.kbd" fmtKbd;
+    writeText "hrm-${kernel}-${kbd}.kbd" fmtKbd;
 
 in
-pkgs.writeShellApplication {
+writeShellApplication {
   name = "hrm";
-  runtimeInputs = lib.optionals (kernel == "linux") [ pkgs.kmonad ];
+  runtimeInputs = lib.optionals (kernel == "linux") [ kmonad ];
   text = ''
     sudo pkill -x kmonad || true
     sudo -b kmonad ${perKernelKbd kernel "base"}

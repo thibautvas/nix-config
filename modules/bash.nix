@@ -1,28 +1,34 @@
 {
   self,
-  pkgs,
+  lib,
+  bashInteractive,
+  fd,
+  fzf,
+  ripgrep,
+  symlinkJoin,
+  makeWrapper,
   ...
 }:
 
 let
   bashRc = self + /dotfiles/bashrc;
 
-  extraPkgs = with pkgs; [
+  extraPkgs = [
     fd
     fzf
     ripgrep
   ];
 
 in
-pkgs.symlinkJoin {
+symlinkJoin {
   name = "bash-wrapped";
   meta.mainProgram = "bash";
-  paths = [ pkgs.bashInteractive ];
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  paths = [ bashInteractive ];
+  nativeBuildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/bash \
       --add-flags "--rcfile ${bashRc}" \
-      --prefix PATH : ${pkgs.lib.makeBinPath extraPkgs}
+      --prefix PATH : ${lib.makeBinPath extraPkgs}
   '';
   passthru = {
     inherit extraPkgs;

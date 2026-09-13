@@ -16,21 +16,31 @@ let
     "vpn@proton.ch" = "proton-vpn-firefox-extension";
   };
 
-  prefs = {
-    "browser.aboutwelcome.enabled" = false;
+  policies = {
+    AIControls.Default = {
+      Value = "blocked";
+      Locked = true;
+    };
+    DisableRemoteImprovements = true;
+    DisableTelemetry = true;
+    DontCheckDefaultBrowser = true;
+    OfferToSaveLogins = false;
+    OverrideFirstRunPage = "";
+    SearchSuggestEnabled = false;
+    SkipTermsOfUse = true;
+  };
+
+  preferences = {
     "browser.ctrlTab.sortByRecentlyUsed" = true;
-    "browser.shell.checkDefaultBrowser" = false;
     "browser.startup.page" = 3;
     "browser.tabs.closeWindowWithLastTab" = false;
     "browser.translations.neverTranslateLanguages" = "es,fr";
     "browser.urlbar.autoFill.adaptiveHistory.enabled" = true;
-    "browser.urlbar.showSearchSuggestionsFirst" = false;
+    "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
     "sidebar.animation.enabled" = false;
     "sidebar.verticalTabs" = true;
     "sidebar.visibility" = "hide-sidebar";
-    "signon.rememberSignons" = false;
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-    "ui.systemUsesDarkTheme" = 1;
   };
 
   userChrome = pkgs.writeText "userChrome.css" ''
@@ -64,23 +74,22 @@ let
     }
   '';
 
-  extensionSettings = builtins.mapAttrs (name: value: {
-    install_url = "https://addons.mozilla.org/firefox/downloads/latest/${value}/latest.xpi";
-    installation_mode = "force_installed";
-    default_area = "navbar";
-    private_browsing = true;
-  }) extensions;
-
-  extraPrefs = lib.concatMapAttrsStringSep "\n" (
-    name: value: "lockPref(${builtins.toJSON name}, ${builtins.toJSON value});"
-  ) prefs;
-
   firefoxOvr = pkgs.firefox.override {
-    extraPolicies = {
-      ExtensionSettings = extensionSettings;
+    extraPolicies = policies // {
+      ExtensionSettings = builtins.mapAttrs (_: value: {
+        install_url = "https://addons.mozilla.org/firefox/downloads/latest/${value}/latest.xpi";
+        installation_mode = "force_installed";
+        default_area = "navbar";
+        private_browsing = true;
+      }) extensions;
+
+      Preferences = builtins.mapAttrs (_: value: {
+        Value = value;
+        Status = "locked";
+      }) preferences;
+
       SearchEngines.Default = defaultSearchEngine;
     };
-    inherit extraPrefs;
   };
 
   runtimeScript =
@@ -102,7 +111,6 @@ let
 in
 pkgs.symlinkJoin {
   name = "firefox-wrapped";
-  meta.mainProgram = "firefox";
   paths = [ firefoxOvr ];
   nativeBuildInputs = [ pkgs.makeWrapper ];
   postBuild = ''

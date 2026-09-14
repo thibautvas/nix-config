@@ -18,6 +18,11 @@
       url = "github:thibautvas/gitutils.nvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zen-build = {
+      url = "github:thibautvas/zen-build";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -27,6 +32,7 @@
       nix-darwin,
       templates,
       gitutils-nvim,
+      zen-build,
     }:
     let
       inherit (nixpkgs) lib;
@@ -80,7 +86,10 @@
                   ghostty = pkgs.ghostty-bin;
                 };
               };
-              firefox.module = ./modules/firefox.nix;
+              zen = {
+                module = ./modules/firefox.nix;
+                extraAttrs.zen-browser = zen-build.packages.${system}.default;
+              };
             }
             // lib.optionalAttrs isDarwin {
               aero.module = ./modules/aerospace.nix;

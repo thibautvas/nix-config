@@ -1,7 +1,6 @@
 {
   lib,
-  firefox,
-  writeText,
+  zen-browser,
   symlinkJoin,
   makeWrapper,
   ...
@@ -31,51 +30,15 @@ let
     SkipTermsOfUse = true;
   };
 
-  preferences = {
-    "browser.ctrlTab.sortByRecentlyUsed" = true;
-    "browser.startup.page" = 3;
-    "browser.tabs.closeWindowWithLastTab" = false;
-    "browser.translations.neverTranslateLanguages" = "es,fr";
-    "browser.urlbar.autoFill.adaptiveHistory.enabled" = true;
-    "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
-    "sidebar.animation.enabled" = false;
-    "sidebar.verticalTabs" = true;
-    "sidebar.visibility" = "hide-sidebar";
-    "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+  zenPrefs = {
+    "ui.systemUsesDarkTheme" = 1;
+    "zen.theme.content-element-separation" = 0;
+    "zen.view.compact.animate-sidebar" = false;
+    "zen.view.compact.show-sidebar-and-toolbar-on-hover" = false;
+    "zen.welcome-screen.seen" = true;
   };
 
-  userChrome = writeText "userChrome.css" ''
-    #nav-bar {
-      max-height: 0 !important;
-      min-height: 0 !important;
-      overflow: visible !important;
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    #navigator-toolbox {
-      border-bottom: none !important;
-    }
-    #nav-bar-customization-target > :not(#urlbar-container),
-    #nav-bar > :not(#nav-bar-customization-target) {
-      display: none !important;
-    }
-    #urlbar-container {
-      position: fixed !important;
-      top: 20% !important;
-      left: 10% !important;
-    }
-    #urlbar {
-      width: 80% !important;
-      max-width: none !important;
-    }
-    #urlbar:not([focused="true"]):not(:focus-within) {
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-  '';
-
-  firefoxOvr = firefox.override {
+  zenOvr = zen-browser.override {
     extraPolicies = policies // {
       ExtensionSettings = builtins.mapAttrs (_: value: {
         install_url = "https://addons.mozilla.org/firefox/downloads/latest/${value}/latest.xpi";
@@ -84,29 +47,27 @@ let
         private_browsing = true;
       }) extensions;
 
-      Preferences = builtins.mapAttrs (_: value: {
-        Value = value;
-        Status = "locked";
-      }) preferences;
-
       SearchEngines.Default = defaultSearchEngine;
     };
+
+    extraPrefs = lib.concatMapAttrsStringSep "\n" (
+      name: value: "lockPref(${builtins.toJSON name}, ${builtins.toJSON value});"
+    ) zenPrefs;
   };
 
-  profileDir = "$HOME/.local/share/firefox-declarative/nx01dclv.default";
+  profileDir = "$HOME/.local/share/zen-declarative/nx02dclv.default";
 
   runtimeScript = ''
     mkdir -p "${profileDir}/chrome"
-    ln -sf ${userChrome} "${profileDir}/chrome/userChrome.css"
   '';
 
 in
 symlinkJoin {
-  name = "firefox-wrapped";
-  paths = [ firefoxOvr ];
+  name = "zen-wrapped";
+  paths = [ zenOvr ];
   nativeBuildInputs = [ makeWrapper ];
   postBuild = ''
-    wrapProgram $out/bin/firefox \
+    wrapProgram $out/bin/zen \
       --run ${lib.escapeShellArg runtimeScript} \
       --add-flags ${lib.escapeShellArg "--profile ${profileDir}"}
   '';

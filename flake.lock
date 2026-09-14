@@ -62,7 +62,8 @@
         "gitutils-nvim": "gitutils-nvim",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
-        "templates": "templates"
+        "templates": "templates",
+        "zen-build": "zen-build"
       }
     },
     "templates": {
@@ -82,6 +83,26 @@
       "original": {
         "owner": "thibautvas",
         "repo": "flake-templates",
+        "type": "github"
+      }
+    },
+    "zen-build": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789383851,
+        "narHash": "sha256-8NdeOAEUJZOz8TtEd8heI4ho7O7iangjal1A9rkxeeU=",
+        "owner": "thibautvas",
+        "repo": "zen-build",
+        "rev": "610e93551147f924d8e9743cd0b6c51fd3f85ddb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thibautvas",
+        "repo": "zen-build",
         "type": "github"
       }
     }

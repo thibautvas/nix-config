@@ -89,12 +89,12 @@ let
       runtimeInputs = [ fzf ];
       text = ''
         addr() {
-          virsh --connect qemu:///system --quiet domifaddr "$1" |
+          sudo virsh --quiet domifaddr "$1" |
             awk '/ipv4/{print $4}' | cut -d/ -f1
         }
         export -f addr
 
-        virsh --connect qemu:///system --quiet list --all |
+        sudo virsh --quiet list --all |
           fzf --reverse --height 10 --bind "ctrl-a:become(sudo virsh start {2})" \
                                     --bind "ctrl-x:become(sudo virsh shutdown {2})" \
                                     --bind "enter:become(TERM=xterm-256color ssh \$(addr {2}))" \

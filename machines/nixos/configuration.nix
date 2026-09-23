@@ -16,7 +16,6 @@ let
     ]
     ++ lib.optionals (machine == "host") [
       ./custom/thinkpad-leds.nix
-      ./custom/libvirtd-hooks.nix
     ];
 
 in
@@ -43,10 +42,7 @@ in
 
   users.users.${primaryUser} = {
     isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "libvirtd"
-    ];
+    extraGroups = [ "wheel" ];
   };
 
   security.sudo.extraRules = [

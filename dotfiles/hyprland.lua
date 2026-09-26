@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 local browser = os.getenv("BROWSER") or "firefox"
 local terminal = os.getenv("TERMINAL") or "Alacritty"
 

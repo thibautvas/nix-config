@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 vim.opt.timeoutlen = 300
 vim.opt.splitright = true
 vim.opt.splitbelow = true
@@ -58,6 +56,7 @@ local servers = {
   lua_ls = {
     cmd = { "lua-language-server" },
     filetypes = { "lua" },
+    root_markers = { ".luarc.json", ".git" },
     settings = {
       Lua = {
         format = { enable = true },

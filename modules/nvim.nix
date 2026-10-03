@@ -36,7 +36,6 @@ let
       fzf-lua
       gitsigns-nvim
       gitutils-nvim
-      image-nvim
       kanagawa-nvim
       oil-nvim
     ];

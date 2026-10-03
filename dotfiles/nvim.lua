@@ -7,7 +7,7 @@ vim.opt.number = true
 vim.opt.wrap = false
 vim.opt.signcolumn = "yes"
 vim.opt.laststatus = 0
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 2
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
   callback = function()
@@ -252,28 +252,6 @@ init("gitutils", function(gu)
   vim.keymap.set("n", "]s", function()
     gu.diffpast("next")
   end, { desc = "Gitutils newer commit diff" })
-end)
-
-
--- image.nvim
-init("image", function(ig)
-  ig.setup({ processor = "magick_rock" })
-
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "image_nvim",
-    callback = function()
-      vim.opt_local.fillchars:append({ eob = " " })
-    end,
-  })
-
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "fzf",
-    callback = function()
-      if #ig.get_images() > 0 then
-        ig.clear()
-      end
-    end,
-  })
 end)
 
 

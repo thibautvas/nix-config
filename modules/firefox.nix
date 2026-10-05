@@ -27,6 +27,7 @@ let
     DontCheckDefaultBrowser = true;
     OfferToSaveLogins = false;
     OverrideFirstRunPage = "";
+    PictureInPicture.Enabled = false;
     SearchSuggestEnabled = false;
     SkipTermsOfUse = true;
   };
@@ -44,36 +45,26 @@ let
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
   };
 
-  userChrome = writeText "userChrome.css" ''
-    #nav-bar {
-      max-height: 0 !important;
-      min-height: 0 !important;
-      overflow: visible !important;
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    #navigator-toolbox {
-      border-bottom: none !important;
-    }
-    #nav-bar-customization-target > :not(#urlbar-container),
-    #nav-bar > :not(#nav-bar-customization-target) {
-      display: none !important;
-    }
-    #urlbar-container {
-      position: fixed !important;
-      top: 20% !important;
-      left: 10% !important;
-    }
-    #urlbar {
-      width: 80% !important;
-      max-width: none !important;
-    }
-    #urlbar:not([focused="true"]):not(:focus-within) {
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-  '';
+  chromeAttrs = {
+    nav-bar = {
+      max-height = 0;
+      min-height = 0;
+    };
+    "nav-bar > :not(#nav-bar-customization-target)".display = "none";
+    "nav-bar-customization-target > :not(#urlbar-container)".display = "none";
+    navigator-toolbox.z-index = 3;
+    urlbar-container = {
+      position = "fixed";
+      left = "10%";
+      right = "10%";
+      top = "20%";
+      width = "auto";
+    };
+    "urlbar:not([focused]):not(:focus-within)" = {
+      opacity = 0;
+      pointer-events = "none";
+    };
+  };
 
   firefoxOvr = firefox.override {
     extraPolicies = policies // {
@@ -92,6 +83,16 @@ let
       SearchEngines.Default = defaultSearchEngine;
     };
   };
+
+  userChrome = writeText "userChrome.css" (
+    lib.concatMapAttrsStringSep "\n" (selector: properties: ''
+      #${selector} {
+      ${lib.concatMapAttrsStringSep "\n" (
+        property: value: "  ${property}: ${toString value} !important;"
+      ) properties}
+      }
+    '') chromeAttrs
+  );
 
   profileDir = "$HOME/.local/share/firefox-declarative/nx01dclv.default";
 

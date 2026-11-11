@@ -225,8 +225,11 @@ init("gitutils", function(gu)
   vim.keymap.set("n", "<leader>hc", gu.commit, { desc = "Gitutils commit" })
   vim.keymap.set("n", "<leader>he", gu.extend, { desc = "Gitutils extend" })
   vim.keymap.set("n", "<leader>hb", gu.checkout, { desc = "Gitutils checkout" })
-  vim.keymap.set("n", "<leader>hx", gu.rebase, { desc = "Gitutils interactive rebase" })
-  vim.keymap.set("n", "<leader>hv", gu.continue, { desc = "Gitutils rebase continue" })
+  vim.keymap.set("n", "<leader>hx", function()
+    local rebase_dir = vim.fn.systemlist({ "git", "rev-parse", "--git-path", "rebase-merge" })[1]
+    local rebasing = vim.fn.isdirectory(rebase_dir) == 1
+    (rebasing and gu.continue or gu.rebase)()
+  end, { desc = "Gitutils interactive rebase" })
 
   vim.keymap.set("n", "<leader>hf", function()
     require("gitsigns").stage_hunk(nil, {}, gu.extend)
@@ -243,6 +246,12 @@ init("gitutils", function(gu)
   vim.keymap.set("n", "[g", function()
     gu.qf_diff("prev")
   end, { desc = "Gitutils prev diff" })
+  vim.keymap.set("n", "[s", function()
+    gu.diffpast("prev")
+  end, { desc = "Gitutils older commit diff" })
+  vim.keymap.set("n", "]s", function()
+    gu.diffpast("next")
+  end, { desc = "Gitutils newer commit diff" })
 end)
 
 

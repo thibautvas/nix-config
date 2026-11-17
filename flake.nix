@@ -18,6 +18,11 @@
       url = "github:thibautvas/gitutils.nvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    ebro = {
+      url = "github:thibautvas/ebro";
+      # relies on recent version of nixpkgs
+    };
   };
 
   outputs =
@@ -27,6 +32,7 @@
       nix-darwin,
       templates,
       gitutils-nvim,
+      ebro,
     }:
     let
       inherit (nixpkgs) lib;
@@ -87,12 +93,13 @@
             }
             // lib.optionalAttrs (!isDarwin) {
               foot.module = ./modules/foot.nix;
-              Hyprland = {
-                module = ./modules/hyprland.nix;
-                extraAttrs.env = {
-                  browser = "firefox";
-                  terminal = "footclient";
-                  sunset = 2000;
+              river = {
+                module = ./modules/river.nix;
+                extraAttrs = {
+                  inherit (ebro.packages.${system}) river;
+                  ebro = ebro.packages.${system}.ebro.override {
+                    configFile = ./dotfiles/ebro.zig;
+                  };
                 };
               };
             }

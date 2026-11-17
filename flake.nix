@@ -80,16 +80,7 @@
                 module = ./modules/nvim.nix;
                 pkgs = vimPkgs;
               };
-              ghostty = {
-                module = ./modules/ghostty.nix;
-                extraAttrs = lib.optionalAttrs isDarwin {
-                  ghostty = pkgs.ghostty-bin;
-                };
-              };
               firefox.module = ./modules/firefox.nix;
-            }
-            // lib.optionalAttrs isDarwin {
-              aero.module = ./modules/aerospace.nix;
             }
             // lib.optionalAttrs (!isDarwin) {
               foot.module = ./modules/foot.nix;

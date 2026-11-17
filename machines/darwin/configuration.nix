@@ -1,7 +1,3 @@
-{
-  ...
-}:
-
 let
   primaryUser = "thibautvas";
 
@@ -39,14 +35,4 @@ in
   };
 
   time.timeZone = "Europe/Madrid";
-
-  homebrew = {
-    enable = true;
-    onActivation.cleanup = "zap";
-    caskArgs.no_quarantine = true;
-    casks = [
-      "ghostty"
-      "shortcat"
-    ];
-  };
 }

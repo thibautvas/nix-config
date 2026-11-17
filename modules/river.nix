@@ -22,7 +22,7 @@
 }:
 
 let
-  kanshiCfgPath = writeText "config.kanshi" ''
+  kanshiCfg = writeText "kanshi.conf" ''
     profile docked {
       output eDP-1 mode 1920x1200 position 0,0 scale 1.5
       output DP-2 mode 3840x2160 position 1280,0 scale 2
@@ -32,46 +32,38 @@ let
     }
   '';
 
-  kanshiWrapped = symlinkJoin {
-    name = "kanshi-wrapped";
-    paths = [ kanshi ];
-    nativeBuildInputs = [ makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/kanshi \
-        --add-flags "-c ${kanshiCfgPath}"
-    '';
-  };
-
-  hypridleCfgPath = runCommand "hypridle.conf" { } ''
+  hypridleCfg = runCommand "hypridle.conf" { } ''
     substitute ${hypridle}/share/hypr/hypridle.conf $out \
       --replace-fail "hyprctl dispatch dpms off" "wlopm --off '*'" \
       --replace-fail "hyprctl dispatch dpms on" "wlopm --on '*'"
   '';
 
-  hypridleWrapped = symlinkJoin {
-    name = "hypridle-wrapped";
-    paths = [ hypridle ];
+  extraPkgs = symlinkJoin {
+    name = "extra-pkgs";
+    paths = [
+      kanshi
+      hypridle
+      hyprlock
+      wlopm
+      wlsunset
+      cliphist
+      wl-clipboard
+      wofi
+      grim
+      slurp
+      brightnessctl
+      playerctl
+    ];
     nativeBuildInputs = [ makeWrapper ];
     postBuild = ''
+      wrapProgram $out/bin/kanshi \
+        --add-flags "-c ${kanshiCfg}"
       wrapProgram $out/bin/hypridle \
-        --add-flags "-c ${hypridleCfgPath}"
+        --add-flags "-c ${hypridleCfg}"
+      wrapProgram $out/bin/hyprlock \
+        --add-flags "-c ${hyprlock}/share/hypr/hyprlock.conf"
     '';
   };
-
-  extraPkgs = [
-    kanshiWrapped
-    hypridleWrapped
-    hyprlock
-    wlopm
-    wlsunset
-    cliphist
-    wl-clipboard
-    wofi
-    grim
-    slurp
-    brightnessctl
-    playerctl
-  ];
 
 in
 symlinkJoin {
@@ -84,7 +76,7 @@ symlinkJoin {
   postBuild = ''
     wrapProgram $out/bin/river \
       --add-flags "-c ${lib.getExe ebro}" \
-      --prefix PATH : ${lib.makeBinPath extraPkgs} \
+      --prefix PATH : ${extraPkgs}/bin \
       --set XKB_DEFAULT_LAYOUT us \
       --set XKB_DEFAULT_VARIANT mac
   '';

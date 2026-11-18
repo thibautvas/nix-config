@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
@@ -21,7 +22,7 @@
 
     ebro = {
       url = "github:thibautvas/ebro";
-      # relies on recent version of nixpkgs
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
@@ -29,6 +30,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       nix-darwin,
       templates,
       gitutils-nvim,
@@ -91,6 +93,7 @@
                   ebro = ebro.packages.${system}.ebro.override {
                     configFile = ./dotfiles/ebro.zig;
                   };
+                  inherit (nixpkgs-unstable.legacyPackages.${system}) hypridle;
                 };
               };
             }

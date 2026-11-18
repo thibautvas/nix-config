@@ -32,10 +32,18 @@ let
     }
   '';
 
+  dpmsToWlopm =
+    action:
+    lib.escapeShellArgs [
+      "--replace-fail"
+      "hyprctl dispatch 'hl.dsp.dpms({action = \"${action}\"})'"
+      "wlopm --${action} '*'"
+    ];
+
   hypridleCfg = runCommand "hypridle.conf" { } ''
     substitute ${hypridle}/share/hypr/hypridle.conf $out \
-      --replace-fail "hyprctl dispatch dpms off" "wlopm --off '*'" \
-      --replace-fail "hyprctl dispatch dpms on" "wlopm --on '*'"
+      ${dpmsToWlopm "on"} \
+      ${dpmsToWlopm "off"}
   '';
 
   extraPkgs = symlinkJoin {

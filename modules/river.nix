@@ -16,6 +16,7 @@
   playerctl,
   runCommand,
   writeText,
+  writeShellScriptBin,
   symlinkJoin,
   makeWrapper,
   ...
@@ -24,12 +25,30 @@
 let
   kanshiCfg = writeText "kanshi.conf" ''
     profile docked {
-      output eDP-1 mode 1920x1200 position 0,0 scale 1.5
-      output DP-2 mode 3840x2160 position 1280,0 scale 2
+      output DP-2 mode 3840x2160 position 0,0 scale 2
+      output eDP-1 disable
+    }
+    profile docked-dual {
+      output DP-2 mode 3840x2160 position 0,0 scale 2
+      output eDP-1 enable mode 1920x1200 position 1920,0 scale 1.5
     }
     profile laptop {
-      output eDP-1 mode 1920x1200 position 0,0 scale 1.5
+      output eDP-1 enable mode 1920x1200 position 0,0 scale 1.5
     }
+    profile laptop-off {
+      output eDP-1 disable
+    }
+  '';
+
+  kanshiToggle = writeShellScriptBin "kanshi-toggle" ''
+    case "$(kanshictl status)" in
+      *'"docked"'*) next=docked-dual ;;
+      *'"docked-dual"'*) next=docked ;;
+      *'"laptop"'*) next=laptop-off ;;
+      *'"laptop-off"'*) next=laptop ;;
+      *) exit 1 ;;
+    esac
+    exec kanshictl switch "$next"
   '';
 
   dpmsToWlopm =
@@ -50,6 +69,7 @@ let
     name = "extra-pkgs";
     paths = [
       kanshi
+      kanshiToggle
       hypridle
       hyprlock
       wlopm

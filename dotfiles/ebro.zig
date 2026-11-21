@@ -58,6 +58,8 @@ pub const binds = [_]ebro.Bind{
     .{ .mods = alt_shift, .keysym = 'k', .action = .{ .move_to_workspace = 2 } },
     .{ .mods = alt_shift, .keysym = 'l', .action = .{ .move_to_workspace = 3 } },
     .{ .mods = alt_shift, .keysym = ';', .action = .{ .move_to_workspace = 4 } },
+    .{ .mods = alt_shift, .keysym = 'n', .action = .{ .summon = browser } },
+    .{ .mods = alt_shift, .keysym = 'm', .action = .reset_rules },
 
     .{ .mods = super, .keysym = tab, .action = .focus_next },
     .{ .mods = super, .keysym = 'p', .action = .swap_master },
@@ -65,7 +67,7 @@ pub const binds = [_]ebro.Bind{
     .{ .mods = super, .keysym = 'c', .action = .close },
     .{ .mods = super, .keysym = 'm', .action = .exit },
     .{ .mods = super, .keysym = 'q', .action = .{ .spawn = "hyprlock" } },
-    .{ .mods = alt_shift, .keysym = '0', .action = .{ .spawn = "wlopm --toggle eDP-1" } },
+    .{ .mods = alt_shift, .keysym = '0', .action = .{ .spawn = "kanshi-toggle" } },
 
     .{ .mods = super, .keysym = 's', .action = .{ .spawn = "grim -g \"$(slurp)\" $HOME/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png" } },
     .{ .mods = super_shift, .keysym = 's', .action = .{ .spawn = "grim $HOME/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png" } },

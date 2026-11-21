@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794935464,
-        "narHash": "sha256-qFi+BZ2dQnUp1elfWtSURo3yHOpRMGwHQqzzk/85UW0=",
+        "lastModified": 1795355944,
+        "narHash": "sha256-4w9Td3aekaNWaoXyVfOnO9UpNwwDwZXWdbD9zAMmgZ4=",
         "owner": "thibautvas",
         "repo": "ebro",
-        "rev": "bc933962191f3299775c790856a3ceef0af69425",
+        "rev": "4b5ccfd5746f84eeef645e31be0a2a9560fe5f43",
         "type": "github"
       },
       "original": {

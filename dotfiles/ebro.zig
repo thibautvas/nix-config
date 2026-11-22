@@ -9,7 +9,6 @@ pub const autostart = [_][:0]const u8{
     "hypridle",
     "wl-paste -t text -w cliphist store",
     "foot --server",
-    "hrm",
 };
 
 pub const keyboard: ebro.Keyboard = .{ .repeat_rate = 50, .repeat_delay = 200 };

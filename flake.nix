@@ -100,7 +100,6 @@
           );
 
           bldPkgs = mkPkgSet {
-            kmonad.module = ./modules/kmonad.nix;
             localbin.module = ./modules/localbin.nix;
           };
         }

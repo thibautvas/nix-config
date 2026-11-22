@@ -16,6 +16,7 @@ let
     ]
     ++ lib.optionals (machine == "host") [
       ./custom/thinkpad-leds.nix
+      ./custom/kmonad.nix
     ];
 
 in
